@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { sendQuoteReadyEmail } from '@/lib/email'
 
-// Admin sends a quote for a booking
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params
@@ -19,24 +19,38 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
       .update({
         price_cents: Math.round(price * 100),
         status: 'confirmed',
-        notes: note ? `[QUOTE NOTE] ${note}` : undefined,
         updated_at: new Date().toISOString(),
       })
       .eq('id', id)
-      .select(`*, customers(name, email, phone)`)
+      .select('*, customers(name, email, phone)')
       .single()
 
     if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
-    // Notify customer
+    // Save customer notification
     await supabase.from('notifications').insert([{
       type: 'quote_sent',
-      title: 'Your Quote is Ready',
-      message: `Your ${booking.service_type} has been quoted at $${price}. Log in to accept or ask a question.`,
+      title: 'Quote Ready',
+      message: `Your ${booking.service_type} has been quoted at $${price}.`,
       booking_id: id,
       customer_email: booking.customers?.email,
       read: false,
     }])
+
+    // Send quote email to customer
+    if (booking.customers?.email) {
+      await sendQuoteReadyEmail({
+        customerName: booking.customers.name,
+        customerEmail: booking.customers.email,
+        service: booking.service_type,
+        date: booking.scheduled_date,
+        address: booking.address,
+        suburb: booking.suburb,
+        price,
+        note: note || '',
+        bookingId: id,
+      })
+    }
 
     return NextResponse.json({ success: true, booking, price_quoted: price })
   } catch (err) {

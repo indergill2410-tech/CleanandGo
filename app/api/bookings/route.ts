@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { sendBookingConfirmationEmail, sendAdminNewBookingEmail } from '@/lib/email'
 
 export async function POST(request: Request) {
   try {
@@ -13,15 +14,13 @@ export async function POST(request: Request) {
     const supabase = await createClient()
 
     // 1. Upsert customer
-    const { data: customer, error: customerError } = await supabase
+    const { data: customer } = await supabase
       .from('customers')
       .upsert({ name, email, phone }, { onConflict: 'email' })
       .select()
       .single()
 
-    if (customerError) console.error('Customer upsert error:', customerError)
-
-    // 2. Create booking — no price, status = pending_quote
+    // 2. Create booking — no price, admin will quote
     const { data: booking, error: bookingError } = await supabase
       .from('bookings')
       .insert([{
@@ -36,26 +35,37 @@ export async function POST(request: Request) {
         scheduled_time: time,
         notes: notes || '',
         status: 'pending',
-        price_cents: 0, // No price — admin will quote
+        price_cents: 0,
       }])
       .select()
       .single()
 
     if (bookingError) {
-      console.error('Booking insert error:', bookingError)
+      console.error('Booking error:', bookingError)
       return NextResponse.json({ error: bookingError.message }, { status: 500 })
     }
 
-    // 3. Create admin notification
-    const supabaseAdmin = await createClient()
-    await supabaseAdmin.from('notifications').insert([{
+    // 3. Save admin notification
+    await supabase.from('notifications').insert([{
       type: 'new_booking',
       title: 'New Quote Request',
-      message: `${name} requested a ${service === 'endoflease' ? 'End of Lease' : service === 'recurring' ? 'Recurring Clean' : 'One-Off Clean'} at ${address}, ${suburb}. ${beds} bed / ${baths} bath.`,
+      message: `${name} requested a ${service} clean at ${address}, ${suburb}.`,
       booking_id: booking.id,
       read: false,
-    }]).select()
-    // Don't fail if notifications table doesn't exist yet
+    }])
+
+    // 4. Send emails (non-blocking — don't fail booking if email fails)
+    const serviceLabel = service === 'endoflease' ? 'End of Lease' : service === 'recurring' ? 'Recurring Clean' : 'One-Off Clean'
+    await Promise.allSettled([
+      sendBookingConfirmationEmail({
+        customerName: name, customerEmail: email, service,
+        date, time, address, suburb, beds, baths, extras: extras || [], bookingId: booking.id,
+      }),
+      sendAdminNewBookingEmail({
+        customerName: name, customerEmail: email, customerPhone: phone, service,
+        date, time, address, suburb, beds, baths, extras: extras || [], notes: notes || '', bookingId: booking.id,
+      }),
+    ])
 
     return NextResponse.json({ success: true, booking }, { status: 201 })
   } catch (err) {
@@ -72,7 +82,7 @@ export async function GET(request: Request) {
 
     let query = supabase
       .from('bookings')
-      .select(`*, customers(name, email, phone)`)
+      .select('*, customers(name, email, phone)')
       .order('created_at', { ascending: false })
 
     if (status) query = query.eq('status', status)
