@@ -1,5 +1,7 @@
-import { createServerClient, type CookieMethodsServer } from '@supabase/ssr'
+import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
+
+type CookieItem = { name: string; value: string; options?: Record<string, unknown> }
 
 export async function createClient() {
   const cookieStore = await cookies()
@@ -12,13 +14,14 @@ export async function createClient() {
         getAll() {
           return cookieStore.getAll()
         },
-        setAll(cookiesToSet: Parameters<CookieMethodsServer['setAll']>[0]) {
+        setAll(cookiesToSet: CookieItem[]) {
           try {
-            cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options)
-            )
+            cookiesToSet.forEach(({ name, value, options }) => {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              cookieStore.set(name, value, options as any)
+            })
           } catch {
-            // Ignore errors in Server Components — cookies can only be set in middleware or route handlers
+            // Server Components cannot set cookies — safe to ignore
           }
         },
       },
