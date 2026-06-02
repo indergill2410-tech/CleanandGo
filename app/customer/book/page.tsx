@@ -1,226 +1,348 @@
 'use client'
-
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 
-const SERVICE_TYPES = [
-  { id: 'recurring', label: 'Recurring Clean', basePrice: 120 },
-  { id: 'oneoff', label: 'One-Off Clean', basePrice: 180 },
-  { id: 'endoflease', label: 'End of Lease', basePrice: 400 },
+const STEPS = ['Service', 'Size & Extras', 'Date & Time', 'Your Details', 'Confirm']
+
+const SERVICES = [
+  { id: 'recurring', icon: '🏠', label: 'Recurring Clean', sub: 'Weekly or fortnightly', base: 120 },
+  { id: 'oneoff',    icon: '✨', label: 'One-Off Clean',   sub: 'Single deep clean',     base: 180 },
+  { id: 'endoflease',icon: '🔑', label: 'End of Lease',    sub: 'Bond-back guaranteed',  base: 400 },
 ]
 
-const BEDROOM_OPTIONS = [1, 2, 3, 4, 5]
-const BATHROOM_OPTIONS = [1, 2, 3, 4]
+const EXTRAS = [
+  { id: 'oven',    label: 'Oven Clean',        price: 60,  icon: '🍳' },
+  { id: 'fridge',  label: 'Fridge Clean',       price: 40,  icon: '❄️' },
+  { id: 'walls',   label: 'Wall Spot Clean',    price: 50,  icon: '🖌️' },
+  { id: 'carpet',  label: 'Carpet Steam',       price: 80,  icon: '🪣' },
+  { id: 'windows', label: 'Interior Windows',   price: 60,  icon: '🪟' },
+  { id: 'balcony', label: 'Balcony / Patio',    price: 45,  icon: '🌿' },
+]
+
+const TIMES = ['8:00 AM','9:00 AM','10:00 AM','11:00 AM','12:00 PM','1:00 PM','2:00 PM','3:00 PM']
+
+function calcPrice(serviceId: string, beds: number, baths: number, extras: string[]) {
+  const svc = SERVICES.find(s => s.id === serviceId)
+  if (!svc) return 0
+  const extrasTotal = EXTRAS.filter(e => extras.includes(e.id)).reduce((sum, e) => sum + e.price, 0)
+  return svc.base + (beds - 1) * 30 + (baths - 1) * 20 + extrasTotal
+}
 
 export default function BookingPage() {
-  const router = useRouter()
-  const [step, setStep] = useState(1)
+  const [step, setStep] = useState(0)
   const [form, setForm] = useState({
-    serviceType: '',
-    bedrooms: 2,
-    bathrooms: 1,
-    extras: [] as string[],
-    date: '',
-    time: '',
-    name: '',
-    email: '',
-    phone: '',
-    address: '',
-    suburb: '',
-    notes: '',
+    service: '', beds: 2, baths: 1, extras: [] as string[],
+    date: '', time: '', frequency: 'once',
+    name: '', email: '', phone: '', address: '', suburb: '', notes: '',
   })
 
-  const selectedService = SERVICE_TYPES.find(s => s.id === form.serviceType)
-  const estimatedPrice = selectedService
-    ? selectedService.basePrice + (form.bedrooms - 1) * 30 + (form.bathrooms - 1) * 20
-    : 0
+  const price = calcPrice(form.service, form.beds, form.baths, form.extras)
+  const selectedService = SERVICES.find(s => s.id === form.service)
 
-  const handleExtras = (extra: string) => {
-    setForm(f => ({
-      ...f,
-      extras: f.extras.includes(extra)
-        ? f.extras.filter(e => e !== extra)
-        : [...f.extras, extra],
-    }))
-  }
+  const toggleExtra = (id: string) =>
+    setForm(f => ({ ...f, extras: f.extras.includes(id) ? f.extras.filter(e => e !== id) : [...f.extras, id] }))
+
+  const canNext = [
+    !!form.service,
+    true,
+    !!form.date && !!form.time,
+    !!form.name && !!form.email && !!form.phone && !!form.address,
+    true,
+  ][step]
 
   return (
-    <main className="min-h-screen bg-gray-50 py-12 px-4">
-      <div className="max-w-xl mx-auto bg-white rounded-2xl shadow-lg p-8">
-        <h1 className="text-2xl font-bold text-brand-700 mb-2">Book a Clean</h1>
-        <p className="text-gray-500 mb-6">Step {step} of 3</p>
+    <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #1C2B3A 0%, #2C4A6E 50%, #4A7FA5 100%)' }}>
+      {/* Blobs */}
+      <div className="fixed top-0 left-0 w-full h-full pointer-events-none overflow-hidden">
+        <div className="absolute top-20 right-20 w-80 h-80 rounded-full blur-3xl opacity-20" style={{ background: '#7BA7C7' }} />
+        <div className="absolute bottom-20 left-20 w-96 h-96 rounded-full blur-3xl opacity-10" style={{ background: '#4A7FA5' }} />
+      </div>
 
-        {/* Step 1: Service Selection */}
-        {step === 1 && (
-          <div className="space-y-6">
+      <div className="relative z-10 min-h-screen flex flex-col items-center justify-center py-12 px-4">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <Link href="/" className="text-white/60 text-sm hover:text-white mb-4 inline-block">← Back to home</Link>
+          <h1 className="text-3xl font-bold text-white">Book a Clean</h1>
+          <p className="text-white/60 mt-1">Takes 60 seconds</p>
+        </div>
+
+        {/* Progress */}
+        <div className="w-full max-w-xl mb-8">
+          <div className="flex items-center justify-between mb-3">
+            {STEPS.map((s, i) => (
+              <div key={i} className="flex flex-col items-center gap-1">
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all ${
+                  i < step ? 'bg-white text-[#2C4A6E]'
+                  : i === step ? 'gradient-cta text-white ring-4 ring-white/30'
+                  : 'bg-white/20 text-white/50'
+                }`}>{i < step ? '✓' : i + 1}</div>
+                <span className={`text-xs hidden md:block ${
+                  i === step ? 'text-white font-medium' : 'text-white/40'
+                }`}>{s}</span>
+              </div>
+            ))}
+          </div>
+          <div className="h-1 bg-white/20 rounded-full">
+            <div
+              className="h-1 rounded-full transition-all duration-500"
+              style={{ width: `${(step / (STEPS.length - 1)) * 100}%`, background: 'linear-gradient(90deg, #7BA7C7, white)' }}
+            />
+          </div>
+        </div>
+
+        {/* Card */}
+        <div className="glass-strong rounded-3xl p-8 w-full max-w-xl shadow-2xl">
+
+          {/* STEP 0: Service */}
+          {step === 0 && (
             <div>
-              <label className="block font-medium mb-2">Service Type</label>
-              <div className="grid grid-cols-1 gap-3">
-                {SERVICE_TYPES.map(s => (
+              <h2 className="text-xl font-bold text-white mb-6">What do you need?</h2>
+              <div className="space-y-3">
+                {SERVICES.map(s => (
                   <button
                     key={s.id}
-                    onClick={() => setForm(f => ({ ...f, serviceType: s.id }))}
-                    className={`p-4 border-2 rounded-xl text-left transition ${
-                      form.serviceType === s.id
-                        ? 'border-brand-600 bg-brand-50'
-                        : 'border-gray-200 hover:border-brand-300'
+                    onClick={() => setForm(f => ({ ...f, service: s.id }))}
+                    className={`w-full p-5 rounded-2xl text-left transition-all border-2 ${
+                      form.service === s.id
+                        ? 'bg-white/30 border-white text-white'
+                        : 'bg-white/10 border-white/20 text-white/80 hover:bg-white/20'
                     }`}
                   >
-                    <div className="font-semibold">{s.label}</div>
-                    <div className="text-brand-600 text-sm">From ${s.basePrice}</div>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-4">
+                        <span className="text-3xl">{s.icon}</span>
+                        <div>
+                          <div className="font-semibold">{s.label}</div>
+                          <div className="text-sm opacity-70">{s.sub}</div>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <div className="font-bold text-lg">From ${s.base}</div>
+                        {form.service === s.id && <div className="text-xs opacity-70">Selected ✓</div>}
+                      </div>
+                    </div>
                   </button>
                 ))}
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block font-medium mb-2">Bedrooms</label>
-                <select
-                  value={form.bedrooms}
-                  onChange={e => setForm(f => ({ ...f, bedrooms: Number(e.target.value) }))}
-                  className="w-full border rounded-lg p-2"
-                >
-                  {BEDROOM_OPTIONS.map(n => <option key={n} value={n}>{n}</option>)}
-                </select>
-              </div>
-              <div>
-                <label className="block font-medium mb-2">Bathrooms</label>
-                <select
-                  value={form.bathrooms}
-                  onChange={e => setForm(f => ({ ...f, bathrooms: Number(e.target.value) }))}
-                  className="w-full border rounded-lg p-2"
-                >
-                  {BATHROOM_OPTIONS.map(n => <option key={n} value={n}>{n}</option>)}
-                </select>
-              </div>
-            </div>
-            <div>
-              <label className="block font-medium mb-2">Extras</label>
-              {['Oven Clean (+$60)', 'Fridge Clean (+$40)', 'Wall Spot Clean (+$50)', 'Carpet Steam (+$80)'].map(extra => (
-                <label key={extra} className="flex items-center gap-3 mb-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={form.extras.includes(extra)}
-                    onChange={() => handleExtras(extra)}
-                    className="w-4 h-4 accent-brand-600"
-                  />
-                  {extra}
-                </label>
-              ))}
-            </div>
-            {estimatedPrice > 0 && (
-              <div className="bg-brand-50 rounded-xl p-4 text-center">
-                <div className="text-sm text-gray-500">Estimated Price</div>
-                <div className="text-3xl font-bold text-brand-700">${estimatedPrice}</div>
-              </div>
-            )}
-            <button
-              disabled={!form.serviceType}
-              onClick={() => setStep(2)}
-              className="w-full bg-brand-600 text-white py-3 rounded-xl font-semibold disabled:opacity-40 hover:bg-brand-700 transition"
-            >
-              Next: Choose Date & Time →
-            </button>
-          </div>
-        )}
+          )}
 
-        {/* Step 2: Date & Time */}
-        {step === 2 && (
-          <div className="space-y-6">
+          {/* STEP 1: Size + Extras */}
+          {step === 1 && (
             <div>
-              <label className="block font-medium mb-2">Preferred Date</label>
-              <input
-                type="date"
-                value={form.date}
-                min={new Date().toISOString().split('T')[0]}
-                onChange={e => setForm(f => ({ ...f, date: e.target.value }))}
-                className="w-full border rounded-lg p-3"
-              />
-            </div>
-            <div>
-              <label className="block font-medium mb-2">Preferred Time</label>
-              <select
-                value={form.time}
-                onChange={e => setForm(f => ({ ...f, time: e.target.value }))}
-                className="w-full border rounded-lg p-3"
-              >
-                <option value="">Select a time</option>
-                {['8:00 AM', '9:00 AM', '10:00 AM', '11:00 AM', '12:00 PM', '1:00 PM', '2:00 PM', '3:00 PM'].map(t => (
-                  <option key={t} value={t}>{t}</option>
+              <h2 className="text-xl font-bold text-white mb-6">Size &amp; extras</h2>
+
+              <div className="grid grid-cols-2 gap-4 mb-6">
+                {[{ label: 'Bedrooms', key: 'beds', min: 1, max: 6 }, { label: 'Bathrooms', key: 'baths', min: 1, max: 5 }].map(f => (
+                  <div key={f.key}>
+                    <label className="text-white/70 text-sm mb-2 block">{f.label}</label>
+                    <div className="flex items-center gap-3 bg-white/10 rounded-xl p-3 border border-white/20">
+                      <button
+                        onClick={() => setForm(prev => ({ ...prev, [f.key]: Math.max(f.min, (prev as any)[f.key] - 1) }))}
+                        className="w-8 h-8 rounded-lg bg-white/20 text-white font-bold hover:bg-white/30 transition"
+                      >−</button>
+                      <span className="text-white font-bold text-xl flex-1 text-center">{(form as any)[f.key]}</span>
+                      <button
+                        onClick={() => setForm(prev => ({ ...prev, [f.key]: Math.min(f.max, (prev as any)[f.key] + 1) }))}
+                        className="w-8 h-8 rounded-lg bg-white/20 text-white font-bold hover:bg-white/30 transition"
+                      >+</button>
+                    </div>
+                  </div>
                 ))}
-              </select>
-            </div>
-            <div className="flex gap-3">
-              <button onClick={() => setStep(1)} className="flex-1 border border-gray-300 py-3 rounded-xl font-semibold hover:bg-gray-50">
-                ← Back
-              </button>
-              <button
-                disabled={!form.date || !form.time}
-                onClick={() => setStep(3)}
-                className="flex-1 bg-brand-600 text-white py-3 rounded-xl font-semibold disabled:opacity-40 hover:bg-brand-700 transition"
-              >
-                Next: Your Details →
-              </button>
-            </div>
-          </div>
-        )}
+              </div>
 
-        {/* Step 3: Customer Details */}
-        {step === 3 && (
-          <div className="space-y-4">
-            {[
-              { label: 'Full Name', key: 'name', type: 'text', placeholder: 'Jane Smith' },
-              { label: 'Email', key: 'email', type: 'email', placeholder: 'jane@example.com' },
-              { label: 'Phone', key: 'phone', type: 'tel', placeholder: '04xx xxx xxx' },
-              { label: 'Street Address', key: 'address', type: 'text', placeholder: '12 Example St' },
-              { label: 'Suburb', key: 'suburb', type: 'text', placeholder: 'South Yarra' },
-            ].map(f => (
-              <div key={f.key}>
-                <label className="block font-medium mb-1">{f.label}</label>
+              <label className="text-white/70 text-sm mb-3 block">Add extras</label>
+              <div className="grid grid-cols-2 gap-2">
+                {EXTRAS.map(e => (
+                  <button
+                    key={e.id}
+                    onClick={() => toggleExtra(e.id)}
+                    className={`p-3 rounded-xl text-left transition-all border ${
+                      form.extras.includes(e.id)
+                        ? 'bg-white/30 border-white text-white'
+                        : 'bg-white/10 border-white/20 text-white/70 hover:bg-white/20'
+                    }`}
+                  >
+                    <div className="text-lg mb-1">{e.icon}</div>
+                    <div className="text-xs font-medium">{e.label}</div>
+                    <div className="text-xs opacity-70">+${e.price}</div>
+                  </button>
+                ))}
+              </div>
+
+              {/* Live price */}
+              <div className="mt-6 bg-white/10 rounded-2xl p-4 border border-white/20 text-center">
+                <div className="text-white/60 text-sm">Estimated total</div>
+                <div className="text-4xl font-bold text-white mt-1">${price}</div>
+              </div>
+            </div>
+          )}
+
+          {/* STEP 2: Date + Time */}
+          {step === 2 && (
+            <div>
+              <h2 className="text-xl font-bold text-white mb-6">When works for you?</h2>
+              <div className="mb-4">
+                <label className="text-white/70 text-sm mb-2 block">Date</label>
                 <input
-                  type={f.type}
-                  placeholder={f.placeholder}
-                  value={(form as any)[f.key]}
-                  onChange={e => setForm(prev => ({ ...prev, [f.key]: e.target.value }))}
-                  className="w-full border rounded-lg p-3"
+                  type="date"
+                  min={new Date().toISOString().split('T')[0]}
+                  value={form.date}
+                  onChange={e => setForm(f => ({ ...f, date: e.target.value }))}
+                  className="w-full bg-white/10 border border-white/20 rounded-xl p-4 text-white"
+                  style={{ colorScheme: 'dark' }}
                 />
               </div>
-            ))}
+              <div>
+                <label className="text-white/70 text-sm mb-2 block">Time</label>
+                <div className="grid grid-cols-4 gap-2">
+                  {TIMES.map(t => (
+                    <button
+                      key={t}
+                      onClick={() => setForm(f => ({ ...f, time: t }))}
+                      className={`py-2.5 rounded-xl text-sm font-medium transition-all ${
+                        form.time === t
+                          ? 'bg-white text-[#2C4A6E] font-bold'
+                          : 'bg-white/10 text-white/70 border border-white/20 hover:bg-white/20'
+                      }`}
+                    >{t}</button>
+                  ))}
+                </div>
+              </div>
+
+              {form.service === 'recurring' && (
+                <div className="mt-4">
+                  <label className="text-white/70 text-sm mb-2 block">Frequency</label>
+                  <div className="grid grid-cols-2 gap-2">
+                    {[{ id: 'weekly', label: 'Weekly', sub: 'Save 10%' }, { id: 'fortnightly', label: 'Fortnightly', sub: 'Save 5%' }].map(f => (
+                      <button
+                        key={f.id}
+                        onClick={() => setForm(prev => ({ ...prev, frequency: f.id }))}
+                        className={`p-3 rounded-xl text-left border transition-all ${
+                          form.frequency === f.id
+                            ? 'bg-white/30 border-white text-white'
+                            : 'bg-white/10 border-white/20 text-white/70'
+                        }`}
+                      >
+                        <div className="font-medium text-sm">{f.label}</div>
+                        <div className="text-xs opacity-70">{f.sub}</div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* STEP 3: Details */}
+          {step === 3 && (
             <div>
-              <label className="block font-medium mb-1">Special Notes</label>
-              <textarea
-                value={form.notes}
-                onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
-                rows={3}
-                placeholder="e.g. pet in house, access code, specific areas to focus on"
-                className="w-full border rounded-lg p-3"
-              />
-            </div>
-            <div className="bg-brand-50 rounded-xl p-4 mb-2">
-              <div className="flex justify-between text-sm text-gray-600 mb-1">
-                <span>{selectedService?.label}</span>
-                <span>${estimatedPrice}</span>
+              <h2 className="text-xl font-bold text-white mb-6">Your details</h2>
+              <div className="space-y-3">
+                {[
+                  { label: 'Full Name', key: 'name', type: 'text', placeholder: 'Jane Smith' },
+                  { label: 'Email', key: 'email', type: 'email', placeholder: 'jane@example.com' },
+                  { label: 'Phone', key: 'phone', type: 'tel', placeholder: '04xx xxx xxx' },
+                  { label: 'Street Address', key: 'address', type: 'text', placeholder: '12 Example St' },
+                  { label: 'Suburb', key: 'suburb', type: 'text', placeholder: 'South Yarra, VIC' },
+                ].map(f => (
+                  <div key={f.key}>
+                    <label className="text-white/70 text-sm mb-1 block">{f.label}</label>
+                    <input
+                      type={f.type}
+                      placeholder={f.placeholder}
+                      value={(form as any)[f.key]}
+                      onChange={e => setForm(prev => ({ ...prev, [f.key]: e.target.value }))}
+                      className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 text-sm"
+                    />
+                  </div>
+                ))}
+                <div>
+                  <label className="text-white/70 text-sm mb-1 block">Notes (optional)</label>
+                  <textarea
+                    rows={3}
+                    placeholder="e.g. pet in house, gate code, areas to focus on"
+                    value={form.notes}
+                    onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
+                    className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 text-sm resize-none"
+                  />
+                </div>
               </div>
-              <div className="flex justify-between font-bold text-lg">
-                <span>Total</span>
-                <span className="text-brand-700">${estimatedPrice}</span>
-              </div>
             </div>
-            <div className="flex gap-3">
-              <button onClick={() => setStep(2)} className="flex-1 border border-gray-300 py-3 rounded-xl font-semibold hover:bg-gray-50">
-                ← Back
-              </button>
+          )}
+
+          {/* STEP 4: Confirm + Pay */}
+          {step === 4 && (
+            <div>
+              <h2 className="text-xl font-bold text-white mb-6">Order summary</h2>
+              <div className="space-y-3 mb-6">
+                {[
+                  { label: 'Service', value: selectedService?.label },
+                  { label: 'Size', value: `${form.beds} bed · ${form.baths} bath` },
+                  { label: 'Date', value: `${form.date} at ${form.time}` },
+                  { label: 'Address', value: `${form.address}, ${form.suburb}` },
+                  { label: 'Contact', value: form.email },
+                ].map(row => (
+                  <div key={row.label} className="flex justify-between text-sm">
+                    <span className="text-white/50">{row.label}</span>
+                    <span className="text-white font-medium text-right max-w-[200px]">{row.value}</span>
+                  </div>
+                ))}
+                {form.extras.length > 0 && (
+                  <div className="flex justify-between text-sm">
+                    <span className="text-white/50">Extras</span>
+                    <span className="text-white">{EXTRAS.filter(e => form.extras.includes(e.id)).map(e => e.label).join(', ')}</span>
+                  </div>
+                )}
+              </div>
+
+              <div className="border-t border-white/20 pt-4 mb-6">
+                <div className="flex justify-between items-center">
+                  <span className="text-white/70">Total</span>
+                  <span className="text-3xl font-bold text-white">${price}</span>
+                </div>
+              </div>
+
+              {/* Trust badges */}
+              <div className="flex gap-3 mb-6 text-xs">
+                {['🔒 Secure payment', '🛡️ Insured', '✅ Guaranteed'].map(b => (
+                  <span key={b} className="bg-white/10 text-white/70 px-3 py-1.5 rounded-full">{b}</span>
+                ))}
+              </div>
+
+              {/* Stripe placeholder */}
+              <div className="bg-white/10 border border-white/20 rounded-xl p-4 mb-4">
+                <div className="text-white/50 text-xs mb-3">Card details</div>
+                <div className="text-white/30 text-sm">Stripe payment element loads here</div>
+              </div>
+
               <button
-                disabled={!form.name || !form.email || !form.phone || !form.address}
-                onClick={() => alert('Proceed to payment — Stripe integration next!')}
-                className="flex-1 bg-brand-600 text-white py-3 rounded-xl font-semibold disabled:opacity-40 hover:bg-brand-700 transition"
+                onClick={() => alert('Payment integration coming — Stripe setup next!')}
+                className="w-full py-4 rounded-2xl font-bold text-lg transition-all bg-white text-[#2C4A6E] hover:bg-white/90 hover:shadow-xl"
               >
-                Confirm &amp; Pay →
+                Confirm &amp; Pay ${price}
               </button>
             </div>
+          )}
+
+          {/* Navigation */}
+          <div className="flex gap-3 mt-6">
+            {step > 0 && (
+              <button
+                onClick={() => setStep(s => s - 1)}
+                className="flex-1 py-3 rounded-xl border border-white/30 text-white/70 hover:bg-white/10 transition font-medium"
+              >← Back</button>
+            )}
+            {step < STEPS.length - 1 && (
+              <button
+                disabled={!canNext}
+                onClick={() => setStep(s => s + 1)}
+                className="flex-1 py-3 rounded-xl font-semibold transition-all disabled:opacity-30 bg-white text-[#2C4A6E] hover:bg-white/90"
+              >Continue →</button>
+            )}
           </div>
-        )}
+        </div>
       </div>
-    </main>
+    </div>
   )
 }
