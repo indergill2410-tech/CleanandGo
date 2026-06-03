@@ -110,7 +110,7 @@ export default function CareersApplyForm() {
 
       <div>
         <label className="text-white/70 text-sm mb-2 block">Resume <span className="text-white/40">(optional, PDF)</span></label>
-        <DocButton k="resume" label="Attach resume" />
+        {renderDocButton('resume', 'Attach resume')}
       </div>
 
       {/* Optional verification — stronger profile */}
@@ -122,13 +122,13 @@ export default function CareersApplyForm() {
           <input type="checkbox" checked={form.hasPoliceCheck} onChange={e => set('hasPoliceCheck', e.target.checked)} className="w-4 h-4 accent-[#4A7FA5]" />
           I have a current National Police Check
         </label>
-        <DocButton k="police" label="Attach police check" />
+        {renderDocButton('police', 'Attach police check')}
 
         <label className="flex items-center gap-3 text-white/80 text-sm pt-1">
           <input type="checkbox" checked={form.hasWwcc} onChange={e => set('hasWwcc', e.target.checked)} className="w-4 h-4 accent-[#4A7FA5]" />
           I have a current Working With Children Check
         </label>
-        <DocButton k="wwcc" label="Attach WWCC" />
+        {renderDocButton('wwcc', 'Attach WWCC')}
       </div>
 
       {error && <div className="bg-red-500/20 border border-red-500/30 rounded-xl px-4 py-3 text-red-200 text-sm">{error}</div>}
