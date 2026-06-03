@@ -47,9 +47,17 @@ export default function Navbar() {
           ))}
         </div>
 
-        <Link href="/customer/book" className="btn-primary text-sm px-6 py-3">
-          Book Now
-        </Link>
+        <div className="flex items-center gap-4">
+          <Link
+            href="/account"
+            className={`text-sm font-medium transition-colors ${
+              scrolled ? 'text-[#7A8A96] hover:text-[#2C4A6E]' : 'text-white/80 hover:text-white'
+            }`}
+          >Log in</Link>
+          <Link href="/customer/book" className="btn-primary text-sm px-6 py-3">
+            Book Now
+          </Link>
+        </div>
       </div>
     </nav>
   )

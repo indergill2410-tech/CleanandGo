@@ -4,6 +4,8 @@ import { requireAdmin } from '@/lib/auth'
 import { getOrCreateCustomer } from '@/lib/customers'
 import { sendBookingConfirmationEmail, sendAdminNewBookingEmail } from '@/lib/email'
 
+export const runtime = 'nodejs'
+
 // Public endpoint: anyone can submit a quote request.
 export async function POST(request: Request) {
   try {

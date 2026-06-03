@@ -108,6 +108,9 @@ export default function AdminDashboard() {
               <Link href="/admin/applications" className="text-sm text-[#7BA7C7] hover:text-white font-semibold transition-colors">
                 Applications →
               </Link>
+              <Link href="/admin/team" className="text-sm text-[#7BA7C7] hover:text-white font-semibold transition-colors">
+                Team →
+              </Link>
             </div>
           </div>
           {unread > 0 && (

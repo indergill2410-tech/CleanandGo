@@ -2,6 +2,9 @@ import { NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { requireAdmin } from '@/lib/auth'
 import { getOrCreateCustomer } from '@/lib/customers'
+import { sendAdminNewPlanEmail } from '@/lib/email'
+
+export const runtime = 'nodejs'
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
@@ -70,6 +73,14 @@ export async function POST(request: Request) {
       message: `${name} requested a ${frequency} ${propertyType} plan at ${address}, ${suburb}.`,
       read: false,
     }])
+
+    // Always email the admin a summary of the new job.
+    const size = propertyType === 'office' ? `${officeSqm ?? '?'} m²` : `${bedrooms ?? '?'} bed · ${bathrooms ?? '?'} bath`
+    await sendAdminNewPlanEmail({
+      name, email, phone, propertyType, frequency, address, suburb, state, postcode,
+      preferredDay, preferredTime, size, notes,
+      photosCount: Array.isArray(photos) ? photos.length : 0,
+    }).catch(e => console.error('Admin plan email failed:', e))
 
     return NextResponse.json({ success: true, subscription }, { status: 201 })
   } catch (err) {

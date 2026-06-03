@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import AddressAutocomplete, { type AddressParts } from '@/components/AddressAutocomplete'
 import PhotoUpload from '@/components/PhotoUpload'
+import { createClient } from '@/lib/supabase/client'
 
 const STEPS = ['Service', 'Size & Extras', 'Date & Time', 'Your Details', 'Confirm']
 
@@ -31,7 +32,7 @@ export default function BookingPage() {
   const [form, setForm] = useState({
     service: '', beds: 2, baths: 1, extras: [] as string[],
     date: '', time: '', frequency: 'once',
-    name: '', email: '', phone: '', address: '', suburb: '', state: '', postcode: '', notes: '',
+    name: '', email: '', phone: '', address: '', suburb: '', state: '', postcode: '', notes: '', password: '',
   })
   const [photos, setPhotos] = useState<string[]>([])
 
@@ -53,10 +54,20 @@ export default function BookingPage() {
   const handleSubmit = async () => {
     setSubmitting(true)
     try {
+      // Optional account: standard, verified sign-up (sends a confirmation email).
+      if (form.password && form.password.length >= 8) {
+        await createClient().auth.signUp({
+          email: form.email,
+          password: form.password,
+          options: { emailRedirectTo: `${window.location.origin}/account`, data: { full_name: form.name } },
+        }).catch(() => {})
+      }
+      const { password, ...rest } = form
+      void password
       const res = await fetch('/api/bookings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...form, photos }),
+        body: JSON.stringify({ ...rest, photos }),
       })
       const data = await res.json()
       const bookingId = data.booking?.id || `REQ-${Date.now().toString().slice(-6)}`
@@ -264,6 +275,11 @@ export default function BookingPage() {
                 <div>
                   <label className="text-white/70 text-sm mb-1 block">Notes (optional)</label>
                   <textarea rows={3} placeholder="e.g. pet in house, gate code, specific areas to focus on" value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))} className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 text-sm resize-none" />
+                </div>
+                <div className="bg-white/5 border border-white/10 rounded-xl p-4">
+                  <label className="text-white/80 text-sm font-medium mb-1 block">Create an account <span className="text-white/40">(optional)</span></label>
+                  <p className="text-white/40 text-xs mb-3">Set a password to track this job and manage future bookings.</p>
+                  <input type="password" placeholder="Choose a password (min 8 characters)" value={form.password} onChange={e => setForm(f => ({ ...f, password: e.target.value }))} minLength={8} autoComplete="new-password" className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 text-sm" />
                 </div>
                 <PhotoUpload urls={photos} onChange={setPhotos} />
               </div>

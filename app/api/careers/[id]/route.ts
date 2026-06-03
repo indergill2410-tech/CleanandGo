@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { requireAdmin } from '@/lib/auth'
 import { provisionStaffLogin } from '@/lib/onboarding'
-import { sendCleanerWelcomeEmail } from '@/lib/email'
+import { sendStaffInviteEmail } from '@/lib/email'
 
 export const runtime = 'nodejs'
 
@@ -73,7 +73,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
   // Email the set-password invite; fall back to returning the link for the admin.
   let emailed = false
   try {
-    await sendCleanerWelcomeEmail({ name: app.name, email: app.email, actionLink })
+    await sendStaffInviteEmail({ name: app.name, email: app.email, actionLink, role: 'cleaner' })
     emailed = true
   } catch (e) {
     console.error('Welcome email failed:', e)

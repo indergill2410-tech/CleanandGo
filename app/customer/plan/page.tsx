@@ -3,6 +3,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import AddressAutocomplete, { type AddressParts } from '@/components/AddressAutocomplete'
 import PhotoUpload from '@/components/PhotoUpload'
+import { createClient } from '@/lib/supabase/client'
 
 type PropertyType = 'home' | 'office'
 type Frequency = 'weekly' | 'fortnightly' | 'monthly'
@@ -15,7 +16,7 @@ export default function PlanRequestPage() {
   const [form, setForm] = useState({
     name: '', email: '', phone: '', address: '', suburb: '', state: '', postcode: '',
     bedrooms: 2, bathrooms: 1, officeSqm: 100,
-    preferredDay: 'Tuesday', preferredTime: '09:00', notes: '',
+    preferredDay: 'Tuesday', preferredTime: '09:00', notes: '', password: '',
   })
   const [photos, setPhotos] = useState<string[]>([])
   const [submitting, setSubmitting] = useState(false)
@@ -31,10 +32,20 @@ export default function PlanRequestPage() {
     setSubmitting(true)
     setError('')
     try {
+      // Optional account: standard, verified sign-up (sends a confirmation email).
+      if (form.password && form.password.length >= 8) {
+        await createClient().auth.signUp({
+          email: form.email,
+          password: form.password,
+          options: { emailRedirectTo: `${window.location.origin}/account`, data: { full_name: form.name } },
+        }).catch(() => {})
+      }
+      const { password, ...rest } = form
+      void password
       const res = await fetch('/api/subscriptions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ propertyType, frequency, ...form, photos }),
+        body: JSON.stringify({ propertyType, frequency, ...rest, photos }),
       })
       const data = await res.json()
       if (!res.ok) { setError(data.error || 'Something went wrong'); return }
@@ -54,6 +65,7 @@ export default function PlanRequestPage() {
           <h1 className="text-2xl font-bold text-white mb-3">Plan request received</h1>
           <p className="text-white/70 text-sm mb-6">
             Thanks {form.name.split(' ')[0]}! We&apos;re reviewing your {frequency} {propertyType} plan and will email your tailored price shortly — usually within 60 minutes during business hours.
+            {form.password ? ' We’ve also emailed you a link to confirm your account.' : ''}
           </p>
           <Link href="/" className="btn-primary text-sm px-8 py-3.5">Back to home</Link>
         </div>
@@ -150,6 +162,13 @@ export default function PlanRequestPage() {
               <input placeholder="Postcode" value={form.postcode} onChange={e => set('postcode', e.target.value)} className={inputCls} />
             </div>
             <textarea placeholder="Anything we should know? (optional)" value={form.notes} onChange={e => set('notes', e.target.value)} rows={3} className={inputCls} />
+          </div>
+
+          {/* Optional account */}
+          <div className="bg-white/5 border border-white/10 rounded-2xl p-4">
+            <label className="text-white/80 text-sm font-medium mb-1 block">Create an account <span className="text-white/40">(optional)</span></label>
+            <p className="text-white/40 text-xs mb-3">Set a password to manage your plan, payments and bookings online.</p>
+            <input type="password" placeholder="Choose a password (min 8 characters)" value={form.password} onChange={e => set('password', e.target.value)} minLength={8} autoComplete="new-password" className={inputCls} />
           </div>
 
           {/* Optional photos */}
