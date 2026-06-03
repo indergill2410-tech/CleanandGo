@@ -42,6 +42,9 @@ export default function AdminSubscriptions() {
   const [saving, setSaving] = useState(false)
   const [msg, setMsg] = useState('')
   const [error, setError] = useState('')
+  const [toolMsg, setToolMsg] = useState('')
+  const [offStaff, setOffStaff] = useState('')
+  const [offDate, setOffDate] = useState('')
 
   const load = async () => {
     try {
@@ -91,6 +94,25 @@ export default function AdminSubscriptions() {
     }
   }
 
+  const generateVisits = async () => {
+    setToolMsg('Generating…')
+    const res = await fetch('/api/subscriptions/generate-visits', { method: 'POST' })
+    const data = await res.json()
+    setToolMsg(res.ok ? `Created ${data.created} upcoming visit(s).` : (data.error || 'Failed'))
+  }
+
+  const reportOff = async () => {
+    if (!offStaff || !offDate) { setToolMsg('Pick a cleaner and date.'); return }
+    setToolMsg('Arranging coverage…')
+    const res = await fetch('/api/staff/unavailability', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ staffId: offStaff, date: offDate }),
+    })
+    const data = await res.json()
+    setToolMsg(res.ok ? `Coverage: ${data.reassigned} reassigned to backup, ${data.uncovered} need manual cover.` : (data.error || 'Failed'))
+  }
+
   const staffName = (id: string | null) => staff.find(s => s.id === id)?.name || '—'
   const sizeLabel = (s: Sub) =>
     s.property_type === 'office' ? `${s.office_sqm ?? '?'} m²` : `${s.bedrooms ?? '?'} bed · ${s.bathrooms ?? '?'} bath`
@@ -102,6 +124,28 @@ export default function AdminSubscriptions() {
           <Link href="/admin" className="text-white/50 text-sm hover:text-white">← Dashboard</Link>
           <h1 className="text-3xl font-bold text-white mt-2">Recurring Plans</h1>
           <p className="text-white/50 mt-1">Price each plan and assign a primary + backup cleaner.</p>
+        </div>
+
+        {/* Coverage tools */}
+        <div className="glass-strong rounded-2xl p-5 mb-6 grid md:grid-cols-2 gap-5">
+          <div>
+            <div className="text-white/80 text-sm font-semibold mb-2">Upcoming visits</div>
+            <button onClick={generateVisits} className="text-sm px-4 py-2.5 rounded-full bg-white text-[#2C4A6E] font-semibold hover:bg-white/90">
+              Generate upcoming visits
+            </button>
+          </div>
+          <div>
+            <div className="text-white/80 text-sm font-semibold mb-2">Report a cleaner off (auto-backup)</div>
+            <div className="flex gap-2">
+              <select value={offStaff} onChange={e => setOffStaff(e.target.value)} className="flex-1 bg-white/10 border border-white/20 rounded-xl px-3 py-2.5 text-white text-sm">
+                <option value="" className="text-black">Cleaner…</option>
+                {staff.map(s => <option key={s.id} value={s.id} className="text-black">{s.name}</option>)}
+              </select>
+              <input type="date" value={offDate} onChange={e => setOffDate(e.target.value)} className="bg-white/10 border border-white/20 rounded-xl px-3 py-2.5 text-white text-sm" />
+              <button onClick={reportOff} className="text-sm px-4 py-2.5 rounded-full border border-white/20 text-white/80 hover:bg-white/10 whitespace-nowrap">Arrange cover</button>
+            </div>
+          </div>
+          {toolMsg && <div className="md:col-span-2 text-[#7BA7C7] text-sm">{toolMsg}</div>}
         </div>
 
         {loading ? (

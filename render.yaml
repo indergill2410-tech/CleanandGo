@@ -56,3 +56,16 @@ services:
         sync: false
       - key: CRON_SECRET
         sync: false
+
+  # Generate upcoming recurring visits daily at 06:00 UTC.
+  - type: cron
+    name: generate-visits-daily
+    runtime: node
+    schedule: "0 6 * * *"
+    buildCommand: "true"
+    startCommand: 'curl -fsS -X POST "$NEXT_PUBLIC_APP_URL/api/subscriptions/generate-visits" -H "Authorization: Bearer $CRON_SECRET"'
+    envVars:
+      - key: NEXT_PUBLIC_APP_URL
+        sync: false
+      - key: CRON_SECRET
+        sync: false
