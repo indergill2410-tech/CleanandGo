@@ -44,6 +44,20 @@ export default function HomePage() {
             </Link>
           </div>
 
+          {/* Trust strip */}
+          <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 mt-10 animate-fade-up delay-300">
+            {[
+              { icon: '✅', label: 'Police-checked' },
+              { icon: '🛡️', label: 'Fully insured ($20M)' },
+              { icon: '👤', label: 'ID-verified' },
+              { icon: '⭐', label: 'Vetted professionals' },
+            ].map(b => (
+              <span key={b.label} className="inline-flex items-center gap-1.5 text-white/80 text-sm font-medium">
+                <span>{b.icon}</span>{b.label}
+              </span>
+            ))}
+          </div>
+
           {/* Glass stats */}
           <div className="grid grid-cols-3 gap-4 mt-16 animate-fade-up delay-400">
             {[

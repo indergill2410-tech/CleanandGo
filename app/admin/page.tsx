@@ -43,6 +43,7 @@ export default function AdminDashboard() {
   const [quoteSent, setQuoteSent] = useState(false)
   const [filter, setFilter] = useState('all')
   const [unread, setUnread] = useState(0)
+  const [apps, setApps] = useState<{ id: string; name: string; suburbs: string | null; status: string; created_at: string }[]>([])
 
   const fetchBookings = async () => {
     try {
@@ -58,7 +59,16 @@ export default function AdminDashboard() {
     }
   }
 
-  useEffect(() => { fetchBookings() }, [])
+  const fetchApplications = async () => {
+    try {
+      const data = await fetch('/api/careers/apply').then(r => r.json())
+      setApps(data.applications || [])
+    } catch (e) { console.error(e) }
+  }
+
+  useEffect(() => { fetchBookings(); fetchApplications() }, [])
+
+  const newApps = apps.filter(a => a.status === 'new').length
 
   const sendQuote = async () => {
     if (!selected || !quotePrice) return
@@ -113,12 +123,20 @@ export default function AdminDashboard() {
               </Link>
             </div>
           </div>
-          {unread > 0 && (
-            <div className="flex items-center gap-3 bg-amber-500/20 border border-amber-400/30 rounded-2xl px-5 py-3">
-              <div className="w-3 h-3 rounded-full bg-amber-400 animate-pulse" />
-              <span className="text-amber-300 font-semibold">{unread} new request{unread > 1 ? 's' : ''} awaiting quote</span>
-            </div>
-          )}
+          <div className="flex flex-col gap-2 items-end">
+            {unread > 0 && (
+              <div className="flex items-center gap-3 bg-amber-500/20 border border-amber-400/30 rounded-2xl px-5 py-3">
+                <div className="w-3 h-3 rounded-full bg-amber-400 animate-pulse" />
+                <span className="text-amber-300 font-semibold">{unread} new request{unread > 1 ? 's' : ''} awaiting quote</span>
+              </div>
+            )}
+            {newApps > 0 && (
+              <Link href="/admin/applications" className="flex items-center gap-3 bg-emerald-500/20 border border-emerald-400/30 rounded-2xl px-5 py-3 hover:bg-emerald-500/30 transition-colors">
+                <div className="w-3 h-3 rounded-full bg-emerald-400 animate-pulse" />
+                <span className="text-emerald-300 font-semibold">{newApps} new application{newApps > 1 ? 's' : ''} →</span>
+              </Link>
+            )}
+          </div>
         </div>
 
         {/* Stats */}
@@ -135,6 +153,24 @@ export default function AdminDashboard() {
             </div>
           ))}
         </div>
+
+        {/* Recent applications */}
+        {apps.length > 0 && (
+          <div className="glass-strong rounded-2xl p-5 mb-8">
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-white font-semibold">Cleaner applications</h2>
+              <Link href="/admin/applications" className="text-sm text-[#7BA7C7] hover:text-white">View all →</Link>
+            </div>
+            <div className="space-y-2">
+              {apps.slice(0, 4).map(a => (
+                <Link key={a.id} href="/admin/applications" className="flex items-center justify-between bg-white/5 hover:bg-white/10 rounded-xl px-4 py-2.5 transition-colors">
+                  <span className="text-white/90 text-sm">{a.name} <span className="text-white/40">· {a.suburbs || 'area not set'}</span></span>
+                  <span className={`text-xs px-2 py-0.5 rounded-full ${a.status === 'new' ? 'bg-amber-500/20 text-amber-300' : 'bg-white/10 text-white/50'}`}>{a.status}</span>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Filter tabs */}
         <div className="flex gap-2 mb-6 flex-wrap">

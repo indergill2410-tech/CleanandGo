@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
+import Link from 'next/link'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
-import CareersApplyForm from '@/components/CareersApplyForm'
 
 export const metadata: Metadata = {
   title: 'Careers — Join the Clean&Go Team (We\'re Hiring Cleaners)',
@@ -20,7 +20,7 @@ const BENEFITS = [
 ]
 
 const HOW = [
-  { n: '01', t: 'Apply online', d: 'Fill in the short form below — takes a couple of minutes.' },
+  { n: '01', t: 'Apply online', d: 'Fill in the short application — it takes a couple of minutes.' },
   { n: '02', t: 'Quick screen', d: 'We review your application and have a brief chat about your experience and availability.' },
   { n: '03', t: 'Checks & onboarding', d: 'Police check and a simple onboarding so you know exactly how we work.' },
   { n: '04', t: 'Your first job', d: 'We match you with clients in your area and you get cleaning.' },
@@ -39,7 +39,7 @@ export default function CareersPage() {
           <p className="text-white/70 text-lg max-w-xl mx-auto">
             We&apos;re growing across Australia and looking for reliable, detail-loving cleaners. Steady work, flexible days, and a team that has your back.
           </p>
-          <a href="#apply" className="inline-block mt-8 btn-primary text-sm px-8 py-3.5">Apply now →</a>
+          <Link href="/careers/apply" className="inline-block mt-8 btn-primary text-sm px-8 py-3.5">Apply now →</Link>
         </div>
       </section>
 
@@ -80,13 +80,15 @@ export default function CareersPage() {
         </div>
       </section>
 
-      {/* Apply */}
-      <section id="apply" className="py-20 px-6 scroll-mt-24" style={{ background: 'linear-gradient(135deg, #1C2B3A 0%, #2C4A6E 100%)' }}>
-        <div className="max-w-3xl mx-auto text-center mb-10">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">Apply to join</h2>
-          <p className="text-white/60">Tell us a bit about yourself — we&apos;ll take it from there.</p>
+      {/* Apply CTA */}
+      <section className="py-20 px-6 gradient-cta">
+        <div className="max-w-2xl mx-auto text-center">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Ready to join us?</h2>
+          <p className="text-white/70 text-lg mb-8">The application takes a couple of minutes — no obligation.</p>
+          <Link href="/careers/apply" className="inline-flex items-center gap-2 bg-white text-[#2C4A6E] font-bold px-10 py-4 rounded-full text-lg hover:bg-white/90 transition-all hover:-translate-y-1">
+            Apply now →
+          </Link>
         </div>
-        <CareersApplyForm />
       </section>
 
       <Footer />
