@@ -1,13 +1,28 @@
 -- ============================================
--- Clean&Go — Sample Seed Data (optional)
--- Run AFTER 001_initial_schema.sql
+-- Clean&Go — Sample Seed Data (optional, dev only)
+-- Run AFTER the migrations in supabase/migrations/.
 -- ============================================
 
--- Sample reviews (visible on landing page)
-insert into public.reviews (rating, comment, customer_name, suburb, service_type) values
-  (5, 'Got my full bond back without a single issue. The team was thorough, professional, and the communication was perfect throughout.', 'Sarah M.', 'South Yarra', 'endoflease'),
-  (5, 'We have had the same cleaner for 4 months now and the quality never drops. Worth every cent for the peace of mind.', 'James T.', 'Richmond', 'recurring'),
-  (5, 'Booked online at 10pm, confirmed by 8am, cleaned by 11am. This is how a service business should work.', 'Priya K.', 'Fitzroy', 'oneoff'),
-  (5, 'Absolutely spotless. Even cleaned areas I forgot to mention. Will never use anyone else.', 'Marcus L.', 'Collingwood', 'oneoff'),
-  (5, 'Bond back guaranteed and they delivered. Agent was impressed. Highly recommend for anyone moving out.', 'Emma R.', 'St Kilda', 'endoflease')
+-- Sample customers
+insert into public.customers (name, email, phone) values
+  ('Sarah M.',  'sarah@example.com',  '0400 000 001'),
+  ('James T.',  'james@example.com',  '0400 000 002'),
+  ('Priya K.',  'priya@example.com',  '0400 000 003')
+on conflict (email) do nothing;
+
+-- Sample bookings (pending quote requests)
+insert into public.bookings (customer_id, service_type, bedrooms, bathrooms, address, suburb, scheduled_date, scheduled_time, status, price_cents)
+select c.id, 'endoflease', 3, 2, '12 Chapel St', 'South Yarra', current_date + 3, '09:00', 'pending', 0
+from public.customers c where c.email = 'sarah@example.com'
 on conflict do nothing;
+
+-- ============================================
+-- Creating the first admin
+-- ============================================
+-- Admin/cleaner access is granted via the `staff` table, keyed to a Supabase
+-- auth user. After the person signs up (Auth > Users, or the /login flow),
+-- promote them to admin by linking their auth user id:
+--
+--   insert into public.staff (user_id, name, email, role, status)
+--   values ('<auth-user-uuid>', 'Owner', 'admin@cleanngo.com.au', 'admin', 'active')
+--   on conflict (email) do update set role = 'admin', status = 'active';
