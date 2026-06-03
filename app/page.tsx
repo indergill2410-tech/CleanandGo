@@ -1,69 +1,10 @@
 import Link from 'next/link'
 import Navbar from '@/components/Navbar'
+import Footer from '@/components/Footer'
 import ServiceCard from '@/components/ServiceCard'
 import TrustBadge from '@/components/TrustBadge'
 import TestimonialCard from '@/components/TestimonialCard'
-
-const services = [
-  {
-    icon: '🏠',
-    title: 'Recurring Clean',
-    description: 'Set and forget. Your home stays spotless every week or fortnight — no reminders needed.',
-    price: '$120',
-    tag: 'Most Popular',
-    tagColor: 'bg-[#4A7FA5]',
-    features: ['Weekly or fortnightly', 'Same cleaner every time', '10% loyalty discount', 'Easy reschedule'],
-    highlight: false,
-  },
-  {
-    icon: '✨',
-    title: 'One-Off Clean',
-    description: 'Perfect for spring cleans, moving in, or any time you need a deep reset.',
-    price: '$180',
-    features: ['Deep clean included', 'Any day that suits', 'No commitment', '100% satisfaction guarantee'],
-    highlight: true,
-  },
-  {
-    icon: '🔑',
-    title: 'End of Lease',
-    description: "Don't risk your bond. Our checklist matches real estate agent standards — guaranteed.",
-    price: '$400',
-    tag: 'Bond Back ✓',
-    tagColor: 'bg-emerald-500',
-    features: ['Real estate checklist', 'Bond-back guarantee', 'Re-clean if needed', 'Certificate provided'],
-    highlight: false,
-  },
-]
-
-const testimonials = [
-  {
-    name: 'Sarah M.',
-    suburb: 'South Yarra',
-    rating: 5,
-    text: 'Got my full bond back without a single issue. The team was thorough, professional, and the communication was perfect throughout.',
-    service: 'End of Lease',
-  },
-  {
-    name: 'James T.',
-    suburb: 'Richmond',
-    rating: 5,
-    text: 'We\'ve had the same cleaner for 4 months now and the quality never drops. Worth every cent for the peace of mind.',
-    service: 'Recurring',
-  },
-  {
-    name: 'Priya K.',
-    suburb: 'Fitzroy',
-    rating: 5,
-    text: 'Booked online at 10pm, confirmed by 8am, cleaned by 11am. This is how a service business should work.',
-    service: 'One-Off',
-  },
-]
-
-const steps = [
-  { number: '01', icon: '📱', title: 'Book Online', desc: 'Pick your service, size, and time. Takes 60 seconds.' },
-  { number: '02', icon: '🧹', title: 'We Clean', desc: 'A vetted, insured professional arrives on time and gets to work.' },
-  { number: '03', icon: '😌', title: 'You Relax', desc: 'Come home to a spotless space. Photos sent on completion.' },
-]
+import { SERVICES, STEPS, TESTIMONIALS, TRUST_BADGES } from '@/lib/content'
 
 export default function HomePage() {
   return (
@@ -98,9 +39,9 @@ export default function HomePage() {
             <Link href="/customer/book" className="btn-primary text-lg px-10 py-4">
               Book a Clean →
             </Link>
-            <a href="#how-it-works" className="inline-flex items-center justify-center gap-2 text-white/80 hover:text-white font-medium py-4 px-6 transition-colors">
-              How it works ↓
-            </a>
+            <Link href="/how-it-works" className="inline-flex items-center justify-center gap-2 text-white/80 hover:text-white font-medium py-4 px-6 transition-colors">
+              How it works →
+            </Link>
           </div>
 
           {/* Glass stats */}
@@ -127,9 +68,9 @@ export default function HomePage() {
             <h2 className="text-4xl font-bold text-[#1C2B3A]">Three steps to a clean home</h2>
           </div>
           <div className="grid md:grid-cols-3 gap-8">
-            {steps.map((step, i) => (
-              <div key={i} className="relative text-center">
-                {i < steps.length - 1 && (
+            {STEPS.map((step, i) => (
+              <div key={step.number} className="relative text-center">
+                {i < STEPS.length - 1 && (
                   <div className="hidden md:block absolute top-10 left-[60%] w-[80%] h-px" style={{ background: 'linear-gradient(90deg, #4A7FA5, transparent)' }} />
                 )}
                 <div className="w-20 h-20 rounded-2xl gradient-cta flex items-center justify-center text-3xl mx-auto mb-6 shadow-lg">
@@ -140,6 +81,11 @@ export default function HomePage() {
                 <p className="text-[#7A8A96] text-sm leading-relaxed">{step.desc}</p>
               </div>
             ))}
+          </div>
+          <div className="text-center mt-12">
+            <Link href="/how-it-works" className="text-[#2C4A6E] font-semibold text-sm hover:text-[#4A7FA5] transition-colors">
+              Learn how it works →
+            </Link>
           </div>
         </div>
       </section>
@@ -153,9 +99,28 @@ export default function HomePage() {
             <p className="text-[#7A8A96] max-w-md mx-auto">Every service is fully insured, background-checked, and backed by our satisfaction guarantee.</p>
           </div>
           <div className="grid md:grid-cols-3 gap-8 items-center">
-            {services.map((s, i) => (
-              <ServiceCard key={i} {...s} />
+            {SERVICES.map((s) => (
+              <ServiceCard
+                key={s.slug}
+                icon={s.icon}
+                title={s.title}
+                description={s.description}
+                price={s.price}
+                tag={s.tag}
+                tagColor={s.tagColor}
+                features={s.features}
+                highlight={s.highlight}
+              />
             ))}
+          </div>
+          <div className="text-center mt-12 flex flex-col sm:flex-row gap-4 justify-center">
+            <Link href="/services" className="text-[#2C4A6E] font-semibold text-sm hover:text-[#4A7FA5] transition-colors">
+              Explore all services →
+            </Link>
+            <span className="hidden sm:inline text-[#7A8A96]">·</span>
+            <Link href="/pricing" className="text-[#2C4A6E] font-semibold text-sm hover:text-[#4A7FA5] transition-colors">
+              See full pricing →
+            </Link>
           </div>
         </div>
       </section>
@@ -168,13 +133,8 @@ export default function HomePage() {
             <p className="text-[#7A8A96]">Every job backed by real guarantees — not just promises.</p>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {[
-              { icon: '🛡️', title: '$20M Insured', subtitle: 'Public liability covered on every job' },
-              { icon: '✅', title: 'Background Checked', subtitle: 'Every cleaner verified before hire' },
-              { icon: '🔑', title: 'Bond Guarantee', subtitle: 'Re-clean free if agent isn\'t satisfied' },
-              { icon: '⭐', title: '4.9 Rating', subtitle: 'From 400+ verified Google reviews' },
-            ].map((b, i) => (
-              <TrustBadge key={i} {...b} />
+            {TRUST_BADGES.map((b) => (
+              <TrustBadge key={b.title} {...b} />
             ))}
           </div>
         </div>
@@ -188,8 +148,8 @@ export default function HomePage() {
             <h2 className="text-4xl font-bold text-[#1C2B3A]">What Melbourne says</h2>
           </div>
           <div className="grid md:grid-cols-3 gap-8">
-            {testimonials.map((t, i) => (
-              <TestimonialCard key={i} {...t} />
+            {TESTIMONIALS.map((t) => (
+              <TestimonialCard key={t.name} {...t} />
             ))}
           </div>
           <div className="text-center mt-8">
@@ -208,27 +168,13 @@ export default function HomePage() {
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">Ready for a cleaner home?</h2>
           <p className="text-white/70 text-lg mb-10">Join 500+ Melbourne homes. Book in 60 seconds.</p>
           <Link href="/customer/book" className="inline-flex items-center gap-2 bg-white text-[#2C4A6E] font-bold px-12 py-5 rounded-full text-lg hover:bg-white/90 transition-all hover:shadow-2xl hover:-translate-y-1">
-            Book Now — It\'s Free to Quote
+            Book Now — It&apos;s Free to Quote
           </Link>
           <p className="text-white/50 text-sm mt-6">No commitment. Cancel anytime. Insured &amp; guaranteed.</p>
         </div>
       </section>
 
-      {/* FOOTER */}
-      <footer className="py-12 px-6" style={{ background: '#1C2B3A' }}>
-        <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
-          <div>
-            <div className="font-bold text-white text-lg mb-1">Clean&amp;Go</div>
-            <div className="text-white/40 text-xs">ABN: XX XXX XXX XXX · Melbourne, VIC 3000</div>
-          </div>
-          <div className="flex gap-8">
-            {['Services', 'Book Now', 'Contact'].map(l => (
-              <a key={l} href="#" className="text-white/50 text-sm hover:text-white transition-colors">{l}</a>
-            ))}
-          </div>
-          <div className="text-white/30 text-xs">© {new Date().getFullYear()} Clean&amp;Go. All rights reserved.</div>
-        </div>
-      </footer>
+      <Footer />
     </main>
   )
 }
