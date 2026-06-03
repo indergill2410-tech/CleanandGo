@@ -37,9 +37,12 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
   // approve -> create (or reuse) a staff record, then link it.
   let staffId = app.staff_id as string | null
   if (!staffId) {
-    const { data: existing } = await supabase.from('staff').select('id').eq('email', app.email).maybeSingle()
+    const { data: existing } = await supabase.from('staff').select('id, role, status').eq('email', app.email).maybeSingle()
     if (existing) {
       staffId = existing.id
+      if (existing.status !== 'active' || existing.role !== 'cleaner') {
+        await supabase.from('staff').update({ role: 'cleaner', status: 'active' }).eq('id', staffId)
+      }
     } else {
       const { data: created, error: staffError } = await supabase
         .from('staff')

@@ -4,7 +4,11 @@ import { createAdminClient } from '@/lib/supabase/admin'
 export const runtime = 'nodejs'
 
 const MAX_BYTES = 8 * 1024 * 1024 // 8MB
-const ALLOWED = ['application/pdf', 'image/jpeg', 'image/png']
+const MIME_EXT: Record<string, string> = {
+  'application/pdf': 'pdf',
+  'image/jpeg': 'jpg',
+  'image/png': 'png',
+}
 const BUCKET = 'resumes'
 
 // Public: upload a single resume to the PRIVATE resumes bucket. Returns the
@@ -16,14 +20,14 @@ export async function POST(request: Request) {
     if (!(file instanceof File)) {
       return NextResponse.json({ error: 'No file provided' }, { status: 400 })
     }
-    if (!ALLOWED.includes(file.type)) {
+    const ext = MIME_EXT[file.type]
+    if (!ext) {
       return NextResponse.json({ error: 'Resume must be a PDF, JPG or PNG' }, { status: 400 })
     }
     if (file.size > MAX_BYTES) {
       return NextResponse.json({ error: 'Resume must be 8MB or smaller' }, { status: 400 })
     }
 
-    const ext = file.name.split('.').pop()?.toLowerCase() || 'pdf'
     const path = `${crypto.randomUUID()}.${ext}`
 
     const supabase = createAdminClient()

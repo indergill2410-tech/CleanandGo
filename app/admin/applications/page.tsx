@@ -81,7 +81,7 @@ export default function AdminApplications() {
                     <span className="text-white font-semibold">{a.name}</span>
                     <span className={`text-xs px-2.5 py-0.5 rounded-full ${STATUS_STYLES[a.status] || 'bg-white/10 text-white/60'}`}>{a.status}</span>
                   </div>
-                  <span className="text-white/40 text-xs">{new Date(a.created_at).toLocaleDateString()}</span>
+                  <span className="text-white/40 text-xs" suppressHydrationWarning>{new Date(a.created_at).toLocaleDateString()}</span>
                 </div>
                 <div className="text-white/60 text-sm">{a.email} · {a.phone}</div>
                 <div className="text-white/40 text-xs mt-1">
