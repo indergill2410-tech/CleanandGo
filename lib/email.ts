@@ -195,6 +195,42 @@ export async function sendAdminNewPlanEmail({
   })
 }
 
+// ─── 3c. Admin: New cleaner application ──────────────────────────
+export async function sendAdminNewApplicationEmail({
+  name, email, phone, suburbs, availability, hasAbn, rightToWork, hasPoliceCheck, hasWwcc,
+}: {
+  name: string; email: string; phone: string; suburbs?: string; availability?: string;
+  hasAbn?: boolean; rightToWork?: boolean; hasPoliceCheck?: boolean; hasWwcc?: boolean
+}) {
+  const yn = (v?: boolean) => (v ? 'Yes' : 'No')
+  const html = base(`
+    <div style="display:inline-block;padding:6px 14px;background:rgba(74,183,165,0.2);border:1px solid rgba(74,183,165,0.4);border-radius:20px;margin-bottom:20px;">
+      <span style="color:#4ab7a5;font-size:13px;font-weight:600;">🧹 New cleaner application</span>
+    </div>
+    ${h1(`${name} applied to join`)}
+    ${p('Review the application and approve to onboard them as a cleaner.')}
+    ${table(
+      row('Name', name) +
+      row('Email', email) +
+      row('Phone', phone) +
+      (suburbs ? row('Areas', suburbs) : '') +
+      (availability ? row('Availability', availability) : '') +
+      row('ABN', yn(hasAbn)) +
+      row('Right to work', yn(rightToWork)) +
+      row('Police check', yn(hasPoliceCheck)) +
+      row('WWCC', yn(hasWwcc))
+    )}
+    ${btn(`${APP_URL}/admin/applications`, 'Review Applications →')}
+  `)
+
+  return getResend().emails.send({
+    from: FROM,
+    to: ADMIN,
+    subject: `🧹 New cleaner application — ${name}`,
+    html,
+  })
+}
+
 // ─── 4. Staff: Welcome / set your password ───────────────────────
 export async function sendStaffInviteEmail({
   name, email, actionLink, role = 'cleaner',

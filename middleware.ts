@@ -23,6 +23,18 @@ export async function middleware(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser()
 
   const { pathname } = request.nextUrl
+
+  // Customer login consolidated onto the single /login page (Client tab).
+  if (pathname === '/account/login') {
+    const url = request.nextUrl.clone()
+    const rt = url.searchParams.get('redirectTo')
+    url.pathname = '/login'
+    url.search = ''
+    url.searchParams.set('tab', 'client')
+    if (rt) url.searchParams.set('redirectTo', rt)
+    return NextResponse.redirect(url)
+  }
+
   const protectedRoutes = ['/cleaner', '/admin']
   const isProtected = protectedRoutes.some(r => pathname.startsWith(r))
 

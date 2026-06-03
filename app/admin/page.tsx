@@ -15,6 +15,7 @@ type Booking = {
   extras: string[]
   notes: string
   price_cents: number
+  staff_id: string | null
   created_at: string
   customers?: { name: string; email: string; phone: string }
 }
@@ -43,6 +44,9 @@ export default function AdminDashboard() {
   const [quoteSent, setQuoteSent] = useState(false)
   const [filter, setFilter] = useState('all')
   const [unread, setUnread] = useState(0)
+  const [apps, setApps] = useState<{ id: string; name: string; suburbs: string | null; status: string; created_at: string }[]>([])
+  const [cleaners, setCleaners] = useState<{ id: string; name: string; role: string }[]>([])
+  const [savingBooking, setSavingBooking] = useState(false)
 
   const fetchBookings = async () => {
     try {
@@ -58,7 +62,44 @@ export default function AdminDashboard() {
     }
   }
 
-  useEffect(() => { fetchBookings() }, [])
+  const fetchApplications = async () => {
+    try {
+      const data = await fetch('/api/careers/apply').then(r => r.json())
+      setApps(data.applications || [])
+    } catch (e) { console.error(e) }
+  }
+
+  const fetchCleaners = async () => {
+    try {
+      const data = await fetch('/api/staff').then(r => r.json())
+      setCleaners((data.staff || []).filter((s: { role: string }) => s.role === 'cleaner'))
+    } catch (e) { console.error(e) }
+  }
+
+  useEffect(() => { fetchBookings(); fetchApplications(); fetchCleaners() }, [])
+
+  const newApps = apps.filter(a => a.status === 'new').length
+
+  // Update a booking (assign cleaner / change status) and keep the panel in sync.
+  const patchBooking = async (updates: Record<string, string>) => {
+    if (!selected) return
+    setSavingBooking(true)
+    try {
+      const res = await fetch(`/api/bookings/${selected.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updates),
+      })
+      const data = await res.json()
+      if (!res.ok) { alert(data.error || 'Update failed'); return }
+      setSelected(s => (s ? { ...s, ...updates } as Booking : s))
+      await fetchBookings()
+    } catch {
+      alert('Network error')
+    } finally {
+      setSavingBooking(false)
+    }
+  }
 
   const sendQuote = async () => {
     if (!selected || !quotePrice) return
@@ -102,6 +143,12 @@ export default function AdminDashboard() {
               <Link href="/admin/subscriptions" className="text-sm text-[#7BA7C7] hover:text-white font-semibold transition-colors">
                 Recurring plans →
               </Link>
+              <Link href="/admin/customers" className="text-sm text-[#7BA7C7] hover:text-white font-semibold transition-colors">
+                Customers →
+              </Link>
+              <Link href="/admin/payments" className="text-sm text-[#7BA7C7] hover:text-white font-semibold transition-colors">
+                Payments →
+              </Link>
               <Link href="/admin/invoices" className="text-sm text-[#7BA7C7] hover:text-white font-semibold transition-colors">
                 Invoices →
               </Link>
@@ -111,14 +158,31 @@ export default function AdminDashboard() {
               <Link href="/admin/team" className="text-sm text-[#7BA7C7] hover:text-white font-semibold transition-colors">
                 Team →
               </Link>
+              <Link href="/admin/timesheets" className="text-sm text-[#7BA7C7] hover:text-white font-semibold transition-colors">
+                Timesheets →
+              </Link>
+              <Link href="/admin/notifications" className="text-sm text-[#7BA7C7] hover:text-white font-semibold transition-colors">
+                Notifications →
+              </Link>
+              <Link href="/admin/account" className="text-sm text-[#7BA7C7] hover:text-white font-semibold transition-colors">
+                Account →
+              </Link>
             </div>
           </div>
-          {unread > 0 && (
-            <div className="flex items-center gap-3 bg-amber-500/20 border border-amber-400/30 rounded-2xl px-5 py-3">
-              <div className="w-3 h-3 rounded-full bg-amber-400 animate-pulse" />
-              <span className="text-amber-300 font-semibold">{unread} new request{unread > 1 ? 's' : ''} awaiting quote</span>
-            </div>
-          )}
+          <div className="flex flex-col gap-2 items-end">
+            {unread > 0 && (
+              <div className="flex items-center gap-3 bg-amber-500/20 border border-amber-400/30 rounded-2xl px-5 py-3">
+                <div className="w-3 h-3 rounded-full bg-amber-400 animate-pulse" />
+                <span className="text-amber-300 font-semibold">{unread} new request{unread > 1 ? 's' : ''} awaiting quote</span>
+              </div>
+            )}
+            {newApps > 0 && (
+              <Link href="/admin/applications" className="flex items-center gap-3 bg-emerald-500/20 border border-emerald-400/30 rounded-2xl px-5 py-3 hover:bg-emerald-500/30 transition-colors">
+                <div className="w-3 h-3 rounded-full bg-emerald-400 animate-pulse" />
+                <span className="text-emerald-300 font-semibold">{newApps} new application{newApps > 1 ? 's' : ''} →</span>
+              </Link>
+            )}
+          </div>
         </div>
 
         {/* Stats */}
@@ -135,6 +199,24 @@ export default function AdminDashboard() {
             </div>
           ))}
         </div>
+
+        {/* Recent applications */}
+        {apps.length > 0 && (
+          <div className="glass-strong rounded-2xl p-5 mb-8">
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-white font-semibold">Cleaner applications</h2>
+              <Link href="/admin/applications" className="text-sm text-[#7BA7C7] hover:text-white">View all →</Link>
+            </div>
+            <div className="space-y-2">
+              {apps.slice(0, 4).map(a => (
+                <Link key={a.id} href="/admin/applications" className="flex items-center justify-between bg-white/5 hover:bg-white/10 rounded-xl px-4 py-2.5 transition-colors">
+                  <span className="text-white/90 text-sm">{a.name} <span className="text-white/40">· {a.suburbs || 'area not set'}</span></span>
+                  <span className={`text-xs px-2 py-0.5 rounded-full ${a.status === 'new' ? 'bg-amber-500/20 text-amber-300' : 'bg-white/10 text-white/50'}`}>{a.status}</span>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Filter tabs */}
         <div className="flex gap-2 mb-6 flex-wrap">
@@ -282,6 +364,41 @@ export default function AdminDashboard() {
                     <div className="flex justify-between items-center">
                       <span className="text-white/50 text-sm">Quoted price</span>
                       <span className="text-2xl font-bold text-green-300">${(selected.price_cents / 100).toFixed(0)}</span>
+                    </div>
+                  </div>
+                )}
+
+                {/* Job management */}
+                {selected.status !== 'pending' && selected.status !== 'cancelled' && (
+                  <div className="border-t border-white/20 pt-4 mt-4 space-y-4">
+                    <div>
+                      <label className="text-white/50 text-xs uppercase tracking-wider mb-1 block">Assigned cleaner</label>
+                      <select
+                        value={selected.staff_id || ''}
+                        disabled={savingBooking}
+                        onChange={e => patchBooking({ staff_id: e.target.value })}
+                        className="w-full bg-white/10 border border-white/20 rounded-xl px-3 py-2.5 text-white text-sm">
+                        <option value="" className="text-black">— Unassigned —</option>
+                        {cleaners.map(c => <option key={c.id} value={c.id} className="text-black">{c.name}</option>)}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="text-white/50 text-xs uppercase tracking-wider mb-2 block">Status</label>
+                      <div className="flex flex-wrap gap-2">
+                        {(['confirmed', 'in_progress', 'completed', 'missed', 'cancelled'] as const).map(st => (
+                          <button key={st} disabled={savingBooking || selected.status === st}
+                            onClick={() => {
+                              if (st === 'missed' && !confirm('Mark this visit as missed? This issues an account credit to the customer.')) return
+                              patchBooking({ status: st })
+                            }}
+                            className={`text-xs px-3 py-1.5 rounded-full border transition-colors disabled:opacity-40 ${
+                              selected.status === st ? 'bg-white text-[#2C4A6E] border-white' : 'bg-white/10 text-white/70 border-white/20 hover:bg-white/20'
+                            }`}>
+                            {st.replace('_', ' ')}
+                          </button>
+                        ))}
+                      </div>
+                      <p className="text-white/30 text-xs mt-2">Marking “missed” auto-credits the customer (reliability guarantee).</p>
                     </div>
                   </div>
                 )}

@@ -13,6 +13,10 @@ type Application = {
   has_abn: boolean
   right_to_work: boolean
   resume_url: string | null
+  has_police_check: boolean
+  police_check_url: string | null
+  has_wwcc: boolean
+  wwcc_url: string | null
   status: string
   created_at: string
 }
@@ -90,10 +94,20 @@ export default function AdminApplications() {
                 <div className="text-white/40 text-xs mt-1">
                   Area: {a.suburbs || '—'} · Availability: {a.availability || '—'} · ABN: {a.has_abn ? 'yes' : 'no'} · Right to work: {a.right_to_work ? 'yes' : 'no'}
                 </div>
+                <div className="flex flex-wrap gap-1.5 mt-2">
+                  {a.has_police_check && <span className="text-xs px-2 py-0.5 rounded-full bg-green-500/20 text-green-300">✅ Police check</span>}
+                  {a.has_wwcc && <span className="text-xs px-2 py-0.5 rounded-full bg-green-500/20 text-green-300">✅ WWCC</span>}
+                </div>
                 {a.experience && <div className="text-white/50 text-sm mt-2 italic">“{a.experience}”</div>}
                 <div className="flex flex-wrap items-center gap-2 mt-4">
                   {a.resume_url && (
-                    <a href={`/api/careers/${a.id}/resume`} target="_blank" rel="noopener noreferrer" className="text-sm px-4 py-2 rounded-full border border-white/20 text-white/80 hover:bg-white/10">Resume ↗</a>
+                    <a href={`/api/careers/${a.id}/resume?doc=resume`} target="_blank" rel="noopener noreferrer" className="text-sm px-4 py-2 rounded-full border border-white/20 text-white/80 hover:bg-white/10">Resume ↗</a>
+                  )}
+                  {a.police_check_url && (
+                    <a href={`/api/careers/${a.id}/resume?doc=police`} target="_blank" rel="noopener noreferrer" className="text-sm px-4 py-2 rounded-full border border-white/20 text-white/80 hover:bg-white/10">Police check ↗</a>
+                  )}
+                  {a.wwcc_url && (
+                    <a href={`/api/careers/${a.id}/resume?doc=wwcc`} target="_blank" rel="noopener noreferrer" className="text-sm px-4 py-2 rounded-full border border-white/20 text-white/80 hover:bg-white/10">WWCC ↗</a>
                   )}
                   {a.status !== 'approved' && (
                     <>

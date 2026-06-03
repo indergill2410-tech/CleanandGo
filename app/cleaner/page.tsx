@@ -1,30 +1,76 @@
 'use client'
-import { useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { createClient } from '@/lib/supabase/client'
+import PhotoUpload from '@/components/PhotoUpload'
 
-const MOCK_JOBS = [
-  { id: '1', address: '42 Chapel St, South Yarra', time: '9:00 AM', service: 'Recurring', status: 'confirmed', beds: 3, baths: 2 },
-  { id: '2', address: '18 Bridge Rd, Richmond', time: '1:00 PM', service: 'End of Lease', status: 'pending', beds: 2, baths: 1 },
-]
+type Job = {
+  id: string
+  service_type: string
+  status: string
+  scheduled_date: string
+  scheduled_time: string
+  address: string
+  suburb: string | null
+  bedrooms: number | null
+  bathrooms: number | null
+  extras: string[] | null
+  notes: string | null
+  covered_by_backup: boolean
+  customers?: { name: string; phone: string } | null
+}
 
-const CHECKLIST = [
-  'Vacuum all floors', 'Mop hard floors', 'Clean bathrooms', 'Clean kitchen benches',
-  'Wipe appliances', 'Empty bins', 'Dust surfaces', 'Clean windows (inside)',
-]
-
-const STATUS_COLORS: Record<string, string> = {
-  confirmed: 'bg-blue-100 text-blue-700',
-  pending:   'bg-amber-100 text-amber-700',
-  inprogress:'bg-purple-100 text-purple-700',
-  completed: 'bg-green-100 text-green-700',
+const SERVICE_LABELS: Record<string, string> = {
+  recurring: 'Recurring Clean', oneoff: 'One-Off Clean', endoflease: 'End of Lease',
 }
 
 export default function CleanerPortal() {
+  const router = useRouter()
+  const [jobs, setJobs] = useState<Job[]>([])
+  const [staffName, setStaffName] = useState('')
+  const [loading, setLoading] = useState(true)
   const [expanded, setExpanded] = useState<string | null>(null)
-  const [checked, setChecked] = useState<Record<string, boolean>>({})
-  const [clocked, setClocked] = useState<Record<string, boolean>>({})
+  const [busy, setBusy] = useState('')
+  const [before, setBefore] = useState<Record<string, string[]>>({})
+  const [after, setAfter] = useState<Record<string, string[]>>({})
+  const [notes, setNotes] = useState<Record<string, string>>({})
 
-  const toggleCheck = (key: string) => setChecked(c => ({ ...c, [key]: !c[key] }))
-  const completedCount = Object.values(checked).filter(Boolean).length
+  const load = useCallback(async () => {
+    const res = await fetch('/api/cleaner/jobs')
+    if (res.status === 401 || res.status === 403) { router.push('/login?redirectTo=/cleaner'); return }
+    const data = await res.json()
+    setJobs(data.jobs || [])
+    setStaffName(data.staffName || '')
+    setLoading(false)
+  }, [router])
+
+  useEffect(() => { load() }, [load])
+
+  const start = async (id: string) => {
+    setBusy(id)
+    await fetch(`/api/cleaner/jobs/${id}/start`, { method: 'POST' })
+    await load()
+    setBusy('')
+  }
+
+  const complete = async (id: string) => {
+    setBusy(id)
+    await fetch(`/api/cleaner/jobs/${id}/complete`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ beforePhotos: before[id] || [], afterPhotos: after[id] || [], notes: notes[id] || '' }),
+    })
+    setExpanded(null)
+    await load()
+    setBusy('')
+  }
+
+  const signOut = async () => {
+    await createClient().auth.signOut()
+    router.push('/login')
+  }
+
+  const next = jobs[0]
 
   return (
     <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #1C2B3A 0%, #2C4A6E 100%)' }}>
@@ -32,114 +78,76 @@ export default function CleanerPortal() {
         <div className="max-w-lg mx-auto flex items-center justify-between">
           <div>
             <div className="text-white font-bold">Clean&amp;Go Staff</div>
-            <div className="text-white/50 text-xs">Wednesday, 3 June 2026</div>
+            <div className="text-white/50 text-xs">{staffName}</div>
           </div>
-          <div className="w-10 h-10 rounded-full gradient-cta flex items-center justify-center text-white font-bold">A</div>
+          <button onClick={signOut} className="text-white/60 text-sm hover:text-white">Sign out</button>
         </div>
       </div>
 
       <div className="max-w-lg mx-auto px-4 pt-24 pb-12">
-        {/* Today summary */}
         <div className="glass-strong rounded-2xl p-5 mb-6">
-          <div className="text-white/60 text-sm mb-1">Today\'s jobs</div>
-          <div className="text-4xl font-bold text-white">{MOCK_JOBS.length}</div>
-          <div className="text-white/50 text-xs mt-1">Next: {MOCK_JOBS[0].address} at {MOCK_JOBS[0].time}</div>
+          <div className="text-white/60 text-sm mb-1">My active jobs</div>
+          <div className="text-4xl font-bold text-white">{jobs.length}</div>
+          {next && <div className="text-white/50 text-xs mt-1">Next: {next.address} · {next.scheduled_date} {next.scheduled_time?.slice(0, 5)}</div>}
         </div>
 
         <h2 className="text-white font-semibold mb-4">My Jobs</h2>
-        <div className="space-y-4">
-          {MOCK_JOBS.map(job => (
-            <div key={job.id} className="glass rounded-2xl overflow-hidden">
-              {/* Job header */}
-              <button
-                onClick={() => setExpanded(expanded === job.id ? null : job.id)}
-                className="w-full p-5 text-left"
-              >
-                <div className="flex items-start justify-between">
-                  <div>
-                    <div className="text-white font-semibold text-sm mb-1">{job.address}</div>
-                    <div className="text-white/60 text-xs">{job.time} · {job.service} · {job.beds}bed/{job.baths}bath</div>
-                  </div>
-                  <div className="flex flex-col items-end gap-2">
-                    <span className={`text-xs font-semibold px-3 py-1 rounded-full ${STATUS_COLORS[job.status]}`}>
-                      {job.status.charAt(0).toUpperCase() + job.status.slice(1)}
-                    </span>
-                    <span className="text-white/40 text-xs">{expanded === job.id ? '▲' : '▼'}</span>
-                  </div>
-                </div>
-              </button>
 
-              {/* Expanded detail */}
-              {expanded === job.id && (
-                <div className="px-5 pb-5 border-t border-white/10">
-                  {/* Clock in/out */}
-                  <div className="my-4">
-                    <button
-                      onClick={() => setClocked(c => ({ ...c, [job.id]: !c[job.id] }))}
-                      className={`w-full py-4 rounded-xl font-bold text-lg transition-all ${
-                        clocked[job.id]
-                          ? 'bg-red-500/80 text-white'
-                          : 'bg-green-500 text-white hover:bg-green-600'
-                      }`}
-                    >
-                      {clocked[job.id] ? '🔴 Clock Out' : '🟢 Clock In'}
-                    </button>
-                  </div>
-
-                  {/* Checklist */}
-                  <div className="mb-4">
-                    <div className="flex items-center justify-between mb-3">
-                      <span className="text-white/70 text-sm">Checklist</span>
-                      <span className="text-white/50 text-xs">{completedCount}/{CHECKLIST.length}</span>
-                    </div>
-                    <div className="space-y-2">
-                      {CHECKLIST.map((item, i) => {
-                        const key = `${job.id}-${i}`
-                        return (
-                          <label key={key} className="flex items-center gap-3 cursor-pointer">
-                            <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all ${
-                              checked[key]
-                                ? 'bg-green-500 border-green-500'
-                                : 'border-white/30'
-                            }`}>
-                              {checked[key] && <span className="text-white text-xs">✓</span>}
-                            </div>
-                            <input type="checkbox" className="hidden" onChange={() => toggleCheck(key)} />
-                            <span className={`text-sm ${
-                              checked[key] ? 'text-white/40 line-through' : 'text-white/80'
-                            }`}>{item}</span>
-                          </label>
-                        )
-                      })}
-                    </div>
-                  </div>
-
-                  {/* Photo upload */}
-                  <div className="grid grid-cols-2 gap-3 mb-4">
-                    {['Before', 'After'].map(label => (
-                      <div key={label}
-                        className="border-2 border-dashed border-white/20 rounded-xl p-4 text-center cursor-pointer hover:bg-white/10 transition"
-                      >
-                        <div className="text-2xl mb-1">📷</div>
-                        <div className="text-white/50 text-xs">{label} photo</div>
+        {loading ? (
+          <div className="text-white/50 text-center py-10">Loading…</div>
+        ) : jobs.length === 0 ? (
+          <div className="glass rounded-2xl p-10 text-center text-white/50">No jobs assigned right now.</div>
+        ) : (
+          <div className="space-y-4">
+            {jobs.map(job => (
+              <div key={job.id} className="glass rounded-2xl overflow-hidden">
+                <button onClick={() => setExpanded(expanded === job.id ? null : job.id)} className="w-full p-5 text-left">
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <div className="text-white font-semibold text-sm mb-1">{job.address}</div>
+                      <div className="text-white/60 text-xs">
+                        {job.scheduled_date} {job.scheduled_time?.slice(0, 5)} · {SERVICE_LABELS[job.service_type] || job.service_type} · {job.bedrooms ?? '?'}bed/{job.bathrooms ?? '?'}bath
                       </div>
-                    ))}
+                      {job.covered_by_backup && <div className="text-amber-300 text-xs mt-1">🛟 Backup coverage</div>}
+                    </div>
+                    <span className={`text-xs font-semibold px-3 py-1 rounded-full ${job.status === 'in_progress' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'}`}>
+                      {job.status === 'in_progress' ? 'In progress' : 'Confirmed'}
+                    </span>
                   </div>
+                </button>
 
-                  <textarea
-                    rows={2}
-                    placeholder="Notes for admin..."
-                    className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 text-sm resize-none mb-4"
-                  />
+                {expanded === job.id && (
+                  <div className="px-5 pb-5 border-t border-white/10 space-y-4 pt-4">
+                    <div className="text-white/60 text-sm">
+                      <div>{job.customers?.name}{job.customers?.phone ? ` · ${job.customers.phone}` : ''}</div>
+                      {job.extras && job.extras.length > 0 && <div className="text-white/40 text-xs mt-1">Extras: {job.extras.join(', ')}</div>}
+                      {job.notes && <div className="mt-2 bg-white/5 rounded-xl p-3 text-white/70 text-sm">{job.notes}</div>}
+                    </div>
 
-                  <button className="w-full py-3 rounded-xl bg-white text-[#2C4A6E] font-bold hover:bg-white/90 transition">
-                    ✅ Mark Job Complete
-                  </button>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
+                    {job.status === 'confirmed' ? (
+                      <button onClick={() => start(job.id)} disabled={busy === job.id}
+                        className="w-full py-4 rounded-xl font-bold text-lg bg-green-500 text-white hover:bg-green-600 transition disabled:opacity-50">
+                        🟢 Start job
+                      </button>
+                    ) : (
+                      <>
+                        <PhotoUpload label="Before photos" urls={before[job.id] || []} onChange={u => setBefore(b => ({ ...b, [job.id]: u }))} />
+                        <PhotoUpload label="After photos" urls={after[job.id] || []} onChange={u => setAfter(a => ({ ...a, [job.id]: u }))} />
+                        <textarea rows={2} placeholder="Notes for admin…" value={notes[job.id] || ''}
+                          onChange={e => setNotes(n => ({ ...n, [job.id]: e.target.value }))}
+                          className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 text-sm resize-none" />
+                        <button onClick={() => complete(job.id)} disabled={busy === job.id}
+                          className="w-full py-3 rounded-xl bg-white text-[#2C4A6E] font-bold hover:bg-white/90 transition disabled:opacity-50">
+                          ✅ Mark job complete
+                        </button>
+                      </>
+                    )}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   )

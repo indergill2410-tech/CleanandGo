@@ -29,7 +29,7 @@ const COLUMNS = [
       { label: 'Book a One-Off Clean', href: '/customer/book' },
       { label: 'My Account', href: '/account' },
       { label: 'Track Your Clean', href: '/track' },
-      { label: 'Staff Login', href: '/login' },
+      { label: 'Staff Login', href: '/login?tab=staff' },
     ],
   },
 ]
