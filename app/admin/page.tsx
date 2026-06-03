@@ -141,8 +141,13 @@ export default function AdminDashboard() {
   }
 
   const signOut = async () => {
-    await createClient().auth.signOut()
-    router.push('/login?tab=staff')
+    try {
+      await createClient().auth.signOut()
+    } catch (error) {
+      console.error('Error signing out:', error)
+    } finally {
+      router.push('/login?tab=staff')
+    }
   }
 
   const filtered = filter === 'all' ? bookings : bookings.filter(b => b.status === filter)
