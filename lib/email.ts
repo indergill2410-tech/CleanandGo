@@ -157,6 +157,44 @@ export async function sendQuoteReadyEmail({
   })
 }
 
+// ─── 3b. Admin: New recurring-plan request ───────────────────────
+export async function sendAdminNewPlanEmail({
+  name, email, phone, propertyType, frequency, address, suburb, state, postcode,
+  preferredDay, preferredTime, size, notes, photosCount,
+}: {
+  name: string; email: string; phone: string; propertyType: string; frequency: string;
+  address: string; suburb: string; state?: string; postcode?: string;
+  preferredDay?: string; preferredTime?: string; size: string; notes?: string; photosCount?: number
+}) {
+  const where = [address, suburb, state, postcode].filter(Boolean).join(', ')
+  const html = base(`
+    <div style="display:inline-block;padding:6px 14px;background:rgba(251,191,36,0.2);border:1px solid rgba(251,191,36,0.4);border-radius:20px;margin-bottom:20px;">
+      <span style="color:#fbbf24;font-size:13px;font-weight:600;">⏳ New recurring-plan request — action required</span>
+    </div>
+    ${h1(`New ${frequency} ${propertyType} plan from ${name}`)}
+    ${p('A customer requested a recurring plan. Log in to price it and assign a cleaner + backup.')}
+    ${table(
+      row('Type', `${propertyType} · ${frequency}`) +
+      row('Size', size) +
+      row('Address', where) +
+      (preferredDay ? row('Preferred', `${preferredDay}${preferredTime ? ' ' + preferredTime : ''}`) : '') +
+      row('Customer', name) +
+      row('Email', email) +
+      row('Phone', phone) +
+      (photosCount ? row('Photos', `${photosCount} attached`) : '') +
+      (notes ? row('Notes', notes) : '')
+    )}
+    ${btn(`${APP_URL}/admin/subscriptions`, 'Open Recurring Plans →')}
+  `)
+
+  return getResend().emails.send({
+    from: FROM,
+    to: ADMIN,
+    subject: `⏳ New ${frequency} ${propertyType} plan — ${name}`,
+    html,
+  })
+}
+
 // ─── 4. Staff: Welcome / set your password ───────────────────────
 export async function sendStaffInviteEmail({
   name, email, actionLink, role = 'cleaner',

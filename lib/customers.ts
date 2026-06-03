@@ -37,3 +37,27 @@ export async function getOrCreateCustomer(supabase: AdminClient, { name, email, 
 
   return { customer: created, error: insertError }
 }
+
+/**
+ * Create a Supabase auth account for a customer (with their chosen password)
+ * and link it to their customer record. Best-effort: returns false (without
+ * throwing) if the email already has an account, so it never blocks a booking.
+ */
+export async function createCustomerAccount(
+  supabase: AdminClient,
+  customerId: string,
+  email: string,
+  password: string
+): Promise<boolean> {
+  const { data, error } = await supabase.auth.admin.createUser({
+    email,
+    password,
+    email_confirm: true,
+  })
+  if (error || !data?.user) {
+    // Most commonly: the email is already registered. Leave it to them to log in.
+    return false
+  }
+  await supabase.from('customers').update({ user_id: data.user.id }).eq('id', customerId)
+  return true
+}

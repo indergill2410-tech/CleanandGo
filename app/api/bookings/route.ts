@@ -1,14 +1,16 @@
 import { NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { requireAdmin } from '@/lib/auth'
-import { getOrCreateCustomer } from '@/lib/customers'
+import { getOrCreateCustomer, createCustomerAccount } from '@/lib/customers'
 import { sendBookingConfirmationEmail, sendAdminNewBookingEmail } from '@/lib/email'
+
+export const runtime = 'nodejs'
 
 // Public endpoint: anyone can submit a quote request.
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    const { service, beds, baths, extras, date, time, name, email, phone, address, suburb, state, postcode, notes, photos } = body
+    const { service, beds, baths, extras, date, time, name, email, phone, address, suburb, state, postcode, notes, photos, password } = body
 
     if (!service || !date || !time || !name || !email || !phone || !address) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
@@ -60,7 +62,13 @@ export async function POST(request: Request) {
       read: false,
     }])
 
-    // 4. Send emails (non-blocking — don't fail booking if email fails)
+    // 4. Optionally create their account so they can track everything.
+    let accountCreated = false
+    if (typeof password === 'string' && password.length >= 8 && !customer.user_id) {
+      accountCreated = await createCustomerAccount(supabase, customer.id, email, password)
+    }
+
+    // 5. Send emails (non-blocking — don't fail booking if email fails)
     await Promise.allSettled([
       sendBookingConfirmationEmail({
         customerName: name, customerEmail: email, service,
@@ -72,7 +80,7 @@ export async function POST(request: Request) {
       }),
     ])
 
-    return NextResponse.json({ success: true, booking }, { status: 201 })
+    return NextResponse.json({ success: true, booking, accountCreated }, { status: 201 })
   } catch (err) {
     console.error('API error:', err)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })

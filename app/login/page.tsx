@@ -7,7 +7,7 @@ import { createClient } from '@/lib/supabase/client'
 function LoginForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const redirectTo = searchParams.get('redirectTo') || '/'
+  const redirectTo = searchParams.get('redirectTo')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -22,9 +22,16 @@ function LoginForm() {
     if (error) {
       setError(error.message)
       setLoading(false)
-    } else {
-      router.push(redirectTo)
+      return
     }
+    // Honour an explicit redirect; otherwise send each role to its console.
+    if (redirectTo) {
+      router.push(redirectTo)
+    } else {
+      const { role } = await fetch('/api/auth/whoami').then(r => r.json()).catch(() => ({ role: null }))
+      router.push(role === 'admin' ? '/admin' : role === 'cleaner' ? '/cleaner' : '/account')
+    }
+    router.refresh()
   }
 
   return (

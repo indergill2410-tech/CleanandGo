@@ -15,7 +15,7 @@ export default function PlanRequestPage() {
   const [form, setForm] = useState({
     name: '', email: '', phone: '', address: '', suburb: '', state: '', postcode: '',
     bedrooms: 2, bathrooms: 1, officeSqm: 100,
-    preferredDay: 'Tuesday', preferredTime: '09:00', notes: '',
+    preferredDay: 'Tuesday', preferredTime: '09:00', notes: '', password: '',
   })
   const [photos, setPhotos] = useState<string[]>([])
   const [submitting, setSubmitting] = useState(false)
@@ -150,6 +150,13 @@ export default function PlanRequestPage() {
               <input placeholder="Postcode" value={form.postcode} onChange={e => set('postcode', e.target.value)} className={inputCls} />
             </div>
             <textarea placeholder="Anything we should know? (optional)" value={form.notes} onChange={e => set('notes', e.target.value)} rows={3} className={inputCls} />
+          </div>
+
+          {/* Optional account */}
+          <div className="bg-white/5 border border-white/10 rounded-2xl p-4">
+            <label className="text-white/80 text-sm font-medium mb-1 block">Create an account <span className="text-white/40">(optional)</span></label>
+            <p className="text-white/40 text-xs mb-3">Set a password to manage your plan, payments and bookings online.</p>
+            <input type="password" placeholder="Choose a password (min 8 characters)" value={form.password} onChange={e => set('password', e.target.value)} minLength={8} autoComplete="new-password" className={inputCls} />
           </div>
 
           {/* Optional photos */}

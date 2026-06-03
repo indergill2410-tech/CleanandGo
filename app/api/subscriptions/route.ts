@@ -1,7 +1,10 @@
 import { NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { requireAdmin } from '@/lib/auth'
-import { getOrCreateCustomer } from '@/lib/customers'
+import { getOrCreateCustomer, createCustomerAccount } from '@/lib/customers'
+import { sendAdminNewPlanEmail } from '@/lib/email'
+
+export const runtime = 'nodejs'
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
@@ -13,7 +16,7 @@ export async function POST(request: Request) {
     const {
       propertyType, frequency, preferredDay, preferredTime,
       name, email, phone, address, suburb, state, postcode,
-      bedrooms, bathrooms, officeSqm, notes, photos,
+      bedrooms, bathrooms, officeSqm, notes, photos, password,
     } = body
 
     if (!propertyType || !frequency || !name || !email || !phone || !address || !suburb) {
@@ -71,7 +74,21 @@ export async function POST(request: Request) {
       read: false,
     }])
 
-    return NextResponse.json({ success: true, subscription }, { status: 201 })
+    // Optionally create their account so they can manage the plan.
+    let accountCreated = false
+    if (typeof password === 'string' && password.length >= 8 && !customer.user_id) {
+      accountCreated = await createCustomerAccount(supabase, customer.id, email, password)
+    }
+
+    // Always email the admin a summary of the new job.
+    const size = propertyType === 'office' ? `${officeSqm ?? '?'} m²` : `${bedrooms ?? '?'} bed · ${bathrooms ?? '?'} bath`
+    await sendAdminNewPlanEmail({
+      name, email, phone, propertyType, frequency, address, suburb, state, postcode,
+      preferredDay, preferredTime, size, notes,
+      photosCount: Array.isArray(photos) ? photos.length : 0,
+    }).catch(e => console.error('Admin plan email failed:', e))
+
+    return NextResponse.json({ success: true, subscription, accountCreated }, { status: 201 })
   } catch (err) {
     console.error('Subscription API error:', err)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })

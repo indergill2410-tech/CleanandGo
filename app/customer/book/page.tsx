@@ -31,7 +31,7 @@ export default function BookingPage() {
   const [form, setForm] = useState({
     service: '', beds: 2, baths: 1, extras: [] as string[],
     date: '', time: '', frequency: 'once',
-    name: '', email: '', phone: '', address: '', suburb: '', state: '', postcode: '', notes: '',
+    name: '', email: '', phone: '', address: '', suburb: '', state: '', postcode: '', notes: '', password: '',
   })
   const [photos, setPhotos] = useState<string[]>([])
 
@@ -264,6 +264,11 @@ export default function BookingPage() {
                 <div>
                   <label className="text-white/70 text-sm mb-1 block">Notes (optional)</label>
                   <textarea rows={3} placeholder="e.g. pet in house, gate code, specific areas to focus on" value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))} className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 text-sm resize-none" />
+                </div>
+                <div className="bg-white/5 border border-white/10 rounded-xl p-4">
+                  <label className="text-white/80 text-sm font-medium mb-1 block">Create an account <span className="text-white/40">(optional)</span></label>
+                  <p className="text-white/40 text-xs mb-3">Set a password to track this job and manage future bookings.</p>
+                  <input type="password" placeholder="Choose a password (min 8 characters)" value={form.password} onChange={e => setForm(f => ({ ...f, password: e.target.value }))} minLength={8} autoComplete="new-password" className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 text-sm" />
                 </div>
                 <PhotoUpload urls={photos} onChange={setPhotos} />
               </div>
