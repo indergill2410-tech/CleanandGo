@@ -12,8 +12,8 @@ export async function POST(request: Request) {
     const body = await request.json()
     const {
       propertyType, frequency, preferredDay, preferredTime,
-      name, email, phone, address, suburb,
-      bedrooms, bathrooms, officeSqm, notes,
+      name, email, phone, address, suburb, state, postcode,
+      bedrooms, bathrooms, officeSqm, notes, photos,
     } = body
 
     if (!propertyType || !frequency || !name || !email || !phone || !address || !suburb) {
@@ -47,10 +47,13 @@ export async function POST(request: Request) {
         preferred_time: preferredTime || null,
         address,
         suburb,
+        state: state || null,
+        postcode: postcode || null,
         bedrooms: propertyType === 'home' ? bedrooms ?? null : null,
         bathrooms: propertyType === 'home' ? bathrooms ?? null : null,
         office_sqm: propertyType === 'office' ? officeSqm ?? null : null,
         notes: notes || '',
+        photos: Array.isArray(photos) ? photos.slice(0, 6) : [],
         status: 'requested',
       }])
       .select()

@@ -18,6 +18,7 @@ type Sub = {
   primary_staff_id: string | null
   backup_staff_id: string | null
   notes: string | null
+  photos: string[] | null
   created_at: string
   customers?: { name: string; email: string; phone: string }
 }
@@ -168,6 +169,16 @@ export default function AdminSubscriptions() {
                     {sub.price_cents ? ` · $${(sub.price_cents/100).toFixed(2)}/visit` : ''}
                   </div>
                   {sub.notes && <div className="text-white/40 text-xs mt-1 italic">“{sub.notes}”</div>}
+                  {sub.photos && sub.photos.length > 0 && (
+                    <div className="flex gap-2 mt-2">
+                      {sub.photos.map(url => (
+                        <a key={url} href={url} target="_blank" rel="noopener noreferrer" className="block w-12 h-12 rounded-lg overflow-hidden border border-white/20">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src={url} alt="Booking photo" className="w-full h-full object-cover" />
+                        </a>
+                      ))}
+                    </div>
+                  )}
                 </div>
                 <button onClick={() => openActivate(sub)} className="btn-primary text-sm px-6 py-3 whitespace-nowrap">
                   {sub.status === 'requested' ? 'Price & assign' : 'Edit'}

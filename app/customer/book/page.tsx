@@ -2,6 +2,8 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import AddressAutocomplete, { type AddressParts } from '@/components/AddressAutocomplete'
+import PhotoUpload from '@/components/PhotoUpload'
 
 const STEPS = ['Service', 'Size & Extras', 'Date & Time', 'Your Details', 'Confirm']
 
@@ -29,10 +31,13 @@ export default function BookingPage() {
   const [form, setForm] = useState({
     service: '', beds: 2, baths: 1, extras: [] as string[],
     date: '', time: '', frequency: 'once',
-    name: '', email: '', phone: '', address: '', suburb: '', notes: '',
+    name: '', email: '', phone: '', address: '', suburb: '', state: '', postcode: '', notes: '',
   })
+  const [photos, setPhotos] = useState<string[]>([])
 
   const selectedService = SERVICES.find(s => s.id === form.service)
+  const fillAddress = (p: AddressParts) =>
+    setForm(f => ({ ...f, address: p.line1 || f.address, suburb: p.suburb || f.suburb, state: p.state || f.state, postcode: p.postcode || f.postcode }))
 
   const toggleExtra = (id: string) =>
     setForm(f => ({ ...f, extras: f.extras.includes(id) ? f.extras.filter(e => e !== id) : [...f.extras, id] }))
@@ -51,7 +56,7 @@ export default function BookingPage() {
       const res = await fetch('/api/bookings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, photos }),
       })
       const data = await res.json()
       const bookingId = data.booking?.id || `REQ-${Date.now().toString().slice(-6)}`
@@ -226,18 +231,41 @@ export default function BookingPage() {
                   { label: 'Full Name', key: 'name', type: 'text', placeholder: 'Jane Smith' },
                   { label: 'Email', key: 'email', type: 'email', placeholder: 'jane@example.com' },
                   { label: 'Phone', key: 'phone', type: 'tel', placeholder: '04xx xxx xxx' },
-                  { label: 'Street Address', key: 'address', type: 'text', placeholder: '12 Example St' },
-                  { label: 'Suburb', key: 'suburb', type: 'text', placeholder: 'Suburb' },
                 ].map(f => (
                   <div key={f.key}>
                     <label className="text-white/70 text-sm mb-1 block">{f.label}</label>
-                    <input type={f.type} placeholder={f.placeholder} value={(form as any)[f.key]} onChange={e => setForm(prev => ({ ...prev, [f.key]: e.target.value }))} className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 text-sm" />
+                    <input type={f.type} placeholder={f.placeholder} value={(form as unknown as Record<string, string>)[f.key]} onChange={e => setForm(prev => ({ ...prev, [f.key]: e.target.value }))} className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 text-sm" />
                   </div>
                 ))}
+                <div>
+                  <label className="text-white/70 text-sm mb-1 block">Street Address</label>
+                  <AddressAutocomplete
+                    value={form.address}
+                    onChange={v => setForm(f => ({ ...f, address: v }))}
+                    onSelect={fillAddress}
+                    placeholder="Start typing your address…"
+                    className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 text-sm"
+                  />
+                </div>
+                <div className="grid grid-cols-3 gap-3">
+                  <div>
+                    <label className="text-white/70 text-sm mb-1 block">Suburb</label>
+                    <input value={form.suburb} onChange={e => setForm(f => ({ ...f, suburb: e.target.value }))} className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 text-sm" />
+                  </div>
+                  <div>
+                    <label className="text-white/70 text-sm mb-1 block">State</label>
+                    <input value={form.state} onChange={e => setForm(f => ({ ...f, state: e.target.value }))} className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 text-sm" />
+                  </div>
+                  <div>
+                    <label className="text-white/70 text-sm mb-1 block">Postcode</label>
+                    <input value={form.postcode} onChange={e => setForm(f => ({ ...f, postcode: e.target.value }))} className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 text-sm" />
+                  </div>
+                </div>
                 <div>
                   <label className="text-white/70 text-sm mb-1 block">Notes (optional)</label>
                   <textarea rows={3} placeholder="e.g. pet in house, gate code, specific areas to focus on" value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))} className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 text-sm resize-none" />
                 </div>
+                <PhotoUpload urls={photos} onChange={setPhotos} />
               </div>
             </div>
           )}
