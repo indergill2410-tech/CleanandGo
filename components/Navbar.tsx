@@ -29,14 +29,19 @@ export default function Navbar() {
         </Link>
 
         <div className="hidden md:flex items-center gap-8">
-          {['Services', 'How It Works', 'Pricing'].map(item => (
-            <a
-              key={item}
-              href={`#${item.toLowerCase().replace(' ', '-')}`}
+          {[
+            { label: 'Services', href: '/services' },
+            { label: 'How It Works', href: '/how-it-works' },
+            { label: 'Pricing', href: '/pricing' },
+            { label: 'Blog', href: '/blog' },
+          ].map(item => (
+            <Link
+              key={item.label}
+              href={item.href}
               className={`text-sm font-medium transition-colors ${
                 scrolled ? 'text-[#7A8A96] hover:text-[#2C4A6E]' : 'text-white/80 hover:text-white'
               }`}
-            >{item}</a>
+            >{item.label}</Link>
           ))}
         </div>
 
