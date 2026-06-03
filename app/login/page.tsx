@@ -1,6 +1,7 @@
 'use client'
 import { useState, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 
 function LoginForm() {
@@ -62,6 +63,9 @@ function LoginForm() {
       >
         {loading ? 'Signing in...' : 'Sign In'}
       </button>
+      <p className="text-center pt-1">
+        <Link href="/forgot-password" className="text-white/50 text-sm hover:text-white">Forgot password?</Link>
+      </p>
     </form>
   )
 }
