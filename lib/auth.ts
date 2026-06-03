@@ -70,3 +70,36 @@ export async function requireStaff(): Promise<AuthResult> {
 
   return { ok: true, userId: user.id, staff: staff as StaffRecord }
 }
+
+export type CustomerRecord = {
+  id: string
+  user_id: string
+  name: string
+  email: string
+}
+
+type CustomerAuthResult =
+  | { ok: true; userId: string; customer: CustomerRecord }
+  | { ok: false; status: 401 | 403; error: string }
+
+/**
+ * Guards a customer-account route. Verifies the caller is signed in AND has a
+ * matching `customers` row linked to their auth user.
+ */
+export async function requireCustomer(): Promise<CustomerAuthResult> {
+  const user = await getSessionUser()
+  if (!user) return { ok: false, status: 401, error: 'Not authenticated' }
+
+  const admin = createAdminClient()
+  const { data: customer } = await admin
+    .from('customers')
+    .select('id, user_id, name, email')
+    .eq('user_id', user.id)
+    .maybeSingle()
+
+  if (!customer) {
+    return { ok: false, status: 403, error: 'Customer account required' }
+  }
+
+  return { ok: true, userId: user.id, customer: customer as CustomerRecord }
+}
