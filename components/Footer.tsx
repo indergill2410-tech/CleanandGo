@@ -18,6 +18,7 @@ const COLUMNS = [
       { label: 'Reliability Guarantee', href: '/reliability' },
       { label: 'For Offices', href: '/commercial' },
       { label: 'Blog', href: '/blog' },
+      { label: 'Careers', href: '/careers' },
       { label: 'Contact Us', href: '/contact' },
     ],
   },

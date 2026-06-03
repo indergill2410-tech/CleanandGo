@@ -105,6 +105,9 @@ export default function AdminDashboard() {
               <Link href="/admin/invoices" className="text-sm text-[#7BA7C7] hover:text-white font-semibold transition-colors">
                 Invoices →
               </Link>
+              <Link href="/admin/applications" className="text-sm text-[#7BA7C7] hover:text-white font-semibold transition-colors">
+                Applications →
+              </Link>
             </div>
           </div>
           {unread > 0 && (

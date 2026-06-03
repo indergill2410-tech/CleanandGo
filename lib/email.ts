@@ -156,3 +156,27 @@ export async function sendQuoteReadyEmail({
     html,
   })
 }
+
+// ─── 4. Cleaner: Welcome / set your password ─────────────────────
+export async function sendCleanerWelcomeEmail({
+  name, email, actionLink,
+}: {
+  name: string; email: string; actionLink: string
+}) {
+  const html = base(`
+    <div style="display:inline-block;padding:6px 14px;background:rgba(74,183,165,0.2);border:1px solid rgba(74,183,165,0.4);border-radius:20px;margin-bottom:20px;">
+      <span style="color:#4ab7a5;font-size:13px;font-weight:600;">🎉 Welcome to the team</span>
+    </div>
+    ${h1(`Welcome aboard, ${name}!`)}
+    ${p('Your application has been approved and your Clean&Go cleaner account is ready. Set your password to log in and start receiving jobs.')}
+    ${btn(actionLink, 'Set Your Password →')}
+    ${p('<span style="font-size:13px;color:rgba(255,255,255,0.4);">This link expires for security. If it does, contact us and we\'ll send a fresh one.</span>')}
+  `)
+
+  return getResend().emails.send({
+    from: FROM,
+    to: email,
+    subject: 'Welcome to Clean&Go — set your password',
+    html,
+  })
+}

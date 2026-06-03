@@ -35,6 +35,7 @@ export default function Navbar() {
             { label: 'Pricing', href: '/pricing' },
             { label: 'Reliability', href: '/reliability' },
             { label: 'Blog', href: '/blog' },
+            { label: "We're hiring", href: '/careers' },
           ].map(item => (
             <Link
               key={item.label}
