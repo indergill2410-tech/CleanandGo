@@ -35,14 +35,16 @@ services:
         sync: false
       - key: STRIPE_PRODUCT_OFFICE
         sync: false
+      - key: NEXT_PUBLIC_MAPBOX_TOKEN
+        sync: false
       - key: CRON_SECRET
         sync: false
       - key: NEXT_PUBLIC_APP_URL
         sync: false
       - key: NEXT_PUBLIC_APP_NAME
         value: Clean&Go
-      - key: NEXT_PUBLIC_BUSINESS_SUBURB
-        value: Melbourne
+      - key: NEXT_PUBLIC_BUSINESS_REGION
+        value: Australia
 
   # Weekly payroll export — Fridays 07:00 UTC (matches the old Vercel cron).
   - type: cron

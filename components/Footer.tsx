@@ -18,6 +18,7 @@ const COLUMNS = [
       { label: 'Reliability Guarantee', href: '/reliability' },
       { label: 'For Offices', href: '/commercial' },
       { label: 'Blog', href: '/blog' },
+      { label: 'Contact Us', href: '/contact' },
     ],
   },
   {
@@ -45,7 +46,7 @@ export default function Footer() {
               <span className="font-bold text-lg text-white">Clean&amp;Go</span>
             </Link>
             <p className="text-white/40 text-sm leading-relaxed max-w-xs">
-              Melbourne&apos;s trusted cleaning service. Recurring, one-off and end-of-lease cleans, fully insured and bond-back guaranteed.
+              Australia&apos;s reliable cleaning service for homes &amp; offices. Recurring, one-off and end-of-lease cleans, fully insured and bond-back guaranteed.
             </p>
           </div>
 
@@ -66,7 +67,7 @@ export default function Footer() {
         </div>
 
         <div className="border-t border-white/10 pt-6 flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="text-white/40 text-xs">ABN: XX XXX XXX XXX · Melbourne, VIC 3000</div>
+          <div className="text-white/40 text-xs">Servicing homes &amp; offices Australia-wide</div>
           <div className="text-white/30 text-xs">© {new Date().getFullYear()} Clean&amp;Go. All rights reserved.</div>
         </div>
       </div>

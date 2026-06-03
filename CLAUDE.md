@@ -1,6 +1,6 @@
 # CleanandGo
 
-Next.js app (Supabase + Resend + Stripe) for the Clean&Go cleaning service (Melbourne, AU).
+Next.js app (Supabase + Resend + Stripe) for the Clean&Go cleaning service (Australia-wide).
 
 ## Infrastructure
 

@@ -1,6 +1,8 @@
 'use client'
 import { useState } from 'react'
 import Link from 'next/link'
+import AddressAutocomplete, { type AddressParts } from '@/components/AddressAutocomplete'
+import PhotoUpload from '@/components/PhotoUpload'
 
 type PropertyType = 'home' | 'office'
 type Frequency = 'weekly' | 'fortnightly' | 'monthly'
@@ -11,15 +13,18 @@ export default function PlanRequestPage() {
   const [propertyType, setPropertyType] = useState<PropertyType>('home')
   const [frequency, setFrequency] = useState<Frequency>('fortnightly')
   const [form, setForm] = useState({
-    name: '', email: '', phone: '', address: '', suburb: '',
+    name: '', email: '', phone: '', address: '', suburb: '', state: '', postcode: '',
     bedrooms: 2, bathrooms: 1, officeSqm: 100,
     preferredDay: 'Tuesday', preferredTime: '09:00', notes: '',
   })
+  const [photos, setPhotos] = useState<string[]>([])
   const [submitting, setSubmitting] = useState(false)
   const [done, setDone] = useState(false)
   const [error, setError] = useState('')
 
   const set = (k: string, v: string | number) => setForm(f => ({ ...f, [k]: v }))
+  const fillAddress = (p: AddressParts) =>
+    setForm(f => ({ ...f, address: p.line1 || f.address, suburb: p.suburb || f.suburb, state: p.state || f.state, postcode: p.postcode || f.postcode }))
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -29,7 +34,7 @@ export default function PlanRequestPage() {
       const res = await fetch('/api/subscriptions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ propertyType, frequency, ...form }),
+        body: JSON.stringify({ propertyType, frequency, ...form, photos }),
       })
       const data = await res.json()
       if (!res.ok) { setError(data.error || 'Something went wrong'); return }
@@ -132,10 +137,23 @@ export default function PlanRequestPage() {
             <input placeholder="Full name" value={form.name} onChange={e => set('name', e.target.value)} required className={inputCls} />
             <input type="email" placeholder="Email" value={form.email} onChange={e => set('email', e.target.value)} required className={inputCls} />
             <input placeholder="Phone" value={form.phone} onChange={e => set('phone', e.target.value)} required className={inputCls} />
-            <input placeholder="Street address" value={form.address} onChange={e => set('address', e.target.value)} required className={inputCls} />
-            <input placeholder="Suburb" value={form.suburb} onChange={e => set('suburb', e.target.value)} required className={inputCls} />
+            <AddressAutocomplete
+              value={form.address}
+              onChange={v => set('address', v)}
+              onSelect={fillAddress}
+              placeholder="Street address"
+              className={inputCls}
+            />
+            <div className="grid grid-cols-3 gap-3">
+              <input placeholder="Suburb" value={form.suburb} onChange={e => set('suburb', e.target.value)} required className={inputCls} />
+              <input placeholder="State" value={form.state} onChange={e => set('state', e.target.value)} className={inputCls} />
+              <input placeholder="Postcode" value={form.postcode} onChange={e => set('postcode', e.target.value)} className={inputCls} />
+            </div>
             <textarea placeholder="Anything we should know? (optional)" value={form.notes} onChange={e => set('notes', e.target.value)} rows={3} className={inputCls} />
           </div>
+
+          {/* Optional photos */}
+          <PhotoUpload urls={photos} onChange={setPhotos} />
 
           {error && <div className="bg-red-500/20 border border-red-500/30 rounded-xl px-4 py-3 text-red-200 text-sm">{error}</div>}
 

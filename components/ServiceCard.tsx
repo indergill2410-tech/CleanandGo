@@ -5,14 +5,13 @@ interface ServiceCardProps {
   icon: string
   title: string
   description: string
-  price: string
   tag?: string
   tagColor?: string
   features: string[]
   highlight?: boolean
 }
 
-export default function ServiceCard({ icon, title, description, price, tag, tagColor, features, highlight }: ServiceCardProps) {
+export default function ServiceCard({ icon, title, description, tag, tagColor, features, highlight }: ServiceCardProps) {
   return (
     <div className={`relative rounded-3xl p-8 card-hover cursor-pointer ${
       highlight
@@ -50,10 +49,10 @@ export default function ServiceCard({ icon, title, description, price, tag, tagC
         <div>
           <div className={`text-xs mb-1 ${
             highlight ? 'text-white/70' : 'text-[#7A8A96]'
-          }`}>From</div>
-          <div className={`text-3xl font-bold ${
+          }`}>Pricing</div>
+          <div className={`text-lg font-bold ${
             highlight ? 'text-white' : 'text-[#2C4A6E]'
-          }`}>{price}</div>
+          }`}>Custom quote</div>
         </div>
         <Link
           href="/customer/book"
@@ -62,7 +61,7 @@ export default function ServiceCard({ icon, title, description, price, tag, tagC
               ? 'bg-white text-[#2C4A6E] hover:bg-white/90'
               : 'bg-[#2C4A6E] text-white hover:bg-[#4A7FA5]'
           }`}
-        >Book →</Link>
+        >Get a quote →</Link>
       </div>
     </div>
   )

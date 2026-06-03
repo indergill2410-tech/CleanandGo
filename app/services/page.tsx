@@ -6,9 +6,9 @@ import TrustBadge from '@/components/TrustBadge'
 import { SERVICES, TRUST_BADGES } from '@/lib/content'
 
 export const metadata: Metadata = {
-  title: 'Cleaning Services Melbourne — Recurring, One-Off & End of Lease',
+  title: 'Cleaning Services Australia — Recurring, One-Off & End of Lease',
   description:
-    'Explore Clean&Go cleaning services in Melbourne: recurring weekly and fortnightly cleans, one-off deep cleans, and bond-back end-of-lease cleaning. Fully insured and guaranteed.',
+    'Explore Clean&Go cleaning services across Australia: recurring weekly and fortnightly cleans, one-off deep cleans, and bond-back end-of-lease cleaning. Fully insured and guaranteed.',
   alternates: { canonical: '/services' },
 }
 
@@ -24,7 +24,7 @@ export default function ServicesPage() {
         <div className="relative z-10 max-w-3xl mx-auto text-center">
           <p className="text-white/60 font-semibold text-sm uppercase tracking-widest mb-3">Our Services</p>
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-5 leading-tight">
-            Cleaning services for every Melbourne home
+            Cleaning services for every Australian home &amp; office
           </h1>
           <p className="text-white/70 text-lg max-w-xl mx-auto">
             Whatever you need — a regular tidy, a deep reset, or a bond-back vacate clean — every job is fully insured, background-checked, and backed by our satisfaction guarantee.
@@ -52,13 +52,13 @@ export default function ServicesPage() {
                 <h2 className="text-3xl font-bold text-[#1C2B3A] mb-1">{s.title}</h2>
                 <p className="text-[#4A7FA5] font-medium mb-4">{s.tagline}</p>
                 <p className="text-[#7A8A96] leading-relaxed mb-6">{s.description}</p>
-                <div className="flex items-end gap-6 mb-6">
+                <div className="flex items-center gap-6 mb-6">
                   <div>
-                    <div className="text-xs text-[#7A8A96] mb-1">{s.priceNote}</div>
-                    <div className="text-4xl font-bold text-[#2C4A6E]">{s.price}</div>
+                    <div className="text-xs text-[#7A8A96] mb-1">Pricing</div>
+                    <div className="text-xl font-bold text-[#2C4A6E]">Custom quote</div>
                   </div>
                   <Link href="/customer/book" className="btn-primary text-sm px-7 py-3.5">
-                    Book {s.title} →
+                    Get a quote →
                   </Link>
                 </div>
               </div>

@@ -7,7 +7,7 @@ import { BLOG_POSTS } from '@/lib/content'
 export const metadata: Metadata = {
   title: 'Cleaning Tips & Guides — The Clean&Go Blog',
   description:
-    'Expert cleaning tips, pricing guides, and end-of-lease advice for Melbourne homes. Learn how to keep your home spotless and get your full bond back.',
+    'Expert cleaning tips, pricing guides, and end-of-lease advice for Australian homes and offices. Learn how to keep your space spotless and get your full bond back.',
   alternates: { canonical: '/blog' },
 }
 
@@ -28,7 +28,7 @@ export default function BlogIndexPage() {
         <div className="relative z-10 max-w-3xl mx-auto text-center">
           <p className="text-white/60 font-semibold text-sm uppercase tracking-widest mb-3">The Blog</p>
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-5 leading-tight">
-            Cleaning tips &amp; guides for Melbourne homes
+            Cleaning tips &amp; guides for Australian homes
           </h1>
           <p className="text-white/70 text-lg max-w-xl mx-auto">
             Practical advice on keeping your home spotless, understanding cleaning costs, and getting your bond back.
@@ -63,7 +63,7 @@ export default function BlogIndexPage() {
       <section className="py-20 px-6 gradient-cta">
         <div className="max-w-2xl mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Rather leave it to the pros?</h2>
-          <p className="text-white/70 text-lg mb-8">Book a trusted Melbourne cleaner in 60 seconds.</p>
+          <p className="text-white/70 text-lg mb-8">Book a trusted local cleaner in 60 seconds.</p>
           <Link href="/customer/book" className="inline-flex items-center gap-2 bg-white text-[#2C4A6E] font-bold px-10 py-4 rounded-full text-lg hover:bg-white/90 transition-all hover:-translate-y-1">
             Book a Clean →
           </Link>

@@ -8,7 +8,7 @@ import { sendBookingConfirmationEmail, sendAdminNewBookingEmail } from '@/lib/em
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    const { service, beds, baths, extras, date, time, name, email, phone, address, suburb, notes } = body
+    const { service, beds, baths, extras, date, time, name, email, phone, address, suburb, state, postcode, notes, photos } = body
 
     if (!service || !date || !time || !name || !email || !phone || !address) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
@@ -34,9 +34,12 @@ export async function POST(request: Request) {
         extras: extras || [],
         address: `${address}${suburb ? ', ' + suburb : ''}`,
         suburb: suburb || '',
+        state: state || null,
+        postcode: postcode || null,
         scheduled_date: date,
         scheduled_time: time,
         notes: notes || '',
+        photos: Array.isArray(photos) ? photos.slice(0, 6) : [],
         status: 'pending',
         price_cents: 0,
       }])

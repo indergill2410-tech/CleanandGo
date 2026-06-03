@@ -99,7 +99,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
           {/* Inline CTA */}
           <div className="bg-white/80 backdrop-blur-sm border border-white/60 rounded-3xl p-8 shadow-lg text-center mt-12">
             <h3 className="text-xl font-bold text-[#1C2B3A] mb-2">Want it done for you?</h3>
-            <p className="text-[#7A8A96] text-sm mb-6">Get a free, no-obligation quote from a trusted Melbourne cleaner.</p>
+            <p className="text-[#7A8A96] text-sm mb-6">Get a free, no-obligation quote from a trusted local cleaner.</p>
             <Link href="/customer/book" className="btn-primary text-sm px-8 py-3.5">
               Request a Quote →
             </Link>

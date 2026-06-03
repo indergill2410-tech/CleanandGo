@@ -4,16 +4,16 @@ import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 
 export const metadata: Metadata = {
-  title: 'Office & Commercial Cleaning Melbourne — Reliable Recurring Plans',
+  title: 'Office & Commercial Cleaning Australia — Reliable Recurring Plans',
   description:
-    'Recurring office cleaning in Melbourne your team can rely on. Named cleaner plus guaranteed backup, flexible weekly/fortnightly schedules, after-hours service, fixed monthly pricing.',
+    'Recurring office cleaning across Australia your team can rely on. Named cleaner plus guaranteed backup, flexible weekly/fortnightly schedules, after-hours service, fixed monthly pricing.',
   alternates: { canonical: '/commercial' },
 }
 
 const REASONS = [
   { icon: '🛡️', title: 'Coverage guaranteed', desc: 'A backup cleaner is assigned to every contract, so your office is never left uncleaned because someone called in sick.' },
   { icon: '🌙', title: 'After-hours friendly', desc: 'We clean around your team — early mornings, evenings, or weekends — so the work day is never disrupted.' },
-  { icon: '📅', title: 'Flexible frequency', desc: 'From daily to weekly. Many Melbourne offices run 3 days (Tue–Thu) to match peak occupancy and cut cost.' },
+  { icon: '📅', title: 'Flexible frequency', desc: 'From daily to weekly. Many offices run 3 days (Tue–Thu) to match peak occupancy and cut cost.' },
   { icon: '🧾', title: 'Fixed monthly pricing', desc: 'A clear, fixed monthly quote — no per-hour surprises and no hidden fees.' },
 ]
 
@@ -47,7 +47,7 @@ export default function CommercialPage() {
       <section className="py-20 px-6">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-[#1C2B3A]">Why Melbourne businesses switch to us</h2>
+            <h2 className="text-3xl font-bold text-[#1C2B3A]">Why Australian businesses switch to us</h2>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {REASONS.map(r => (
