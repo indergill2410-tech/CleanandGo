@@ -1,8 +1,12 @@
 import { NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
+import { requireAdmin } from '@/lib/auth'
 import { sendQuoteReadyEmail } from '@/lib/email'
 
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const auth = await requireAdmin()
+  if (!auth.ok) return NextResponse.json({ error: auth.error }, { status: auth.status })
+
   try {
     const { id } = await params
     const { price, note } = await request.json()
@@ -11,7 +15,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
       return NextResponse.json({ error: 'Valid price required' }, { status: 400 })
     }
 
-    const supabase = await createClient()
+    const supabase = createAdminClient()
 
     // Update booking with quoted price
     const { data: booking, error } = await supabase

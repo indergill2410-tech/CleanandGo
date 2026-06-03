@@ -1,30 +1,37 @@
 import { NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
+import { requireAdmin } from '@/lib/auth'
 import { sendBookingConfirmationEmail, sendAdminNewBookingEmail } from '@/lib/email'
 
+// Public endpoint: anyone can submit a quote request.
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    const { service, beds, baths, extras, date, time, frequency, name, email, phone, address, suburb, notes } = body
+    const { service, beds, baths, extras, date, time, name, email, phone, address, suburb, notes } = body
 
     if (!service || !date || !time || !name || !email || !phone || !address) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
 
-    const supabase = await createClient()
+    const supabase = createAdminClient()
 
     // 1. Upsert customer
-    const { data: customer } = await supabase
+    const { data: customer, error: customerError } = await supabase
       .from('customers')
       .upsert({ name, email, phone }, { onConflict: 'email' })
       .select()
       .single()
 
+    if (customerError || !customer) {
+      console.error('Customer upsert error:', customerError)
+      return NextResponse.json({ error: 'Could not save customer' }, { status: 500 })
+    }
+
     // 2. Create booking — no price, admin will quote
     const { data: booking, error: bookingError } = await supabase
       .from('bookings')
       .insert([{
-        customer_id: customer?.id,
+        customer_id: customer.id,
         service_type: service,
         bedrooms: beds,
         bathrooms: baths,
@@ -55,7 +62,6 @@ export async function POST(request: Request) {
     }])
 
     // 4. Send emails (non-blocking — don't fail booking if email fails)
-    const serviceLabel = service === 'endoflease' ? 'End of Lease' : service === 'recurring' ? 'Recurring Clean' : 'One-Off Clean'
     await Promise.allSettled([
       sendBookingConfirmationEmail({
         customerName: name, customerEmail: email, service,
@@ -74,9 +80,13 @@ export async function POST(request: Request) {
   }
 }
 
+// Admin-only: list all bookings.
 export async function GET(request: Request) {
+  const auth = await requireAdmin()
+  if (!auth.ok) return NextResponse.json({ error: auth.error }, { status: auth.status })
+
   try {
-    const supabase = await createClient()
+    const supabase = createAdminClient()
     const { searchParams } = new URL(request.url)
     const status = searchParams.get('status')
 
