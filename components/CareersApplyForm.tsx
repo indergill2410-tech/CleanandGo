@@ -68,11 +68,11 @@ export default function CareersApplyForm() {
 
   const inputCls = 'w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 text-sm'
 
-  const DocButton = ({ k, label }: { k: DocKey; label: string }) => (
+  const renderDocButton = (k: DocKey, label: string) => (
     <>
-      <button type="button" onClick={() => refs[k].current?.click()} disabled={uploadingKey === k}
+      <button type="button" onClick={() => refs[k].current?.click()} disabled={uploadingKey !== ''}
         className="text-sm px-5 py-2.5 rounded-full border border-white/20 text-white/80 hover:bg-white/10 disabled:opacity-50">
-        {uploadingKey === k ? 'Uploading…' : docs[k].name ? `✓ ${docs[k].name}` : label}
+        {uploadingKey === k ? 'Uploading…' : docs[k].name ? '✓ ' + docs[k].name : label}
       </button>
       <input ref={refs[k]} type="file" accept="application/pdf,image/jpeg,image/png" hidden onChange={upload(k)} />
     </>
