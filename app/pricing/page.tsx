@@ -92,7 +92,7 @@ export default function PricingPage() {
           <div className="space-y-4">
             {PRICING_FAQS.map((faq) => (
               <details key={faq.q} className="group bg-white/80 backdrop-blur-sm border border-white/60 rounded-2xl p-6 shadow-sm">
-                <summary className="font-semibold text-[#1C2B3A] cursor-pointer list-none flex items-center justify-between">
+                <summary className="font-semibold text-[#1C2B3A] cursor-pointer list-none flex items-center justify-between [&::-webkit-details-marker]:hidden">
                   {faq.q}
                   <span className="text-[#4A7FA5] transition-transform group-open:rotate-45 text-xl leading-none">+</span>
                 </summary>
