@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { requireAdmin } from '@/lib/auth'
+import { getOrCreateCustomer } from '@/lib/customers'
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 // Public: a customer requests a recurring plan (home or office). Quote-based —
 // no price yet; an admin reviews and sets the per-visit fee.
@@ -16,6 +19,9 @@ export async function POST(request: Request) {
     if (!propertyType || !frequency || !name || !email || !phone || !address || !suburb) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
+    if (!EMAIL_RE.test(email)) {
+      return NextResponse.json({ error: 'Invalid email format' }, { status: 400 })
+    }
     if (!['home', 'office'].includes(propertyType)) {
       return NextResponse.json({ error: 'Invalid property type' }, { status: 400 })
     }
@@ -25,14 +31,9 @@ export async function POST(request: Request) {
 
     const supabase = createAdminClient()
 
-    const { data: customer, error: customerError } = await supabase
-      .from('customers')
-      .upsert({ name, email, phone }, { onConflict: 'email' })
-      .select()
-      .single()
-
+    const { customer, error: customerError } = await getOrCreateCustomer(supabase, { name, email, phone })
     if (customerError || !customer) {
-      console.error('Customer upsert error:', customerError)
+      console.error('Customer resolve error:', customerError)
       return NextResponse.json({ error: 'Could not save customer' }, { status: 500 })
     }
 

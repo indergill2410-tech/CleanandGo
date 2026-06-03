@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { requireAdmin } from '@/lib/auth'
-import { createRecurringSubscription, type Frequency } from '@/lib/subscriptions'
+import { createRecurringSubscription, cancelSubscription, type Frequency } from '@/lib/subscriptions'
 
 export const runtime = 'nodejs'
 
@@ -16,7 +16,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     const { id } = await params
     const { price, primaryStaffId, backupStaffId } = await request.json()
 
-    if (!price || price <= 0) {
+    if (typeof price !== 'number' || isNaN(price) || price <= 0) {
       return NextResponse.json({ error: 'Valid price required' }, { status: 400 })
     }
 
@@ -24,7 +24,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
 
     const { data: sub, error: subError } = await supabase
       .from('subscriptions')
-      .select('*, customers(name, email)')
+      .select('*, customers(id, name, email, stripe_customer_id)')
       .eq('id', id)
       .single()
 
@@ -32,7 +32,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
       return NextResponse.json({ error: 'Subscription not found' }, { status: 404 })
     }
 
-    const customer = sub.customers as { name: string; email: string } | null
+    const customer = sub.customers as { id: string; name: string; email: string; stripe_customer_id: string | null } | null
     if (!customer?.email) {
       return NextResponse.json({ error: 'Subscription has no customer email' }, { status: 409 })
     }
@@ -45,7 +45,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
       priceCents,
       frequency: sub.frequency as Frequency,
       propertyType: sub.property_type as 'home' | 'office',
-      existingStripeCustomerId: sub.stripe_customer_id,
+      existingStripeCustomerId: sub.stripe_customer_id || customer.stripe_customer_id,
       metadata: { subscription_id: id },
     })
 
@@ -63,7 +63,18 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
 
     if (updateError) {
       console.error('Subscription update error:', updateError)
+      // Don't leave an orphaned Stripe subscription behind.
+      try {
+        await cancelSubscription(stripeSubscriptionId)
+      } catch (cancelErr) {
+        console.error('Failed to cancel orphaned Stripe subscription:', cancelErr)
+      }
       return NextResponse.json({ error: updateError.message }, { status: 500 })
+    }
+
+    // Cache the Stripe customer id on the customer for reuse (avoids duplicates).
+    if (stripeCustomerId && stripeCustomerId !== customer.stripe_customer_id) {
+      await supabase.from('customers').update({ stripe_customer_id: stripeCustomerId }).eq('id', customer.id)
     }
 
     await supabase.from('notifications').insert([{

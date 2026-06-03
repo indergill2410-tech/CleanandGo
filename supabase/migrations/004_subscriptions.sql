@@ -38,6 +38,9 @@ create index if not exists subscriptions_customer_id_idx on public.subscriptions
 create index if not exists subscriptions_primary_staff_idx on public.subscriptions(primary_staff_id);
 create index if not exists subscriptions_backup_staff_idx on public.subscriptions(backup_staff_id);
 create index if not exists subscriptions_status_idx on public.subscriptions(status);
+-- Looked up frequently in webhooks and self-serve flows.
+create unique index if not exists subscriptions_stripe_subscription_id_idx on public.subscriptions(stripe_subscription_id);
+create unique index if not exists subscriptions_manage_token_idx on public.subscriptions(manage_token);
 
 -- Link recurring visits (bookings) back to their subscription.
 alter table public.bookings add column if not exists subscription_id uuid references public.subscriptions(id);

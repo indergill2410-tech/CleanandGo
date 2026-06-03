@@ -34,9 +34,15 @@ export async function createRecurringSubscription(opts: {
 }): Promise<{ stripeCustomerId: string; stripeSubscriptionId: string; clientSecret: string | null }> {
   const stripe = getStripe()
 
-  const customerId =
-    opts.existingStripeCustomerId ||
-    (await stripe.customers.create({ email: opts.customerEmail, name: opts.customerName })).id
+  // Reuse an existing Stripe customer where possible (by id, then by email)
+  // to avoid creating duplicates each time a customer starts a new plan.
+  let customerId = opts.existingStripeCustomerId || null
+  if (!customerId) {
+    const found = await stripe.customers.list({ email: opts.customerEmail, limit: 1 })
+    customerId =
+      found.data[0]?.id ||
+      (await stripe.customers.create({ email: opts.customerEmail, name: opts.customerName })).id
+  }
 
   const { interval, interval_count } = intervalFor(opts.frequency)
   const productId =
