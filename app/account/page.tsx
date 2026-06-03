@@ -17,6 +17,7 @@ type Sub = {
   stripe_subscription_id: string | null
 }
 type Credit = { id: string; amount_cents: number; reason: string | null }
+type Invoice = { id: string; amount_cents: number; description: string | null; hosted_invoice_url: string | null }
 
 const STATUS_STYLES: Record<string, string> = {
   requested: 'bg-amber-500/20 text-amber-300',
@@ -31,6 +32,7 @@ export default function AccountPage() {
   const [name, setName] = useState('')
   const [subs, setSubs] = useState<Sub[]>([])
   const [credits, setCredits] = useState<Credit[]>([])
+  const [invoices, setInvoices] = useState<Invoice[]>([])
   const [busy, setBusy] = useState<string>('')
   const [pay, setPay] = useState<{ id: string; clientSecret: string; amountCents: number } | null>(null)
 
@@ -41,6 +43,7 @@ export default function AccountPage() {
     setName(data.customer?.name || '')
     setSubs(data.subscriptions || [])
     setCredits(data.credits || [])
+    setInvoices(data.invoices || [])
     setLoading(false)
   }, [router])
 
@@ -90,6 +93,28 @@ export default function AccountPage() {
         {credits.length > 0 && (
           <div className="glass rounded-2xl p-4 mb-6 text-green-200 text-sm">
             🎉 You have ${(credits.reduce((s, c) => s + c.amount_cents, 0) / 100).toFixed(2)} in account credit.
+          </div>
+        )}
+
+        {invoices.length > 0 && (
+          <div className="mb-6">
+            <h2 className="text-white/70 text-sm font-semibold uppercase tracking-wider mb-3">Outstanding invoices</h2>
+            <div className="space-y-3">
+              {invoices.map(inv => (
+                <div key={inv.id} className="glass-strong rounded-2xl p-5 flex items-center justify-between">
+                  <div>
+                    <div className="text-white font-semibold">${(inv.amount_cents / 100).toFixed(2)}</div>
+                    <div className="text-white/50 text-sm">{inv.description || 'Cleaning service'}</div>
+                  </div>
+                  {inv.hosted_invoice_url && (
+                    <a href={inv.hosted_invoice_url} target="_blank" rel="noopener noreferrer"
+                      className="text-sm font-semibold px-5 py-2.5 rounded-full bg-white text-[#2C4A6E] hover:bg-white/90">
+                      Pay now →
+                    </a>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
         )}
 

@@ -74,8 +74,13 @@ export async function POST(req: NextRequest) {
         await recordPayment(event.data.object as Stripe.PaymentIntent, 'failed')
         break
       case 'invoice.paid': {
-        const sub = (event.data.object as unknown as { subscription?: string }).subscription
-        if (sub) await syncSubscriptionStatus(sub, 'active')
+        const inv = event.data.object as unknown as { id: string; subscription?: string }
+        if (inv.subscription) await syncSubscriptionStatus(inv.subscription, 'active')
+        // Mark any matching ad-hoc invoice paid.
+        await createAdminClient()
+          .from('invoices')
+          .update({ status: 'paid' })
+          .eq('stripe_invoice_id', inv.id)
         break
       }
       case 'invoice.payment_failed': {
