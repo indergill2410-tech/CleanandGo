@@ -18,6 +18,13 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+        env:
+          # Retry transient registry network errors (e.g. ECONNRESET) instead
+          # of failing the whole job on the first blip.
+          npm_config_fetch_retries: "5"
+          npm_config_fetch_retry_factor: "3"
+          npm_config_fetch_retry_mintimeout: "10000"
+          npm_config_fetch_retry_maxtimeout: "60000"
 
       - name: Typecheck
         run: npm run typecheck
