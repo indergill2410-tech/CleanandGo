@@ -46,9 +46,12 @@ export default function AdminApplications() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action }),
       })
+      const data = await res.json().catch(() => ({}))
       if (!res.ok) {
-        const data = await res.json().catch(() => ({}))
         alert(data.error || `Action failed: ${res.statusText}`)
+      } else if (action === 'approve' && data.emailed === false && data.inviteLink) {
+        // Email couldn't be sent — give the admin the invite link to share.
+        prompt('Approved. Email could not be sent — copy this set-password link for the cleaner:', data.inviteLink)
       }
     } catch (e) {
       console.error(e)

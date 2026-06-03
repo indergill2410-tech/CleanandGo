@@ -1,9 +1,14 @@
 import { NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { requireAdmin } from '@/lib/auth'
+import { provisionStaffLogin } from '@/lib/onboarding'
+import { sendCleanerWelcomeEmail } from '@/lib/email'
 
-// Admin-only: move an application through the pipeline. Approving promotes the
-// applicant into the staff table as a cleaner.
+export const runtime = 'nodejs'
+
+// Admin-only: move an application through the pipeline. Approving fully
+// onboards the applicant: provisions their login, links a staff (cleaner)
+// record, and emails a "set your password" invite.
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const auth = await requireAdmin()
   if (!auth.ok) return NextResponse.json({ error: auth.error }, { status: auth.status })
@@ -34,19 +39,23 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     return NextResponse.json({ ok: true, status: 'rejected' })
   }
 
-  // approve -> create (or reuse) a staff record, then link it.
+  // approve -> provision a login account, link a cleaner staff record, invite.
+  const provisioned = await provisionStaffLogin(supabase, app.email)
+  if ('error' in provisioned) {
+    console.error('Provision login error:', provisioned.error)
+    return NextResponse.json({ error: 'Could not create login account for applicant' }, { status: 500 })
+  }
+  const { userId, actionLink } = provisioned
+
   let staffId = app.staff_id as string | null
   if (!staffId) {
-    const { data: existing } = await supabase.from('staff').select('id, role, status').eq('email', app.email).maybeSingle()
+    const { data: existing } = await supabase.from('staff').select('id').eq('email', app.email).maybeSingle()
     if (existing) {
       staffId = existing.id
-      if (existing.status !== 'active' || existing.role !== 'cleaner') {
-        await supabase.from('staff').update({ role: 'cleaner', status: 'active' }).eq('id', staffId)
-      }
     } else {
       const { data: created, error: staffError } = await supabase
         .from('staff')
-        .insert({ name: app.name, email: app.email, phone: app.phone, suburb: app.suburbs, role: 'cleaner', status: 'active' })
+        .insert({ name: app.name, email: app.email, phone: app.phone, suburb: app.suburbs, role: 'cleaner', status: 'active', user_id: userId })
         .select('id')
         .single()
       if (staffError || !created) {
@@ -57,6 +66,18 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     }
   }
 
+  // Ensure the record is linked, active, and a cleaner.
+  await supabase.from('staff').update({ user_id: userId, role: 'cleaner', status: 'active' }).eq('id', staffId)
   await supabase.from('job_applications').update({ status: 'approved', staff_id: staffId }).eq('id', id)
-  return NextResponse.json({ ok: true, status: 'approved', staffId })
+
+  // Email the set-password invite; fall back to returning the link for the admin.
+  let emailed = false
+  try {
+    await sendCleanerWelcomeEmail({ name: app.name, email: app.email, actionLink })
+    emailed = true
+  } catch (e) {
+    console.error('Welcome email failed:', e)
+  }
+
+  return NextResponse.json({ ok: true, status: 'approved', staffId, emailed, inviteLink: emailed ? undefined : actionLink })
 }
