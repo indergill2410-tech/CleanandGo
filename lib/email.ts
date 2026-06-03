@@ -1,6 +1,12 @@
 import { Resend } from 'resend'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+// Lazily instantiate so importing this module (e.g. during `next build`)
+// doesn't throw when RESEND_API_KEY isn't present.
+let _resend: Resend | null = null
+function getResend(): Resend {
+  if (!_resend) _resend = new Resend(process.env.RESEND_API_KEY)
+  return _resend
+}
 
 const FROM = process.env.RESEND_FROM_EMAIL || 'noreply@cleanngo.com.au'
 const ADMIN = process.env.ADMIN_EMAIL || 'admin@cleanngo.com.au'
@@ -68,7 +74,7 @@ export async function sendBookingConfirmationEmail({
     ${btn(`${APP_URL}/track`, 'Track Your Request →')}
   `)
 
-  return resend.emails.send({
+  return getResend().emails.send({
     from: FROM,
     to: customerEmail,
     subject: `Quote request received — Clean&Go`,
@@ -108,7 +114,7 @@ export async function sendAdminNewBookingEmail({
     ${btn(`${APP_URL}/admin`, 'Open Admin Dashboard →')}
   `)
 
-  return resend.emails.send({
+  return getResend().emails.send({
     from: FROM,
     to: ADMIN,
     subject: `⏳ New quote request — ${customerName} (${serviceLabel})`,
@@ -143,7 +149,7 @@ export async function sendQuoteReadyEmail({
     ${btn(`${APP_URL}/track?id=${bookingId}`, 'Accept Quote →')}
   `)
 
-  return resend.emails.send({
+  return getResend().emails.send({
     from: FROM,
     to: customerEmail,
     subject: `Your Clean&Go quote is ready — $${price}`,

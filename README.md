@@ -11,7 +11,7 @@ A full-stack web application for a managed cleaning business — handling custom
 | Payments | Stripe (card capture + payment holds) |
 | Scheduling | Cal.com API |
 | Payroll | Xero Payroll AU API |
-| Hosting | Vercel |
+| Hosting | Render (`render.yaml`) |
 | Styling | Tailwind CSS + shadcn/ui |
 
 ## Portals
@@ -37,7 +37,29 @@ npm run dev
 
 ## Environment Variables
 
-See `.env.example` for all required keys.
+See `.env.example` for all required keys. Server-only secrets
+(`SUPABASE_SERVICE_ROLE_KEY`, `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`,
+`RESEND_API_KEY`, `CRON_SECRET`) must never be exposed to the browser.
+
+## Deployment (Render)
+
+Deploy via the `render.yaml` Blueprint. It provisions the Next.js web service
+(health check at `/api/health`) and a weekly payroll Cron Job. Set every
+`sync: false` secret in the Render dashboard, then point a Stripe webhook at
+`/api/stripe/webhook`.
+
+## Creating the first admin
+
+Admin/cleaner access is granted through the `staff` table. The quickest way is
+the helper script (needs `NEXT_PUBLIC_SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY`
+in your env):
+
+```bash
+npm run create-admin -- admin@cleanngo.com.au 'a-strong-password' 'Owner Name'
+```
+
+It creates the auth user (or promotes an existing one) and inserts an active
+`admin` staff row. You can also do it by hand in SQL — see `supabase/seed.sql`.
 
 ## Project Structure
 

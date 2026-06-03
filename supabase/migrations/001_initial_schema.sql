@@ -1,283 +1,149 @@
 -- ============================================
--- Clean&Go — Complete Database Schema
--- Run this in Supabase SQL Editor
+-- Clean&Go — Core Schema
+-- Mirrors the deployed production database so a fresh environment
+-- (`supabase db reset`) reproduces it exactly.
 -- ============================================
 
--- Enable UUID extension
 create extension if not exists "uuid-ossp";
 
 -- ============================================
--- PROFILES (extends Supabase auth.users)
+-- CUSTOMERS
 -- ============================================
-create table if not exists public.profiles (
-  id           uuid references auth.users(id) on delete cascade primary key,
-  full_name    text,
-  role         text not null default 'customer' check (role in ('customer', 'cleaner', 'admin')),
-  phone        text,
-  avatar_url   text,
-  created_at   timestamptz default now()
+create table if not exists public.customers (
+  id          uuid primary key default uuid_generate_v4(),
+  name        text not null,
+  email       text not null unique,
+  phone       text,
+  created_at  timestamptz default now()
 );
 
-alter table public.profiles enable row level security;
+alter table public.customers enable row level security;
+-- No anon/authenticated policies: customer records are written/read only by
+-- trusted server code using the service-role key.
 
-create policy "Users can view own profile"
-  on public.profiles for select
-  using (auth.uid() = id);
+-- ============================================
+-- STAFF (cleaners + admins; linked to auth.users)
+-- ============================================
+create table if not exists public.staff (
+  id               uuid primary key default uuid_generate_v4(),
+  user_id          uuid references auth.users(id),
+  name             text not null,
+  email            text not null unique,
+  phone            text,
+  suburb           text,
+  role             text default 'cleaner',
+  status           text default 'active',
+  xero_employee_id text,
+  created_at       timestamptz default now()
+);
 
-create policy "Users can update own profile"
-  on public.profiles for update
-  using (auth.uid() = id);
+alter table public.staff enable row level security;
 
-create policy "Admins can view all profiles"
-  on public.profiles for select
-  using (
-    exists (select 1 from public.profiles where id = auth.uid() and role = 'admin')
-  );
+create index if not exists staff_user_id_idx on public.staff(user_id);
 
--- Auto-create profile on signup
-create or replace function public.handle_new_user()
-returns trigger as $$
-begin
-  insert into public.profiles (id, full_name, role)
-  values (
-    new.id,
-    coalesce(new.raw_user_meta_data->>'full_name', new.email),
-    coalesce(new.raw_user_meta_data->>'role', 'customer')
-  );
-  return new;
-end;
-$$ language plpgsql security definer;
-
-drop trigger if exists on_auth_user_created on auth.users;
-create trigger on_auth_user_created
-  after insert on auth.users
-  for each row execute procedure public.handle_new_user();
+-- A staff member can read their own row (useful for client-side role checks).
+drop policy if exists staff_read_own on public.staff;
+create policy staff_read_own
+  on public.staff for select
+  using (user_id = (select auth.uid()));
 
 -- ============================================
 -- BOOKINGS
 -- ============================================
 create table if not exists public.bookings (
-  id               uuid default uuid_generate_v4() primary key,
-  customer_name    text not null,
-  customer_email   text not null,
-  customer_phone   text not null,
-  address          text not null,
-  suburb           text,
-  service_type     text not null check (service_type in ('recurring', 'oneoff', 'endoflease')),
-  bedrooms         int not null default 2,
-  bathrooms        int not null default 1,
-  extras           text[] default '{}',
-  date             date not null,
-  time             text not null,
-  frequency        text default 'once' check (frequency in ('once', 'weekly', 'fortnightly')),
-  notes            text,
-  total_price      numeric(10,2) not null,
-  status           text not null default 'pending' check (status in ('pending','confirmed','in_progress','completed','cancelled')),
-  assigned_cleaner uuid references public.profiles(id),
-  user_id          uuid references auth.users(id),
-  created_at       timestamptz default now(),
-  updated_at       timestamptz default now()
+  id                uuid primary key default uuid_generate_v4(),
+  customer_id       uuid references public.customers(id),
+  staff_id          uuid references public.staff(id),
+  service_type      text not null check (service_type in ('recurring', 'oneoff', 'endoflease')),
+  bedrooms          int default 2,
+  bathrooms         int default 1,
+  extras            jsonb default '[]'::jsonb,
+  address           text not null,
+  suburb            text not null,
+  scheduled_date    date not null,
+  scheduled_time    time not null,
+  status            text default 'pending' check (status in ('pending','confirmed','in_progress','completed','cancelled')),
+  price_cents       int not null,
+  notes             text,
+  calcom_booking_id text,
+  created_at        timestamptz default now(),
+  updated_at        timestamptz default now()
 );
 
 alter table public.bookings enable row level security;
 
--- Customers can create bookings (no auth required for public booking)
-create policy "Anyone can create a booking"
-  on public.bookings for insert
-  with check (true);
+create index if not exists bookings_customer_id_idx on public.bookings(customer_id);
+create index if not exists bookings_staff_id_idx on public.bookings(staff_id);
 
--- Customers can view their own bookings by email
-create policy "Customers can view own bookings"
+-- Cleaners can see bookings assigned to them.
+drop policy if exists staff_own_bookings on public.bookings;
+create policy staff_own_bookings
   on public.bookings for select
-  using (
-    customer_email = (select email from auth.users where id = auth.uid())
-    or auth.uid() = user_id
-  );
-
--- Cleaners can view bookings assigned to them
-create policy "Cleaners can view assigned bookings"
-  on public.bookings for select
-  using (assigned_cleaner = auth.uid());
-
--- Admins can view and update all bookings
-create policy "Admins can do everything on bookings"
-  on public.bookings for all
-  using (
-    exists (select 1 from public.profiles where id = auth.uid() and role = 'admin')
-  );
-
--- Cleaners can update status of their assigned jobs
-create policy "Cleaners can update assigned bookings"
-  on public.bookings for update
-  using (assigned_cleaner = auth.uid())
-  with check (assigned_cleaner = auth.uid());
-
--- Auto-update updated_at
-create or replace function public.update_updated_at()
-returns trigger as $$
-begin
-  new.updated_at = now();
-  return new;
-end;
-$$ language plpgsql;
-
-create trigger bookings_updated_at
-  before update on public.bookings
-  for each row execute procedure public.update_updated_at();
+  using (staff_id = (select id from public.staff where user_id = (select auth.uid())));
 
 -- ============================================
--- JOB CHECKLIST ITEMS
+-- PAYMENTS (Stripe)
 -- ============================================
-create table if not exists public.job_checklist (
-  id          uuid default uuid_generate_v4() primary key,
-  booking_id  uuid references public.bookings(id) on delete cascade,
-  item        text not null,
-  completed   boolean default false,
-  completed_at timestamptz,
-  created_at  timestamptz default now()
+create table if not exists public.payments (
+  id                       uuid primary key default uuid_generate_v4(),
+  booking_id               uuid references public.bookings(id),
+  stripe_payment_intent_id text unique,
+  stripe_customer_id       text,
+  amount_cents             int not null,
+  status                   text default 'pending' check (status in ('pending','held','captured','refunded','failed')),
+  captured_at              timestamptz,
+  created_at               timestamptz default now()
 );
 
-alter table public.job_checklist enable row level security;
-
-create policy "Cleaners and admins can manage checklists"
-  on public.job_checklist for all
-  using (
-    exists (
-      select 1 from public.bookings b
-      where b.id = booking_id
-      and (b.assigned_cleaner = auth.uid()
-        or exists (select 1 from public.profiles where id = auth.uid() and role = 'admin')
-      )
-    )
-  );
+alter table public.payments enable row level security;
+create index if not exists payments_booking_id_idx on public.payments(booking_id);
+-- Service-role only (no anon/authenticated policies).
 
 -- ============================================
--- JOB PHOTOS
+-- JOB COMPLETIONS (cleaner checklist + photos)
 -- ============================================
-create table if not exists public.job_photos (
-  id          uuid default uuid_generate_v4() primary key,
-  booking_id  uuid references public.bookings(id) on delete cascade,
-  photo_url   text not null,
-  type        text not null check (type in ('before', 'after')),
-  uploaded_by uuid references public.profiles(id),
-  created_at  timestamptz default now()
+create table if not exists public.job_completions (
+  id            uuid primary key default uuid_generate_v4(),
+  booking_id    uuid references public.bookings(id) unique,
+  staff_id      uuid references public.staff(id),
+  checklist     jsonb default '{}'::jsonb,
+  before_photos text[] default '{}'::text[],
+  after_photos  text[] default '{}'::text[],
+  start_time    timestamptz,
+  end_time      timestamptz,
+  notes         text,
+  submitted_at  timestamptz default now()
 );
 
-alter table public.job_photos enable row level security;
+alter table public.job_completions enable row level security;
+create index if not exists job_completions_staff_id_idx on public.job_completions(staff_id);
 
-create policy "Anyone with booking access can view photos"
-  on public.job_photos for select
-  using (
-    exists (
-      select 1 from public.bookings b
-      where b.id = booking_id
-      and (
-        b.assigned_cleaner = auth.uid()
-        or b.user_id = auth.uid()
-        or exists (select 1 from public.profiles where id = auth.uid() and role = 'admin')
-      )
-    )
-  );
+drop policy if exists staff_own_completions on public.job_completions;
+create policy staff_own_completions
+  on public.job_completions for select
+  using (staff_id = (select id from public.staff where user_id = (select auth.uid())));
 
-create policy "Cleaners can upload photos"
-  on public.job_photos for insert
-  with check (
-    exists (
-      select 1 from public.bookings b
-      where b.id = booking_id and b.assigned_cleaner = auth.uid()
-    )
-  );
+drop policy if exists staff_submit_completions on public.job_completions;
+create policy staff_submit_completions
+  on public.job_completions for insert
+  with check (staff_id = (select id from public.staff where user_id = (select auth.uid())));
 
 -- ============================================
--- CLOCK IN/OUT RECORDS
+-- TIMESHEETS (payroll → Xero)
 -- ============================================
-create table if not exists public.time_records (
-  id           uuid default uuid_generate_v4() primary key,
-  booking_id   uuid references public.bookings(id) on delete cascade,
-  cleaner_id   uuid references public.profiles(id),
-  clocked_in   timestamptz,
-  clocked_out  timestamptz,
-  duration_mins int generated always as (
-    case when clocked_out is not null
-    then extract(epoch from (clocked_out - clocked_in))::int / 60
-    else null end
-  ) stored,
-  created_at   timestamptz default now()
+create table if not exists public.timesheets (
+  id                uuid primary key default uuid_generate_v4(),
+  staff_id          uuid references public.staff(id),
+  booking_id        uuid references public.bookings(id),
+  date              date not null,
+  hours_worked      numeric not null,
+  hourly_rate       numeric default 28.00,
+  xero_synced       boolean default false,
+  xero_timesheet_id text,
+  created_at        timestamptz default now()
 );
 
-alter table public.time_records enable row level security;
-
-create policy "Cleaners manage own time records"
-  on public.time_records for all
-  using (cleaner_id = auth.uid());
-
-create policy "Admins can view all time records"
-  on public.time_records for select
-  using (
-    exists (select 1 from public.profiles where id = auth.uid() and role = 'admin')
-  );
-
--- ============================================
--- REVIEWS
--- ============================================
-create table if not exists public.reviews (
-  id          uuid default uuid_generate_v4() primary key,
-  booking_id  uuid references public.bookings(id) on delete cascade unique,
-  rating      int not null check (rating between 1 and 5),
-  comment     text,
-  customer_name text,
-  suburb      text,
-  service_type text,
-  created_at  timestamptz default now()
-);
-
-alter table public.reviews enable row level security;
-
-create policy "Anyone can read reviews"
-  on public.reviews for select
-  using (true);
-
-create policy "Anyone can create a review"
-  on public.reviews for insert
-  with check (true);
-
--- ============================================
--- USEFUL VIEWS
--- ============================================
-
--- Admin dashboard: bookings with cleaner name
-create or replace view public.bookings_with_cleaner as
-  select
-    b.*,
-    p.full_name as cleaner_name
-  from public.bookings b
-  left join public.profiles p on p.id = b.assigned_cleaner;
-
--- Payroll: hours per cleaner this week
-create or replace view public.weekly_payroll as
-  select
-    p.id as cleaner_id,
-    p.full_name,
-    count(distinct t.booking_id) as jobs_completed,
-    coalesce(sum(t.duration_mins), 0) as total_minutes,
-    coalesce(sum(t.duration_mins), 0) / 60.0 as total_hours
-  from public.profiles p
-  left join public.time_records t on t.cleaner_id = p.id
-    and t.clocked_in >= date_trunc('week', now())
-  where p.role = 'cleaner'
-  group by p.id, p.full_name;
-
--- ============================================
--- STORAGE BUCKET FOR PHOTOS
--- ============================================
-insert into storage.buckets (id, name, public)
-values ('job-photos', 'job-photos', true)
-on conflict (id) do nothing;
-
-create policy "Authenticated users can upload job photos"
-  on storage.objects for insert
-  with check (bucket_id = 'job-photos' and auth.role() = 'authenticated');
-
-create policy "Job photos are publicly viewable"
-  on storage.objects for select
-  using (bucket_id = 'job-photos');
+alter table public.timesheets enable row level security;
+create index if not exists timesheets_staff_id_idx on public.timesheets(staff_id);
+create index if not exists timesheets_booking_id_idx on public.timesheets(booking_id);
+-- Service-role only (no anon/authenticated policies).

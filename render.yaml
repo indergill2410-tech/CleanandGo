@@ -1,0 +1,54 @@
+# Render Blueprint — https://render.com/docs/blueprint-spec
+# Deploys the Next.js web service and the weekly payroll cron job.
+services:
+  - type: web
+    name: cleanandgo
+    runtime: node
+    plan: starter
+    buildCommand: npm ci && npm run build
+    startCommand: npm run start
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: "20"
+      # Secrets — set these in the Render dashboard (sync: false = not in repo)
+      - key: NEXT_PUBLIC_SUPABASE_URL
+        sync: false
+      - key: NEXT_PUBLIC_SUPABASE_ANON_KEY
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false
+      - key: RESEND_FROM_EMAIL
+        sync: false
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+        sync: false
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: STRIPE_WEBHOOK_SECRET
+        sync: false
+      - key: CRON_SECRET
+        sync: false
+      - key: NEXT_PUBLIC_APP_URL
+        sync: false
+      - key: NEXT_PUBLIC_APP_NAME
+        value: Clean&Go
+      - key: NEXT_PUBLIC_BUSINESS_SUBURB
+        value: Melbourne
+
+  # Weekly payroll export — Fridays 07:00 UTC (matches the old Vercel cron).
+  - type: cron
+    name: payroll-weekly
+    runtime: node
+    schedule: "0 7 * * 5"
+    buildCommand: "true"
+    startCommand: 'curl -fsS -X POST "$NEXT_PUBLIC_APP_URL/api/payroll/export" -H "Authorization: Bearer $CRON_SECRET"'
+    envVars:
+      - key: NEXT_PUBLIC_APP_URL
+        sync: false
+      - key: CRON_SECRET
+        sync: false
