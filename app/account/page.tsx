@@ -50,7 +50,7 @@ export default function AccountPage() {
     // confirming a sign-up made during checkout), then load their data.
     await fetch('/api/account/claim', { method: 'POST' }).catch(() => {})
     const res = await fetch('/api/account/data')
-    if (res.status === 401 || res.status === 403) { router.push('/account/login'); return }
+    if (res.status === 401 || res.status === 403) { router.push('/login?tab=client'); return }
     const data = await res.json()
     setName(data.customer?.name || '')
     setSubs(data.subscriptions || [])
@@ -85,7 +85,7 @@ export default function AccountPage() {
 
   const signOut = async () => {
     await createClient().auth.signOut()
-    router.push('/account/login')
+    router.push('/login?tab=client')
   }
 
   if (loading) {
