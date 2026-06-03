@@ -1,5 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
+import Link from 'next/link'
 
 type Booking = {
   id: string
@@ -97,6 +98,9 @@ export default function AdminDashboard() {
           <div>
             <h1 className="text-3xl font-bold text-white">Admin Dashboard</h1>
             <p className="text-white/50 mt-1">Manage quote requests &amp; jobs</p>
+            <Link href="/admin/subscriptions" className="inline-block mt-3 text-sm text-[#7BA7C7] hover:text-white font-semibold transition-colors">
+              Recurring plans →
+            </Link>
           </div>
           {unread > 0 && (
             <div className="flex items-center gap-3 bg-amber-500/20 border border-amber-400/30 rounded-2xl px-5 py-3">
