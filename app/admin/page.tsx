@@ -161,9 +161,9 @@ export default function AdminDashboard() {
             <p className="text-white/50 mt-1">Manage quote requests &amp; jobs</p>
           </div>
           <div className="flex flex-col gap-2 items-end">
-            <button onClick={signOut}
+            <button type="button" onClick={signOut}
               className="inline-flex items-center gap-2 text-sm font-medium px-4 py-2 rounded-lg border border-white/15 text-white/70 hover:text-white hover:bg-white/10 transition-colors">
-              <span aria-hidden>⎋</span> Sign out
+              <span aria-hidden="true">⎋</span> Sign out
             </button>
             {unread > 0 && (
               <div className="flex items-center gap-3 bg-amber-500/20 border border-amber-400/30 rounded-2xl px-5 py-3">
