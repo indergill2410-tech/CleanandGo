@@ -22,7 +22,7 @@ export default function HomePage() {
           {/* Social proof pill */}
           <div className="inline-flex items-center gap-2 glass rounded-full px-5 py-2.5 mb-8 animate-fade-up">
             <span className="text-amber-400">★★★★★</span>
-            <span className="text-white/90 text-sm font-medium">Trusted by 500+ Melbourne homes</span>
+            <span className="text-white/90 text-sm font-medium">Trusted by 500+ Australian homes &amp; offices</span>
           </div>
 
           <h1 className="text-6xl md:text-7xl font-bold text-white mb-6 leading-tight animate-fade-up delay-100">
@@ -105,7 +105,6 @@ export default function HomePage() {
                 icon={s.icon}
                 title={s.title}
                 description={s.description}
-                price={s.price}
                 tag={s.tag}
                 tagColor={s.tagColor}
                 features={s.features}
@@ -129,7 +128,7 @@ export default function HomePage() {
       <section className="py-24 px-6">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-[#1C2B3A] mb-3">Why Melbourne trusts us</h2>
+            <h2 className="text-3xl font-bold text-[#1C2B3A] mb-3">Why Australia trusts us</h2>
             <p className="text-[#7A8A96]">Every job backed by real guarantees — not just promises.</p>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -145,7 +144,7 @@ export default function HomePage() {
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-16">
             <p className="text-[#4A7FA5] font-semibold text-sm uppercase tracking-widest mb-3">Reviews</p>
-            <h2 className="text-4xl font-bold text-[#1C2B3A]">What Melbourne says</h2>
+            <h2 className="text-4xl font-bold text-[#1C2B3A]">What Australia says</h2>
           </div>
           <div className="grid md:grid-cols-3 gap-8">
             {TESTIMONIALS.map((t) => (
@@ -153,7 +152,7 @@ export default function HomePage() {
             ))}
           </div>
           <div className="text-center mt-8">
-            <p className="text-[#7A8A96] text-sm">47 cleans completed in Melbourne this month</p>
+            <p className="text-[#7A8A96] text-sm">Hundreds of cleans completed across Australia this month</p>
           </div>
         </div>
       </section>
@@ -166,7 +165,7 @@ export default function HomePage() {
         </div>
         <div className="relative z-10 max-w-2xl mx-auto text-center">
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">Ready for a cleaner home?</h2>
-          <p className="text-white/70 text-lg mb-10">Join 500+ Melbourne homes. Book in 60 seconds.</p>
+          <p className="text-white/70 text-lg mb-10">Join 500+ Australian homes &amp; offices. Book in 60 seconds.</p>
           <Link href="/customer/book" className="inline-flex items-center gap-2 bg-white text-[#2C4A6E] font-bold px-12 py-5 rounded-full text-lg hover:bg-white/90 transition-all hover:shadow-2xl hover:-translate-y-1">
             Book Now — It&apos;s Free to Quote
           </Link>

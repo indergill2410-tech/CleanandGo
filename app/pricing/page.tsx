@@ -6,9 +6,9 @@ import ServiceCard from '@/components/ServiceCard'
 import { SERVICES, PRICING_FAQS } from '@/lib/content'
 
 export const metadata: Metadata = {
-  title: 'Cleaning Prices Melbourne — Transparent, No Hidden Fees',
+  title: 'Cleaning Prices Australia — Transparent, No Hidden Fees',
   description:
-    "See Clean&Go's Melbourne cleaning prices: recurring cleans from $120, one-off deep cleans from $180, and end-of-lease cleans from $400. Free quotes, no hidden fees.",
+    "How Clean&Go pricing works Australia-wide: every job is quoted individually based on your home and service. Free, no-obligation quotes and no hidden fees.",
   alternates: { canonical: '/pricing' },
 }
 
@@ -49,7 +49,6 @@ export default function PricingPage() {
                 icon={s.icon}
                 title={s.title}
                 description={s.description}
-                price={s.price}
                 tag={s.tag}
                 tagColor={s.tagColor}
                 features={s.features}
@@ -58,7 +57,7 @@ export default function PricingPage() {
             ))}
           </div>
           <p className="text-center text-[#7A8A96] text-sm mt-8">
-            Prices shown are starting points. Your exact quote depends on your home — request one free, no obligation.
+            Every job is priced individually based on your home and service — request a free, no-obligation quote.
           </p>
         </div>
       </section>

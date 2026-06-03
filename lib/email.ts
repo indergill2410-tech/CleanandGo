@@ -27,7 +27,7 @@ const base = (content: string) => `
         </td></tr>
         <tr><td style="padding:36px 40px;">${content}</td></tr>
         <tr><td style="padding:24px 40px;border-top:1px solid rgba(255,255,255,0.1);text-align:center;">
-          <div style="font-size:12px;color:rgba(255,255,255,0.3);">Clean&amp;Go · Melbourne, VIC · <a href="https://cleanngo.com.au" style="color:rgba(255,255,255,0.4);">cleanngo.com.au</a></div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.3);">Clean&amp;Go · Australia-wide · <a href="https://cleanngo.com.au" style="color:rgba(255,255,255,0.4);">cleanngo.com.au</a></div>
         </td></tr>
       </table>
     </td></tr>

@@ -7,8 +7,6 @@ export type Service = {
   title: string
   tagline: string
   description: string
-  price: string
-  priceNote: string
   tag?: string
   tagColor?: string
   features: string[]
@@ -23,8 +21,6 @@ export const SERVICES: Service[] = [
     title: 'Recurring Clean',
     tagline: 'Set and forget',
     description: 'Your home stays spotless every week or fortnight — no reminders needed.',
-    price: '$120',
-    priceNote: 'per visit, from',
     tag: 'Most Popular',
     tagColor: 'bg-[#4A7FA5]',
     features: ['Weekly or fortnightly', 'Same cleaner every time', '10% loyalty discount', 'Easy reschedule'],
@@ -44,8 +40,6 @@ export const SERVICES: Service[] = [
     title: 'One-Off Clean',
     tagline: 'A complete reset',
     description: 'Perfect for spring cleans, moving in, or any time you need a deep reset.',
-    price: '$180',
-    priceNote: 'one-time, from',
     features: ['Deep clean included', 'Any day that suits', 'No commitment', '100% satisfaction guarantee'],
     includes: [
       'Everything in a recurring clean, plus:',
@@ -63,8 +57,6 @@ export const SERVICES: Service[] = [
     title: 'End of Lease',
     tagline: 'Protect your bond',
     description: "Don't risk your bond. Our checklist matches real estate agent standards — guaranteed.",
-    price: '$400',
-    priceNote: 'from, property size dependent',
     tag: 'Bond Back ✓',
     tagColor: 'bg-emerald-500',
     features: ['Real estate checklist', 'Bond-back guarantee', 'Re-clean if needed', 'Certificate provided'],
@@ -185,8 +177,8 @@ export const GENERAL_FAQS: Faq[] = [
     a: 'We back every job with a 100% satisfaction guarantee. Let us know within 48 hours and we will return to re-clean the areas in question at no extra cost.',
   },
   {
-    q: 'Which areas of Melbourne do you cover?',
-    a: 'We service homes right across metropolitan Melbourne, from the inner suburbs out to the bayside and eastern suburbs.',
+    q: 'Which areas do you cover?',
+    a: 'We operate Australia-wide, with cleaners across the major metro areas including Sydney, Melbourne, Brisbane, Perth, Adelaide, Canberra and the Gold Coast. Enter your address when you request a quote and we will confirm coverage.',
   },
 ]
 
@@ -203,15 +195,15 @@ export type BlogPost = {
 
 export const BLOG_POSTS: BlogPost[] = [
   {
-    slug: 'end-of-lease-cleaning-checklist-melbourne',
-    title: 'The Complete End of Lease Cleaning Checklist for Melbourne Renters',
+    slug: 'end-of-lease-cleaning-checklist-australia',
+    title: 'The Complete End of Lease Cleaning Checklist for Australian Renters',
     excerpt:
       'Everything your property manager expects to see — room by room — so you get your full bond back the first time.',
     date: '2026-05-28',
     readTime: '7 min read',
     category: 'End of Lease',
     keywords: [
-      'end of lease cleaning Melbourne',
+      'end of lease cleaning Australia',
       'bond cleaning checklist',
       'vacate cleaning',
       'get bond back',
@@ -219,7 +211,7 @@ export const BLOG_POSTS: BlogPost[] = [
     sections: [
       {
         paragraphs: [
-          'Moving out of a rental in Melbourne means meeting the cleaning standard set out in your lease — and Victorian property managers are thorough. A missed oven or a dusty skirting board is one of the most common reasons bond money is withheld. This room-by-room checklist covers exactly what agents inspect.',
+          'Moving out of a rental anywhere in Australia means meeting the cleaning standard set out in your lease — and property managers are thorough. A missed oven or a dusty skirting board is one of the most common reasons bond money is withheld. This room-by-room checklist covers exactly what agents inspect (the rules are similar in every state, though exact bond conditions vary).',
         ],
       },
       {
@@ -258,36 +250,28 @@ export const BLOG_POSTS: BlogPost[] = [
         heading: 'Should you DIY or hire a professional?',
         paragraphs: [
           'A full vacate clean on a two-bedroom apartment typically takes one person 8–12 hours. If your lease requires a professional carpet steam clean — many do — you will need to hire that separately anyway. A professional end-of-lease service that includes a bond-back guarantee removes the risk: if the agent is not satisfied, the cleaner returns free of charge.',
-          'At Clean&Go our end-of-lease checklist mirrors the standard Victorian real estate inspection, and every bond clean is backed by a free re-clean guarantee.',
+          'At Clean&Go our end-of-lease checklist mirrors the standard real estate inspection used across Australia, and every bond clean is backed by a free re-clean guarantee.',
         ],
       },
     ],
   },
   {
-    slug: 'how-much-does-house-cleaning-cost-melbourne',
-    title: 'How Much Does House Cleaning Cost in Melbourne? (2026 Guide)',
+    slug: 'what-affects-house-cleaning-cost-australia',
+    title: 'What Affects House Cleaning Cost in Australia? (2026 Guide)',
     excerpt:
-      'A clear breakdown of recurring, one-off and end-of-lease cleaning prices in Melbourne, and what actually drives the cost.',
+      'What actually drives the price of a clean — service type, home size and extras — and why we quote each job individually.',
     date: '2026-05-20',
     readTime: '6 min read',
     category: 'Pricing',
     keywords: [
-      'house cleaning cost Melbourne',
-      'cleaning prices Melbourne',
+      'house cleaning cost Australia',
+      'cleaning prices Australia',
       'how much does a cleaner cost',
     ],
     sections: [
       {
         paragraphs: [
-          'One of the first questions every Melbourne homeowner asks is simply: what should a clean cost? Prices vary based on the type of service, the size of your home, and any extras — but here is a realistic guide to current Melbourne rates.',
-        ],
-      },
-      {
-        heading: 'Typical price ranges',
-        bullets: [
-          'Recurring (weekly/fortnightly): from $120 per visit',
-          'One-off deep clean: from $180',
-          'End of lease / bond clean: from $400, depending on property size',
+          'One of the first questions every homeowner asks is simply: what should a clean cost? Rather than a one-size-fits-all figure, the honest answer is that it depends on a few things — so here is what actually drives the price, and why we send a tailored quote for every job.',
         ],
       },
       {
@@ -297,9 +281,9 @@ export const BLOG_POSTS: BlogPost[] = [
         ],
       },
       {
-        heading: 'Why recurring cleans cost less per visit',
+        heading: 'Why recurring cleans are the best value',
         paragraphs: [
-          'A home that is cleaned every week or fortnight never accumulates heavy build-up, so each visit is faster. That is why recurring customers pay less per visit than a one-off clean — and at Clean&Go they also receive a 10% loyalty discount.',
+          'A home that is cleaned every week or fortnight never accumulates heavy build-up, so each visit is faster and better value than a one-off clean. Recurring Clean&Go customers also receive a loyalty discount on every visit.',
         ],
       },
       {
@@ -320,7 +304,7 @@ export const BLOG_POSTS: BlogPost[] = [
     category: 'Recurring',
     keywords: [
       'weekly vs fortnightly cleaning',
-      'recurring cleaning Melbourne',
+      'recurring cleaning Australia',
       'how often should I clean my house',
     ],
     sections: [

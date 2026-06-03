@@ -227,7 +227,7 @@ export default function BookingPage() {
                   { label: 'Email', key: 'email', type: 'email', placeholder: 'jane@example.com' },
                   { label: 'Phone', key: 'phone', type: 'tel', placeholder: '04xx xxx xxx' },
                   { label: 'Street Address', key: 'address', type: 'text', placeholder: '12 Example St' },
-                  { label: 'Suburb', key: 'suburb', type: 'text', placeholder: 'South Yarra, VIC' },
+                  { label: 'Suburb', key: 'suburb', type: 'text', placeholder: 'Suburb' },
                 ].map(f => (
                   <div key={f.key}>
                     <label className="text-white/70 text-sm mb-1 block">{f.label}</label>
