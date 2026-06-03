@@ -23,11 +23,11 @@ export default function CareersApplyForm() {
     setError('')
     try {
       const body = new FormData()
-      body.append('files', file)
-      const res = await fetch('/api/uploads', { method: 'POST', body })
+      body.append('file', file)
+      const res = await fetch('/api/careers/resume', { method: 'POST', body })
       const data = await res.json()
       if (!res.ok) { setError(data.error || 'Upload failed'); return }
-      setResumeUrl(data.urls[0])
+      setResumeUrl(data.path)
       setResumeName(file.name)
     } catch {
       setError('Upload failed — please try again')
@@ -99,8 +99,8 @@ export default function CareersApplyForm() {
 
       {error && <div className="bg-red-500/20 border border-red-500/30 rounded-xl px-4 py-3 text-red-200 text-sm">{error}</div>}
 
-      <button type="submit" disabled={submitting} className="w-full py-3.5 rounded-xl bg-white text-[#2C4A6E] font-bold hover:bg-white/90 transition disabled:opacity-50">
-        {submitting ? 'Submitting…' : 'Submit application →'}
+      <button type="submit" disabled={submitting || uploading} className="w-full py-3.5 rounded-xl bg-white text-[#2C4A6E] font-bold hover:bg-white/90 transition disabled:opacity-50">
+        {submitting ? 'Submitting…' : uploading ? 'Uploading resume…' : 'Submit application →'}
       </button>
     </form>
   )

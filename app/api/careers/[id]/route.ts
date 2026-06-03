@@ -9,8 +9,14 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
   if (!auth.ok) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
   const { id } = await params
-  const { action } = await request.json()
-  if (!['reviewing', 'approve', 'reject'].includes(action)) {
+  let action: string
+  try {
+    const body = await request.json()
+    action = body?.action
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 })
+  }
+  if (!action || !['reviewing', 'approve', 'reject'].includes(action)) {
     return NextResponse.json({ error: 'Invalid action' }, { status: 400 })
   }
 

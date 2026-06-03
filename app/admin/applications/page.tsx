@@ -40,13 +40,23 @@ export default function AdminApplications() {
   const act = async (id: string, action: 'reviewing' | 'approve' | 'reject') => {
     if (action === 'approve' && !confirm('Approve this applicant and add them as a cleaner?')) return
     setBusy(id)
-    await fetch(`/api/careers/${id}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action }),
-    })
-    await load()
-    setBusy('')
+    try {
+      const res = await fetch(`/api/careers/${id}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action }),
+      })
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}))
+        alert(data.error || `Action failed: ${res.statusText}`)
+      }
+    } catch (e) {
+      console.error(e)
+      alert('A network error occurred. Please try again.')
+    } finally {
+      await load()
+      setBusy('')
+    }
   }
 
   return (
@@ -80,7 +90,7 @@ export default function AdminApplications() {
                 {a.experience && <div className="text-white/50 text-sm mt-2 italic">“{a.experience}”</div>}
                 <div className="flex flex-wrap items-center gap-2 mt-4">
                   {a.resume_url && (
-                    <a href={a.resume_url} target="_blank" rel="noopener noreferrer" className="text-sm px-4 py-2 rounded-full border border-white/20 text-white/80 hover:bg-white/10">Resume ↗</a>
+                    <a href={`/api/careers/${a.id}/resume`} target="_blank" rel="noopener noreferrer" className="text-sm px-4 py-2 rounded-full border border-white/20 text-white/80 hover:bg-white/10">Resume ↗</a>
                   )}
                   {a.status !== 'approved' && (
                     <>

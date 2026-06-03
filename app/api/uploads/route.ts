@@ -5,7 +5,7 @@ export const runtime = 'nodejs'
 
 const MAX_FILES = 6
 const MAX_BYTES = 8 * 1024 * 1024 // 8MB
-const ALLOWED = ['image/jpeg', 'image/png', 'image/webp', 'application/pdf']
+const ALLOWED = ['image/jpeg', 'image/png', 'image/webp']
 const BUCKET = 'booking-photos'
 
 // Public: upload up to 6 booking photos. Uploaded server-side with the
@@ -27,7 +27,7 @@ export async function POST(request: Request) {
 
     for (const file of files) {
       if (!ALLOWED.includes(file.type)) {
-        return NextResponse.json({ error: 'Only JPG, PNG, WebP or PDF files are allowed' }, { status: 400 })
+        return NextResponse.json({ error: 'Only JPG, PNG or WebP images are allowed' }, { status: 400 })
       }
       if (file.size > MAX_BYTES) {
         return NextResponse.json({ error: 'Each photo must be 8MB or smaller' }, { status: 400 })
