@@ -54,5 +54,25 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
     .select()
     .single()
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+
+  // Missed-visit guarantee: a missed visit issues an account credit for its value.
+  if (updates.status === 'missed' && data.customer_id && data.price_cents > 0) {
+    const { data: existing } = await supabase
+      .from('account_credits')
+      .select('id')
+      .eq('booking_id', id)
+      .maybeSingle()
+    if (!existing) {
+      await supabase.from('account_credits').insert({
+        customer_id: data.customer_id,
+        subscription_id: data.subscription_id ?? null,
+        booking_id: id,
+        amount_cents: data.price_cents,
+        reason: 'Missed visit — reliability guarantee',
+        status: 'available',
+      })
+    }
+  }
+
   return NextResponse.json({ booking: data })
 }

@@ -179,7 +179,7 @@ function TrackInner() {
               {payError && <div className="text-red-300 text-sm mt-3 text-center">{payError}</div>}
             </>
           ) : (
-            <PaymentForm clientSecret={clientSecret} amountCents={payAmount} bookingId={booking.id} />
+            <PaymentForm clientSecret={clientSecret} amountCents={payAmount} returnPath={`/track?id=${booking.id}`} />
           )}
         </div>
       )}

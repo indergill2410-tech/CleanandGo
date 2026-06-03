@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { requireAdmin } from '@/lib/auth'
+import { getOrCreateCustomer } from '@/lib/customers'
 import { sendBookingConfirmationEmail, sendAdminNewBookingEmail } from '@/lib/email'
 
 // Public endpoint: anyone can submit a quote request.
@@ -15,15 +16,10 @@ export async function POST(request: Request) {
 
     const supabase = createAdminClient()
 
-    // 1. Upsert customer
-    const { data: customer, error: customerError } = await supabase
-      .from('customers')
-      .upsert({ name, email, phone }, { onConflict: 'email' })
-      .select()
-      .single()
-
+    // 1. Resolve customer (create if new; never overwrite an existing record)
+    const { customer, error: customerError } = await getOrCreateCustomer(supabase, { name, email, phone })
     if (customerError || !customer) {
-      console.error('Customer upsert error:', customerError)
+      console.error('Customer resolve error:', customerError)
       return NextResponse.json({ error: 'Could not save customer' }, { status: 500 })
     }
 

@@ -36,6 +36,17 @@ async function recordPayment(intent: Stripe.PaymentIntent, status: 'captured' | 
   }
 }
 
+// Recurring plans: flip the subscription to active once its first invoice is
+// paid, and back to a flagged state if a renewal payment fails.
+async function syncSubscriptionStatus(stripeSubscriptionId: string, status: 'active' | 'paused') {
+  if (!stripeSubscriptionId) return
+  const supabase = createAdminClient()
+  await supabase
+    .from('subscriptions')
+    .update({ status, updated_at: new Date().toISOString() })
+    .eq('stripe_subscription_id', stripeSubscriptionId)
+}
+
 export async function POST(req: NextRequest) {
   const sig = req.headers.get('stripe-signature')
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET
@@ -62,6 +73,30 @@ export async function POST(req: NextRequest) {
       case 'payment_intent.payment_failed':
         await recordPayment(event.data.object as Stripe.PaymentIntent, 'failed')
         break
+      case 'invoice.paid': {
+        const inv = event.data.object as unknown as { id: string; subscription?: string }
+        if (inv.subscription) await syncSubscriptionStatus(inv.subscription, 'active')
+        // Mark any matching ad-hoc invoice paid.
+        await createAdminClient()
+          .from('invoices')
+          .update({ status: 'paid' })
+          .eq('stripe_invoice_id', inv.id)
+        break
+      }
+      case 'invoice.payment_failed': {
+        const sub = (event.data.object as unknown as { subscription?: string }).subscription
+        if (sub) await syncSubscriptionStatus(sub, 'paused')
+        break
+      }
+      case 'customer.subscription.deleted': {
+        const subId = (event.data.object as Stripe.Subscription).id
+        const supabase = createAdminClient()
+        await supabase
+          .from('subscriptions')
+          .update({ status: 'cancelled', updated_at: new Date().toISOString() })
+          .eq('stripe_subscription_id', subId)
+        break
+      }
       default:
         // Unhandled event types are acknowledged but ignored.
         break
