@@ -1,113 +1,240 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback, Suspense } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import PaymentForm from '@/components/PaymentForm'
 
+type Booking = {
+  id: string
+  service_type: string
+  scheduled_date: string
+  scheduled_time: string
+  address: string
+  suburb: string
+  status: string
+  price_cents: number
+  customer_name: string | null
+}
+
+const SERVICE_LABEL: Record<string, string> = {
+  endoflease: 'End of Lease Clean',
+  recurring: 'Recurring Clean',
+  oneoff: 'One-Off Clean',
+}
+
+// Booking status → ordered progress stages.
 const STAGES = [
-  { id: 'confirmed',  icon: '✅', label: 'Booking Confirmed',  sub: 'Your clean is locked in' },
-  { id: 'assigned',   icon: '👤', label: 'Cleaner Assigned',   sub: 'Alex Chen is on your job' },
-  { id: 'ontheway',   icon: '🚗', label: 'On The Way',         sub: 'Arriving in ~15 minutes' },
-  { id: 'cleaning',   icon: '🧹', label: 'Cleaning Now',       sub: 'Your home is being cleaned' },
-  { id: 'done',       icon: '✨', label: 'All Done!',           sub: 'Photos sent to your email' },
+  { key: 'requested', icon: '📋', label: 'Quote Requested', sub: "We've got your details" },
+  { key: 'confirmed', icon: '✅', label: 'Booking Confirmed', sub: 'Payment received, clean locked in' },
+  { key: 'in_progress', icon: '🧹', label: 'Cleaning Now', sub: 'Your home is being cleaned' },
+  { key: 'completed', icon: '✨', label: 'All Done', sub: 'Photos sent to your email' },
 ]
 
-export default function TrackPage() {
-  const [currentStage, setCurrentStage] = useState(2)
+function stageIndex(status: string, paid: boolean): number {
+  switch (status) {
+    case 'completed': return 3
+    case 'in_progress': return 2
+    case 'confirmed': return paid ? 1 : 0
+    default: return 0
+  }
+}
 
-  // Demo: auto-advance through stages
-  useEffect(() => {
-    if (currentStage < STAGES.length - 1) {
-      const t = setTimeout(() => setCurrentStage(s => s + 1), 4000)
-      return () => clearTimeout(t)
+function Lookup() {
+  const router = useRouter()
+  const [ref, setRef] = useState('')
+  return (
+    <div className="glass-strong rounded-3xl p-8 w-full max-w-sm text-center">
+      <h1 className="text-2xl font-bold text-white mb-2">Track Your Clean</h1>
+      <p className="text-white/50 text-sm mb-6">Enter the booking reference from your confirmation email.</p>
+      <form
+        onSubmit={e => { e.preventDefault(); if (ref.trim()) router.push(`/track?id=${ref.trim()}`) }}
+        className="space-y-4"
+      >
+        <input
+          value={ref}
+          onChange={e => setRef(e.target.value)}
+          placeholder="Booking reference"
+          className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 text-sm"
+        />
+        <button type="submit" className="w-full py-3.5 rounded-xl bg-white text-[#2C4A6E] font-bold hover:bg-white/90 transition">
+          Track
+        </button>
+      </form>
+    </div>
+  )
+}
+
+function TrackInner() {
+  const params = useSearchParams()
+  const id = params.get('id')
+  const justPaid = params.get('redirect_status') === 'succeeded'
+
+  const [booking, setBooking] = useState<Booking | null>(null)
+  const [paid, setPaid] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const [notFound, setNotFound] = useState(false)
+
+  // Payment UI state
+  const [clientSecret, setClientSecret] = useState('')
+  const [payAmount, setPayAmount] = useState(0)
+  const [startingPay, setStartingPay] = useState(false)
+  const [payError, setPayError] = useState('')
+
+  const load = useCallback(async () => {
+    if (!id) return
+    setLoading(true)
+    try {
+      const res = await fetch(`/api/track/${id}`)
+      if (!res.ok) { setNotFound(true); return }
+      const data = await res.json()
+      setBooking(data.booking)
+      setPaid(data.paid)
+    } catch {
+      setNotFound(true)
+    } finally {
+      setLoading(false)
     }
-  }, [currentStage])
+  }, [id])
 
+  useEffect(() => { load() }, [load])
+
+  const startPayment = async () => {
+    if (!id) return
+    setStartingPay(true)
+    setPayError('')
+    try {
+      const res = await fetch('/api/payments/create-intent', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ bookingId: id }),
+      })
+      const data = await res.json()
+      if (!res.ok) { setPayError(data.error || 'Could not start payment'); return }
+      setClientSecret(data.clientSecret)
+      setPayAmount(data.amount)
+    } catch {
+      setPayError('Could not start payment')
+    } finally {
+      setStartingPay(false)
+    }
+  }
+
+  if (!id) return <Lookup />
+  if (loading) return <div className="text-white/60">Loading…</div>
+  if (notFound || !booking) {
+    return (
+      <div className="glass-strong rounded-3xl p-8 w-full max-w-sm text-center">
+        <div className="text-4xl mb-3">🤔</div>
+        <h1 className="text-xl font-bold text-white mb-2">Booking not found</h1>
+        <p className="text-white/50 text-sm">Double-check the reference in your confirmation email.</p>
+      </div>
+    )
+  }
+
+  const current = stageIndex(booking.status, paid || justPaid)
+  const isPaid = paid || justPaid
+  const awaitingQuote = booking.status === 'pending' || booking.price_cents <= 0
+  const awaitingPayment = !awaitingQuote && !isPaid && booking.status !== 'cancelled'
+  const serviceLabel = SERVICE_LABEL[booking.service_type] || 'Clean'
+
+  return (
+    <div className="relative z-10 w-full max-w-sm">
+      <div className="text-center mb-6">
+        <div className="text-white/40 text-xs mb-1">Reference: {booking.id}</div>
+        <h1 className="text-2xl font-bold text-white">Track Your Clean</h1>
+      </div>
+
+      {/* Booking summary */}
+      <div className="glass-strong rounded-3xl p-6 mb-6">
+        <div className="text-white font-bold text-lg">{serviceLabel}</div>
+        <div className="text-white/60 text-sm mt-1">{booking.address}</div>
+        <div className="text-white/40 text-xs mt-1">
+          {booking.scheduled_date} · {String(booking.scheduled_time).slice(0, 5)}
+        </div>
+      </div>
+
+      {/* Quote / payment */}
+      {awaitingQuote && (
+        <div className="glass rounded-3xl p-6 mb-6 text-center">
+          <div className="text-3xl mb-2">⏳</div>
+          <div className="text-white font-semibold">Preparing your quote</div>
+          <div className="text-white/50 text-sm mt-1">We usually send quotes within 60 minutes during business hours.</div>
+        </div>
+      )}
+
+      {awaitingPayment && (
+        <div className="glass rounded-3xl p-6 mb-6">
+          <div className="flex items-baseline justify-between mb-4">
+            <span className="text-white/60 text-sm">Your quote</span>
+            <span className="text-white font-bold text-2xl">${(booking.price_cents / 100).toFixed(2)}</span>
+          </div>
+          {!clientSecret ? (
+            <>
+              <button
+                onClick={startPayment}
+                disabled={startingPay}
+                className="w-full py-3.5 rounded-xl bg-white text-[#2C4A6E] font-bold hover:bg-white/90 transition disabled:opacity-50"
+              >
+                {startingPay ? 'Loading…' : 'Pay & Confirm Booking'}
+              </button>
+              {payError && <div className="text-red-300 text-sm mt-3 text-center">{payError}</div>}
+            </>
+          ) : (
+            <PaymentForm clientSecret={clientSecret} amountCents={payAmount} bookingId={booking.id} />
+          )}
+        </div>
+      )}
+
+      {isPaid && (
+        <div className="glass rounded-3xl p-5 mb-6 text-center">
+          <div className="inline-flex items-center gap-2 bg-green-500/20 text-green-400 px-4 py-2 rounded-full text-sm font-medium">
+            <div className="w-2 h-2 rounded-full bg-green-400" /> Payment received
+          </div>
+        </div>
+      )}
+
+      {/* Timeline */}
+      <div className="glass rounded-3xl p-6">
+        {STAGES.map((stage, i) => {
+          const isPast = i < current
+          const isCurrent = i === current
+          return (
+            <div key={stage.key} className="flex gap-4">
+              <div className="flex flex-col items-center">
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center text-lg flex-shrink-0 transition-all duration-500 ${
+                  isPast ? 'bg-green-500 shadow-lg shadow-green-500/30'
+                  : isCurrent ? 'gradient-cta ring-4 ring-white/30 shadow-xl'
+                  : 'bg-white/10'
+                }`}>
+                  {isPast ? '✓' : stage.icon}
+                </div>
+                {i < STAGES.length - 1 && (
+                  <div className={`w-0.5 h-8 my-1 transition-all duration-500 ${isPast ? 'bg-green-500' : 'bg-white/20'}`} />
+                )}
+              </div>
+              <div className="pb-6">
+                <div className={`font-semibold text-sm ${isCurrent ? 'text-white' : isPast ? 'text-white/70' : 'text-white/30'}`}>
+                  {stage.label}
+                </div>
+                {(isCurrent || isPast) && <div className="text-xs mt-0.5 text-white/50">{stage.sub}</div>}
+              </div>
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
+export default function TrackPage() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-4 py-12" style={{ background: 'linear-gradient(135deg, #1C2B3A 0%, #2C4A6E 100%)' }}>
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-20 right-10 w-80 h-80 rounded-full blur-3xl opacity-20" style={{ background: '#7BA7C7' }} />
         <div className="absolute bottom-20 left-10 w-96 h-96 rounded-full blur-3xl opacity-10" style={{ background: '#4A7FA5' }} />
       </div>
-
-      <div className="relative z-10 w-full max-w-sm">
-        <div className="text-center mb-8">
-          <div className="text-white/60 text-sm mb-1">Booking #CG-20260603</div>
-          <h1 className="text-2xl font-bold text-white">Track Your Clean</h1>
-        </div>
-
-        {/* Cleaner card */}
-        <div className="glass-strong rounded-3xl p-6 mb-6 text-center">
-          <div className="w-20 h-20 rounded-full gradient-cta flex items-center justify-center text-3xl mx-auto mb-4">👤</div>
-          <div className="text-white font-bold text-lg">Alex Chen</div>
-          <div className="text-white/60 text-sm">Your cleaner · 4.9★ · 127 cleans</div>
-          {currentStage >= 2 && (
-            <div className="mt-4 animate-pulse-soft">
-              <div className="inline-flex items-center gap-2 bg-green-500/20 text-green-400 px-4 py-2 rounded-full text-sm font-medium">
-                <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-                {STAGES[currentStage].sub}
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Timeline */}
-        <div className="glass rounded-3xl p-6">
-          <div className="space-y-0">
-            {STAGES.map((stage, i) => {
-              const isPast    = i < currentStage
-              const isCurrent = i === currentStage
-              const isFuture  = i > currentStage
-              return (
-                <div key={stage.id} className="flex gap-4">
-                  {/* Line + dot */}
-                  <div className="flex flex-col items-center">
-                    <div className={`w-10 h-10 rounded-full flex items-center justify-center text-lg flex-shrink-0 transition-all duration-500 ${
-                      isPast    ? 'bg-green-500 shadow-lg shadow-green-500/30'
-                      : isCurrent ? 'gradient-cta ring-4 ring-white/30 shadow-xl'
-                      : 'bg-white/10'
-                    }`}>
-                      {isPast ? '✓' : stage.icon}
-                    </div>
-                    {i < STAGES.length - 1 && (
-                      <div className={`w-0.5 h-8 my-1 transition-all duration-500 ${
-                        isPast ? 'bg-green-500' : 'bg-white/20'
-                      }`} />
-                    )}
-                  </div>
-
-                  {/* Text */}
-                  <div className="pb-6">
-                    <div className={`font-semibold text-sm transition-all ${
-                      isCurrent ? 'text-white' : isPast ? 'text-white/70' : 'text-white/30'
-                    }`}>{stage.label}</div>
-                    {(isCurrent || isPast) && (
-                      <div className={`text-xs mt-0.5 ${
-                        isCurrent ? 'text-white/70' : 'text-white/40'
-                      }`}>{stage.sub}</div>
-                    )}
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-        </div>
-
-        {/* Before/After — shown when done */}
-        {currentStage === STAGES.length - 1 && (
-          <div className="mt-6 glass rounded-3xl p-6 animate-fade-up">
-            <div className="text-white font-semibold mb-4 text-center">Before &amp; After</div>
-            <div className="grid grid-cols-2 gap-3">
-              {['Before', 'After'].map(label => (
-                <div key={label} className="bg-white/10 rounded-2xl aspect-square flex flex-col items-center justify-center border border-white/20">
-                  <div className="text-3xl mb-2">{label === 'Before' ? '🏚️' : '✨'}</div>
-                  <div className="text-white/50 text-xs">{label}</div>
-                </div>
-              ))}
-            </div>
-            <button className="w-full mt-4 py-3 rounded-xl bg-white text-[#2C4A6E] font-bold hover:bg-white/90 transition">
-              ⭐ Leave a Review
-            </button>
-          </div>
-        )}
-      </div>
+      <Suspense fallback={<div className="text-white/60">Loading…</div>}>
+        <TrackInner />
+      </Suspense>
     </div>
   )
 }

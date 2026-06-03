@@ -50,9 +50,16 @@ Deploy via the `render.yaml` Blueprint. It provisions the Next.js web service
 
 ## Creating the first admin
 
-Admin/cleaner access is granted through the `staff` table. After a user signs up
-in Supabase Auth, promote them by inserting a `staff` row with `role = 'admin'`
-linked to their auth `user_id` (see `supabase/seed.sql`).
+Admin/cleaner access is granted through the `staff` table. The quickest way is
+the helper script (needs `NEXT_PUBLIC_SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY`
+in your env):
+
+```bash
+npm run create-admin -- admin@cleanngo.com.au 'a-strong-password' 'Owner Name'
+```
+
+It creates the auth user (or promotes an existing one) and inserts an active
+`admin` staff row. You can also do it by hand in SQL — see `supabase/seed.sql`.
 
 ## Project Structure
 

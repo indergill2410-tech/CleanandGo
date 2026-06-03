@@ -17,8 +17,7 @@ export async function createClient() {
         setAll(cookiesToSet: CookieItem[]) {
           try {
             cookiesToSet.forEach(({ name, value, options }) => {
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              cookieStore.set(name, value, options as any)
+              cookieStore.set(name, value, options as Parameters<typeof cookieStore.set>[2])
             })
           } catch {
             // Server Components cannot set cookies — safe to ignore

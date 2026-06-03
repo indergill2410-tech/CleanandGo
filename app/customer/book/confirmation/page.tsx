@@ -65,7 +65,7 @@ export default async function ConfirmationPage({ searchParams }: Props) {
         )}
 
         <div className="flex flex-col gap-3">
-          <Link href="/track" className="w-full py-3.5 rounded-xl bg-white text-[#2C4A6E] font-bold hover:bg-white/90 transition text-center">
+          <Link href={bookingId ? `/track?id=${bookingId}` : '/track'} className="w-full py-3.5 rounded-xl bg-white text-[#2C4A6E] font-bold hover:bg-white/90 transition text-center">
             Track My Request →
           </Link>
           <Link href="/" className="w-full py-3 rounded-xl border border-white/20 text-white/70 hover:bg-white/10 transition text-center text-sm">
