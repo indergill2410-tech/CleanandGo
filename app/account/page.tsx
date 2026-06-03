@@ -37,6 +37,9 @@ export default function AccountPage() {
   const [pay, setPay] = useState<{ id: string; clientSecret: string; amountCents: number } | null>(null)
 
   const load = useCallback(async () => {
+    // Ensure the signed-in user is linked to their customer record (e.g. after
+    // confirming a sign-up made during checkout), then load their data.
+    await fetch('/api/account/claim', { method: 'POST' }).catch(() => {})
     const res = await fetch('/api/account/data')
     if (res.status === 401 || res.status === 403) { router.push('/account/login'); return }
     const data = await res.json()

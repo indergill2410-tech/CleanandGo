@@ -51,6 +51,15 @@ export async function POST(request: Request) {
 
   const supabase = createAdminClient()
 
+  const { data: existingStaff } = await supabase
+    .from('staff')
+    .select('id')
+    .eq('email', email)
+    .maybeSingle()
+  if (existingStaff) {
+    return NextResponse.json({ error: 'A staff member with this email already exists' }, { status: 400 })
+  }
+
   const provisioned = await provisionStaffLogin(supabase, email)
   if ('error' in provisioned) {
     console.error('Provision login error:', provisioned.error)

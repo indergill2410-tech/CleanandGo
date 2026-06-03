@@ -3,6 +3,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import AddressAutocomplete, { type AddressParts } from '@/components/AddressAutocomplete'
 import PhotoUpload from '@/components/PhotoUpload'
+import { createClient } from '@/lib/supabase/client'
 
 type PropertyType = 'home' | 'office'
 type Frequency = 'weekly' | 'fortnightly' | 'monthly'
@@ -31,10 +32,20 @@ export default function PlanRequestPage() {
     setSubmitting(true)
     setError('')
     try {
+      // Optional account: standard, verified sign-up (sends a confirmation email).
+      if (form.password && form.password.length >= 8) {
+        await createClient().auth.signUp({
+          email: form.email,
+          password: form.password,
+          options: { emailRedirectTo: `${window.location.origin}/account`, data: { full_name: form.name } },
+        }).catch(() => {})
+      }
+      const { password, ...rest } = form
+      void password
       const res = await fetch('/api/subscriptions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ propertyType, frequency, ...form, photos }),
+        body: JSON.stringify({ propertyType, frequency, ...rest, photos }),
       })
       const data = await res.json()
       if (!res.ok) { setError(data.error || 'Something went wrong'); return }
@@ -54,6 +65,7 @@ export default function PlanRequestPage() {
           <h1 className="text-2xl font-bold text-white mb-3">Plan request received</h1>
           <p className="text-white/70 text-sm mb-6">
             Thanks {form.name.split(' ')[0]}! We&apos;re reviewing your {frequency} {propertyType} plan and will email your tailored price shortly — usually within 60 minutes during business hours.
+            {form.password ? ' We’ve also emailed you a link to confirm your account.' : ''}
           </p>
           <Link href="/" className="btn-primary text-sm px-8 py-3.5">Back to home</Link>
         </div>

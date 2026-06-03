@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import AddressAutocomplete, { type AddressParts } from '@/components/AddressAutocomplete'
 import PhotoUpload from '@/components/PhotoUpload'
+import { createClient } from '@/lib/supabase/client'
 
 const STEPS = ['Service', 'Size & Extras', 'Date & Time', 'Your Details', 'Confirm']
 
@@ -53,10 +54,20 @@ export default function BookingPage() {
   const handleSubmit = async () => {
     setSubmitting(true)
     try {
+      // Optional account: standard, verified sign-up (sends a confirmation email).
+      if (form.password && form.password.length >= 8) {
+        await createClient().auth.signUp({
+          email: form.email,
+          password: form.password,
+          options: { emailRedirectTo: `${window.location.origin}/account`, data: { full_name: form.name } },
+        }).catch(() => {})
+      }
+      const { password, ...rest } = form
+      void password
       const res = await fetch('/api/bookings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...form, photos }),
+        body: JSON.stringify({ ...rest, photos }),
       })
       const data = await res.json()
       const bookingId = data.booking?.id || `REQ-${Date.now().toString().slice(-6)}`
