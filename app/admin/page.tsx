@@ -1,6 +1,20 @@
 'use client'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { createClient } from '@/lib/supabase/client'
+
+const NAV = [
+  { href: '/admin/subscriptions', label: 'Recurring plans' },
+  { href: '/admin/customers', label: 'Customers' },
+  { href: '/admin/payments', label: 'Payments' },
+  { href: '/admin/invoices', label: 'Invoices' },
+  { href: '/admin/applications', label: 'Applications' },
+  { href: '/admin/team', label: 'Team' },
+  { href: '/admin/timesheets', label: 'Timesheets' },
+  { href: '/admin/notifications', label: 'Notifications' },
+  { href: '/admin/account', label: 'Account' },
+]
 
 type Booking = {
   id: string
@@ -35,6 +49,7 @@ const STATUS_STYLES: Record<string, string> = {
 }
 
 export default function AdminDashboard() {
+  const router = useRouter()
   const [bookings, setBookings] = useState<Booking[]>([])
   const [loading, setLoading] = useState(true)
   const [selected, setSelected] = useState<Booking | null>(null)
@@ -125,6 +140,11 @@ export default function AdminDashboard() {
     }
   }
 
+  const signOut = async () => {
+    await createClient().auth.signOut()
+    router.push('/login?tab=staff')
+  }
+
   const filtered = filter === 'all' ? bookings : bookings.filter(b => b.status === filter)
 
   return (
@@ -135,41 +155,16 @@ export default function AdminDashboard() {
 
       <div className="relative z-10 p-6 max-w-7xl mx-auto">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex items-start justify-between gap-4 mb-5">
           <div>
             <h1 className="text-3xl font-bold text-white">Admin Dashboard</h1>
             <p className="text-white/50 mt-1">Manage quote requests &amp; jobs</p>
-            <div className="mt-3 flex gap-4">
-              <Link href="/admin/subscriptions" className="text-sm text-[#7BA7C7] hover:text-white font-semibold transition-colors">
-                Recurring plans →
-              </Link>
-              <Link href="/admin/customers" className="text-sm text-[#7BA7C7] hover:text-white font-semibold transition-colors">
-                Customers →
-              </Link>
-              <Link href="/admin/payments" className="text-sm text-[#7BA7C7] hover:text-white font-semibold transition-colors">
-                Payments →
-              </Link>
-              <Link href="/admin/invoices" className="text-sm text-[#7BA7C7] hover:text-white font-semibold transition-colors">
-                Invoices →
-              </Link>
-              <Link href="/admin/applications" className="text-sm text-[#7BA7C7] hover:text-white font-semibold transition-colors">
-                Applications →
-              </Link>
-              <Link href="/admin/team" className="text-sm text-[#7BA7C7] hover:text-white font-semibold transition-colors">
-                Team →
-              </Link>
-              <Link href="/admin/timesheets" className="text-sm text-[#7BA7C7] hover:text-white font-semibold transition-colors">
-                Timesheets →
-              </Link>
-              <Link href="/admin/notifications" className="text-sm text-[#7BA7C7] hover:text-white font-semibold transition-colors">
-                Notifications →
-              </Link>
-              <Link href="/admin/account" className="text-sm text-[#7BA7C7] hover:text-white font-semibold transition-colors">
-                Account →
-              </Link>
-            </div>
           </div>
           <div className="flex flex-col gap-2 items-end">
+            <button onClick={signOut}
+              className="inline-flex items-center gap-2 text-sm font-medium px-4 py-2 rounded-lg border border-white/15 text-white/70 hover:text-white hover:bg-white/10 transition-colors">
+              <span aria-hidden>⎋</span> Sign out
+            </button>
             {unread > 0 && (
               <div className="flex items-center gap-3 bg-amber-500/20 border border-amber-400/30 rounded-2xl px-5 py-3">
                 <div className="w-3 h-3 rounded-full bg-amber-400 animate-pulse" />
@@ -184,6 +179,16 @@ export default function AdminDashboard() {
             )}
           </div>
         </div>
+
+        {/* Section nav */}
+        <nav className="flex flex-wrap gap-2 mb-8">
+          {NAV.map(item => (
+            <Link key={item.href} href={item.href}
+              className="px-3.5 py-2 rounded-lg bg-white/5 border border-white/10 text-white/70 hover:text-white hover:bg-white/10 text-sm font-medium transition-colors">
+              {item.label}
+            </Link>
+          ))}
+        </nav>
 
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
