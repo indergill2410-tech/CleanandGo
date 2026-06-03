@@ -18,12 +18,20 @@ type Sub = {
 }
 type Credit = { id: string; amount_cents: number; reason: string | null }
 type Invoice = { id: string; amount_cents: number; description: string | null; hosted_invoice_url: string | null }
+type Booking = { id: string; service_type: string; status: string; scheduled_date: string; scheduled_time: string | null; suburb: string | null; price_cents: number }
+
+const SERVICE_LABELS: Record<string, string> = { recurring: 'Recurring Clean', oneoff: 'One-Off Clean', endoflease: 'End of Lease' }
 
 const STATUS_STYLES: Record<string, string> = {
   requested: 'bg-amber-500/20 text-amber-300',
   active:    'bg-green-500/20 text-green-300',
   paused:    'bg-purple-500/20 text-purple-300',
   cancelled: 'bg-red-500/20 text-red-300',
+  pending:     'bg-amber-500/20 text-amber-300',
+  confirmed:   'bg-blue-500/20 text-blue-300',
+  in_progress: 'bg-purple-500/20 text-purple-300',
+  completed:   'bg-green-500/20 text-green-300',
+  missed:      'bg-red-500/20 text-red-300',
 }
 
 export default function AccountPage() {
@@ -33,6 +41,7 @@ export default function AccountPage() {
   const [subs, setSubs] = useState<Sub[]>([])
   const [credits, setCredits] = useState<Credit[]>([])
   const [invoices, setInvoices] = useState<Invoice[]>([])
+  const [bookings, setBookings] = useState<Booking[]>([])
   const [busy, setBusy] = useState<string>('')
   const [pay, setPay] = useState<{ id: string; clientSecret: string; amountCents: number } | null>(null)
 
@@ -47,6 +56,7 @@ export default function AccountPage() {
     setSubs(data.subscriptions || [])
     setCredits(data.credits || [])
     setInvoices(data.invoices || [])
+    setBookings(data.bookings || [])
     setLoading(false)
   }, [router])
 
@@ -165,6 +175,26 @@ export default function AccountPage() {
                 )}
               </div>
             ))}
+          </div>
+        )}
+
+        {bookings.length > 0 && (
+          <div className="mt-8">
+            <h2 className="text-white/70 text-sm font-semibold uppercase tracking-wider mb-3">Your bookings</h2>
+            <div className="space-y-3">
+              {bookings.map(b => (
+                <div key={b.id} className="glass-strong rounded-2xl p-5 flex items-center justify-between gap-3">
+                  <div>
+                    <div className="text-white font-semibold">{SERVICE_LABELS[b.service_type] || b.service_type}</div>
+                    <div className="text-white/50 text-sm">{b.scheduled_date}{b.scheduled_time ? ` · ${b.scheduled_time.slice(0, 5)}` : ''}{b.suburb ? ` · ${b.suburb}` : ''}</div>
+                  </div>
+                  <div className="text-right">
+                    {b.price_cents > 0 && <div className="text-white font-bold">${(b.price_cents / 100).toFixed(0)}</div>}
+                    <span className={`text-xs px-2.5 py-0.5 rounded-full ${STATUS_STYLES[b.status] || 'bg-white/10 text-white/60'}`}>{b.status.replace('_', ' ')}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         )}
 

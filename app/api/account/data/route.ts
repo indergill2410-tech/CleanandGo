@@ -9,7 +9,7 @@ export async function GET() {
 
   const supabase = createAdminClient()
 
-  const [{ data: subscriptions }, { data: credits }, { data: invoices }] = await Promise.all([
+  const [{ data: subscriptions }, { data: credits }, { data: invoices }, { data: bookings }] = await Promise.all([
     supabase
       .from('subscriptions')
       .select('id, property_type, frequency, address, suburb, status, price_cents, preferred_day, stripe_subscription_id')
@@ -26,6 +26,13 @@ export async function GET() {
       .eq('customer_id', auth.customer.id)
       .eq('status', 'open')
       .order('created_at', { ascending: false }),
+    supabase
+      .from('bookings')
+      .select('id, service_type, status, scheduled_date, scheduled_time, suburb, price_cents')
+      .eq('customer_id', auth.customer.id)
+      .is('subscription_id', null)
+      .order('scheduled_date', { ascending: false })
+      .limit(50),
   ])
 
   return NextResponse.json({
@@ -33,5 +40,6 @@ export async function GET() {
     subscriptions: subscriptions || [],
     credits: credits || [],
     invoices: invoices || [],
+    bookings: bookings || [],
   })
 }

@@ -158,6 +158,15 @@ export default function AdminDashboard() {
               <Link href="/admin/team" className="text-sm text-[#7BA7C7] hover:text-white font-semibold transition-colors">
                 Team →
               </Link>
+              <Link href="/admin/timesheets" className="text-sm text-[#7BA7C7] hover:text-white font-semibold transition-colors">
+                Timesheets →
+              </Link>
+              <Link href="/admin/notifications" className="text-sm text-[#7BA7C7] hover:text-white font-semibold transition-colors">
+                Notifications →
+              </Link>
+              <Link href="/admin/account" className="text-sm text-[#7BA7C7] hover:text-white font-semibold transition-colors">
+                Account →
+              </Link>
             </div>
           </div>
           <div className="flex flex-col gap-2 items-end">
