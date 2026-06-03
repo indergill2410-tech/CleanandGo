@@ -15,6 +15,7 @@ type Booking = {
   extras: string[]
   notes: string
   price_cents: number
+  staff_id: string | null
   created_at: string
   customers?: { name: string; email: string; phone: string }
 }
@@ -44,6 +45,8 @@ export default function AdminDashboard() {
   const [filter, setFilter] = useState('all')
   const [unread, setUnread] = useState(0)
   const [apps, setApps] = useState<{ id: string; name: string; suburbs: string | null; status: string; created_at: string }[]>([])
+  const [cleaners, setCleaners] = useState<{ id: string; name: string; role: string }[]>([])
+  const [savingBooking, setSavingBooking] = useState(false)
 
   const fetchBookings = async () => {
     try {
@@ -66,9 +69,37 @@ export default function AdminDashboard() {
     } catch (e) { console.error(e) }
   }
 
-  useEffect(() => { fetchBookings(); fetchApplications() }, [])
+  const fetchCleaners = async () => {
+    try {
+      const data = await fetch('/api/staff').then(r => r.json())
+      setCleaners((data.staff || []).filter((s: { role: string }) => s.role === 'cleaner'))
+    } catch (e) { console.error(e) }
+  }
+
+  useEffect(() => { fetchBookings(); fetchApplications(); fetchCleaners() }, [])
 
   const newApps = apps.filter(a => a.status === 'new').length
+
+  // Update a booking (assign cleaner / change status) and keep the panel in sync.
+  const patchBooking = async (updates: Record<string, string>) => {
+    if (!selected) return
+    setSavingBooking(true)
+    try {
+      const res = await fetch(`/api/bookings/${selected.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updates),
+      })
+      const data = await res.json()
+      if (!res.ok) { alert(data.error || 'Update failed'); return }
+      setSelected(s => (s ? { ...s, ...updates } as Booking : s))
+      await fetchBookings()
+    } catch {
+      alert('Network error')
+    } finally {
+      setSavingBooking(false)
+    }
+  }
 
   const sendQuote = async () => {
     if (!selected || !quotePrice) return
@@ -318,6 +349,41 @@ export default function AdminDashboard() {
                     <div className="flex justify-between items-center">
                       <span className="text-white/50 text-sm">Quoted price</span>
                       <span className="text-2xl font-bold text-green-300">${(selected.price_cents / 100).toFixed(0)}</span>
+                    </div>
+                  </div>
+                )}
+
+                {/* Job management */}
+                {selected.status !== 'pending' && selected.status !== 'cancelled' && (
+                  <div className="border-t border-white/20 pt-4 mt-4 space-y-4">
+                    <div>
+                      <label className="text-white/50 text-xs uppercase tracking-wider mb-1 block">Assigned cleaner</label>
+                      <select
+                        value={selected.staff_id || ''}
+                        disabled={savingBooking}
+                        onChange={e => patchBooking({ staff_id: e.target.value })}
+                        className="w-full bg-white/10 border border-white/20 rounded-xl px-3 py-2.5 text-white text-sm">
+                        <option value="" className="text-black">— Unassigned —</option>
+                        {cleaners.map(c => <option key={c.id} value={c.id} className="text-black">{c.name}</option>)}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="text-white/50 text-xs uppercase tracking-wider mb-2 block">Status</label>
+                      <div className="flex flex-wrap gap-2">
+                        {(['confirmed', 'in_progress', 'completed', 'missed', 'cancelled'] as const).map(st => (
+                          <button key={st} disabled={savingBooking || selected.status === st}
+                            onClick={() => {
+                              if (st === 'missed' && !confirm('Mark this visit as missed? This issues an account credit to the customer.')) return
+                              patchBooking({ status: st })
+                            }}
+                            className={`text-xs px-3 py-1.5 rounded-full border transition-colors disabled:opacity-40 ${
+                              selected.status === st ? 'bg-white text-[#2C4A6E] border-white' : 'bg-white/10 text-white/70 border-white/20 hover:bg-white/20'
+                            }`}>
+                            {st.replace('_', ' ')}
+                          </button>
+                        ))}
+                      </div>
+                      <p className="text-white/30 text-xs mt-2">Marking “missed” auto-credits the customer (reliability guarantee).</p>
                     </div>
                   </div>
                 )}

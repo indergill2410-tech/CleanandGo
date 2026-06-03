@@ -9,10 +9,12 @@ export default function PhotoUpload({
   urls,
   onChange,
   max = 6,
+  label = 'Photos',
 }: {
   urls: string[]
   onChange: (urls: string[]) => void
   max?: number
+  label?: string
 }) {
   const inputRef = useRef<HTMLInputElement>(null)
   const [uploading, setUploading] = useState(false)
@@ -48,7 +50,7 @@ export default function PhotoUpload({
 
   return (
     <div>
-      <label className="text-white/70 text-sm mb-2 block">Photos <span className="text-white/40">(optional)</span></label>
+      <label className="text-white/70 text-sm mb-2 block">{label} <span className="text-white/40">(optional)</span></label>
       <div className="flex flex-wrap gap-3">
         {urls.map(url => (
           <div key={url} className="relative w-20 h-20 rounded-xl overflow-hidden border border-white/20">
