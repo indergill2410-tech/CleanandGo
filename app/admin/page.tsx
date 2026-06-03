@@ -143,6 +143,12 @@ export default function AdminDashboard() {
               <Link href="/admin/subscriptions" className="text-sm text-[#7BA7C7] hover:text-white font-semibold transition-colors">
                 Recurring plans →
               </Link>
+              <Link href="/admin/customers" className="text-sm text-[#7BA7C7] hover:text-white font-semibold transition-colors">
+                Customers →
+              </Link>
+              <Link href="/admin/payments" className="text-sm text-[#7BA7C7] hover:text-white font-semibold transition-colors">
+                Payments →
+              </Link>
               <Link href="/admin/invoices" className="text-sm text-[#7BA7C7] hover:text-white font-semibold transition-colors">
                 Invoices →
               </Link>
