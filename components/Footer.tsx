@@ -25,6 +25,7 @@ const COLUMNS = [
     links: [
       { label: 'Start a Recurring Plan', href: '/customer/plan' },
       { label: 'Book a One-Off Clean', href: '/customer/book' },
+      { label: 'My Account', href: '/account' },
       { label: 'Track Your Clean', href: '/track' },
       { label: 'Staff Login', href: '/login' },
     ],

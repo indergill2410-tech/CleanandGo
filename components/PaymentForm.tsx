@@ -6,7 +6,7 @@ import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-
 const publishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
 const stripePromise = publishableKey ? loadStripe(publishableKey) : null
 
-function CheckoutForm({ amountCents, bookingId }: { amountCents: number; bookingId: string }) {
+function CheckoutForm({ amountCents, returnPath, ctaLabel }: { amountCents: number; returnPath: string; ctaLabel?: string }) {
   const stripe = useStripe()
   const elements = useElements()
   const [error, setError] = useState('')
@@ -21,7 +21,7 @@ function CheckoutForm({ amountCents, bookingId }: { amountCents: number; booking
     const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
-        return_url: `${window.location.origin}/track?id=${bookingId}`,
+        return_url: `${window.location.origin}${returnPath}`,
       },
     })
 
@@ -46,24 +46,26 @@ function CheckoutForm({ amountCents, bookingId }: { amountCents: number; booking
         disabled={!stripe || submitting}
         className="w-full py-3.5 rounded-xl bg-white text-[#2C4A6E] font-bold hover:bg-white/90 transition disabled:opacity-50"
       >
-        {submitting ? 'Processing…' : `Pay $${(amountCents / 100).toFixed(2)}`}
+        {submitting ? 'Processing…' : ctaLabel || `Pay $${(amountCents / 100).toFixed(2)}`}
       </button>
     </form>
   )
 }
 
 /**
- * Mounts Stripe Elements for a quoted booking. Fetches the PaymentIntent
- * client secret from the server (which derives the amount from the booking).
+ * Mounts Stripe Elements for a client secret. `returnPath` is where Stripe
+ * redirects after confirmation (e.g. /track?id=… or /account).
  */
 export default function PaymentForm({
   clientSecret,
   amountCents,
-  bookingId,
+  returnPath,
+  ctaLabel,
 }: {
   clientSecret: string
   amountCents: number
-  bookingId: string
+  returnPath: string
+  ctaLabel?: string
 }) {
   if (!stripePromise) {
     return (
@@ -78,7 +80,7 @@ export default function PaymentForm({
       stripe={stripePromise}
       options={{ clientSecret, appearance: { theme: 'night', labels: 'floating' } }}
     >
-      <CheckoutForm amountCents={amountCents} bookingId={bookingId} />
+      <CheckoutForm amountCents={amountCents} returnPath={returnPath} ctaLabel={ctaLabel} />
     </Elements>
   )
 }
