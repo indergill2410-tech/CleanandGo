@@ -31,8 +31,9 @@ export default function Navbar() {
         <div className="hidden md:flex items-center gap-8">
           {[
             { label: 'Services', href: '/services' },
-            { label: 'How It Works', href: '/how-it-works' },
+            { label: 'For Offices', href: '/commercial' },
             { label: 'Pricing', href: '/pricing' },
+            { label: 'Reliability', href: '/reliability' },
             { label: 'Blog', href: '/blog' },
           ].map(item => (
             <Link

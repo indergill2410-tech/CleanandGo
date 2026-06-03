@@ -15,13 +15,16 @@ const COLUMNS = [
     links: [
       { label: 'How It Works', href: '/how-it-works' },
       { label: 'Pricing', href: '/pricing' },
+      { label: 'Reliability Guarantee', href: '/reliability' },
+      { label: 'For Offices', href: '/commercial' },
       { label: 'Blog', href: '/blog' },
     ],
   },
   {
     heading: 'Get Started',
     links: [
-      { label: 'Book a Clean', href: '/customer/book' },
+      { label: 'Start a Recurring Plan', href: '/customer/plan' },
+      { label: 'Book a One-Off Clean', href: '/customer/book' },
       { label: 'Track Your Clean', href: '/track' },
       { label: 'Staff Login', href: '/login' },
     ],

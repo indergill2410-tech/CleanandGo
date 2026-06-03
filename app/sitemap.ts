@@ -8,10 +8,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: base,                     lastModified: now, changeFrequency: 'weekly',  priority: 1 },
     { url: `${base}/services`,       lastModified: now, changeFrequency: 'monthly', priority: 0.9 },
+    { url: `${base}/commercial`,     lastModified: now, changeFrequency: 'monthly', priority: 0.9 },
+    { url: `${base}/reliability`,    lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
     { url: `${base}/how-it-works`,   lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
     { url: `${base}/pricing`,        lastModified: now, changeFrequency: 'monthly', priority: 0.9 },
     { url: `${base}/blog`,           lastModified: now, changeFrequency: 'weekly',  priority: 0.7 },
-    { url: `${base}/customer/book`,  lastModified: now, changeFrequency: 'monthly', priority: 0.9 },
+    { url: `${base}/customer/plan`,  lastModified: now, changeFrequency: 'monthly', priority: 0.9 },
+    { url: `${base}/customer/book`,  lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
     { url: `${base}/track`,          lastModified: now, changeFrequency: 'monthly', priority: 0.5 },
     { url: `${base}/login`,          lastModified: now, changeFrequency: 'yearly',  priority: 0.2 },
   ]
