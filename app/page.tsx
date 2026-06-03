@@ -157,6 +157,32 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* HIRING */}
+      <section className="py-20 px-6">
+        <div className="max-w-4xl mx-auto">
+          <div className="relative overflow-hidden rounded-3xl p-10 md:p-12 shadow-xl" style={{ background: 'linear-gradient(135deg, #1C2B3A 0%, #2C4A6E 100%)' }}>
+            <div className="absolute -top-10 -right-10 w-64 h-64 rounded-full blur-3xl opacity-20" style={{ background: '#7BA7C7' }} />
+            <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+              <div>
+                <span className="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-4 py-1.5 text-white/90 text-xs font-semibold mb-4">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" /> We&apos;re hiring
+                </span>
+                <h2 className="text-2xl md:text-3xl font-bold text-white mb-2">Join our team of cleaners</h2>
+                <p className="text-white/70 max-w-md">Steady recurring work, flexible days, and a team that has your back — across Australia.</p>
+              </div>
+              <div className="flex flex-col items-start md:items-end gap-2 flex-shrink-0">
+                <Link href="/careers#apply" className="inline-flex items-center gap-2 bg-white text-[#2C4A6E] font-bold px-8 py-4 rounded-full hover:bg-white/90 transition-all hover:-translate-y-0.5">
+                  Apply now →
+                </Link>
+                <Link href="/careers#why-join" className="text-white/60 text-sm hover:text-white transition-colors">
+                  Why join Clean&amp;Go?
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* FINAL CTA */}
       <section className="py-24 px-6 gradient-cta relative overflow-hidden">
         <div className="absolute inset-0 opacity-10">
