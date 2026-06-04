@@ -63,6 +63,9 @@ export default function AdminDashboard() {
   const [apps, setApps] = useState<{ id: string; name: string; suburbs: string | null; status: string; created_at: string }[]>([])
   const [cleaners, setCleaners] = useState<{ id: string; name: string; role: string }[]>([])
   const [savingBooking, setSavingBooking] = useState(false)
+  const [messageText, setMessageText] = useState('')
+  const [messageStatus, setMessageStatus] = useState('')
+  const [sendingMessage, setSendingMessage] = useState(false)
 
   const fetchBookings = async () => {
     try {
@@ -138,6 +141,30 @@ export default function AdminDashboard() {
       console.error(e)
     } finally {
       setQuoting(false)
+    }
+  }
+
+  const sendCustomerMessage = async () => {
+    if (!selected || !messageText.trim()) return
+    setSendingMessage(true)
+    setMessageStatus('')
+    try {
+      const res = await fetch('/api/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ bookingId: selected.id, body: messageText }),
+      })
+      const data = await res.json().catch(() => ({}))
+      if (!res.ok) {
+        setMessageStatus(data.error || 'Message failed')
+        return
+      }
+      setMessageText('')
+      setMessageStatus('Message sent and customer notified by email.')
+    } catch {
+      setMessageStatus('Network error')
+    } finally {
+      setSendingMessage(false)
     }
   }
 
@@ -258,7 +285,7 @@ export default function AdminDashboard() {
                 <div className="text-white/40">No {filter === 'all' ? '' : filter} bookings yet</div>
               </div>
             ) : filtered.map(b => (
-              <button key={b.id} onClick={() => { setSelected(b); setQuoteSent(false); setQuotePrice(b.price_cents > 0 ? String(b.price_cents / 100) : '') }}
+              <button key={b.id} onClick={() => { setSelected(b); setQuoteSent(false); setQuotePrice(b.price_cents > 0 ? String(b.price_cents / 100) : ''); setMessageText(''); setMessageStatus('') }}
                 className={`w-full glass-strong rounded-2xl p-5 text-left transition-all hover:bg-white/20 border-2 ${
                   selected?.id === b.id ? 'border-white/50' : 'border-transparent'
                 } ${b.status === 'pending' ? 'ring-1 ring-amber-400/30' : ''}`}>
@@ -296,6 +323,26 @@ export default function AdminDashboard() {
                   <div className="text-white font-semibold">{selected.customers?.name}</div>
                   <div className="text-white/60 text-sm">{selected.customers?.email}</div>
                   <div className="text-white/60 text-sm">{selected.customers?.phone}</div>
+                </div>
+
+                <div className="bg-white/5 rounded-xl p-4 mb-4">
+                  <div className="text-white/50 text-xs uppercase tracking-wider mb-2">Message customer</div>
+                  <textarea
+                    rows={3}
+                    placeholder="Write a message for the customer..."
+                    value={messageText}
+                    onChange={e => setMessageText(e.target.value)}
+                    className="w-full bg-white/10 border border-white/20 rounded-xl px-3 py-2.5 text-white placeholder-white/30 text-sm resize-none"
+                  />
+                  {messageStatus && <div className="text-white/50 text-xs mt-2">{messageStatus}</div>}
+                  <button
+                    type="button"
+                    onClick={sendCustomerMessage}
+                    disabled={sendingMessage || !messageText.trim()}
+                    className="w-full mt-3 py-2.5 rounded-xl bg-white text-[#2C4A6E] text-sm font-bold hover:bg-white/90 transition disabled:opacity-40"
+                  >
+                    {sendingMessage ? 'Sending...' : 'Send message + email'}
+                  </button>
                 </div>
 
                 {/* Job info */}
