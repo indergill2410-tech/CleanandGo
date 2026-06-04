@@ -1,4 +1,5 @@
 import { MetadataRoute } from 'next'
+import { SITE_URL } from '@/lib/seo'
 
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -6,9 +7,10 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: '*',
         allow: ['/', '/customer/book', '/track'],
-        disallow: ['/admin', '/cleaner', '/api'],
+        disallow: ['/admin', '/cleaner', '/api', '/account'],
       },
     ],
-    sitemap: 'https://cleanandgo.onrender.com/sitemap.xml',
+    sitemap: `${SITE_URL}/sitemap.xml`,
+    host: SITE_URL,
   }
 }

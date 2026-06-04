@@ -2,7 +2,8 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
-import { BLOG_POSTS } from '@/lib/content'
+import NewsletterSignup from '@/components/NewsletterSignup'
+import { getAllPosts } from '@/lib/blog'
 
 export const metadata: Metadata = {
   title: 'Cleaning Tips & Guides — The cleanngo Blog',
@@ -11,12 +12,15 @@ export const metadata: Metadata = {
   alternates: { canonical: '/blog' },
 }
 
+// Revalidate so newly published newsletter posts appear without a redeploy.
+export const revalidate = 600
+
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' })
 }
 
-export default function BlogIndexPage() {
-  const posts = [...BLOG_POSTS].sort((a, b) => +new Date(b.date) - +new Date(a.date))
+export default async function BlogIndexPage() {
+  const posts = await getAllPosts()
 
   return (
     <main className="min-h-screen" style={{ background: '#F5F0EB' }}>
@@ -56,6 +60,17 @@ export default function BlogIndexPage() {
               </div>
             </Link>
           ))}
+        </div>
+      </section>
+
+      {/* Newsletter signup */}
+      <section className="py-16 px-6" style={{ background: 'linear-gradient(180deg, #F5F0EB 0%, #EBF0F5 100%)' }}>
+        <div className="max-w-xl mx-auto text-center">
+          <h2 className="text-2xl font-bold text-[#1C2B3A] mb-2">Get weekly cleaning tips</h2>
+          <p className="text-[#7A8A96] text-sm mb-5">Practical guides and seasonal advice, straight to your inbox. No spam — unsubscribe any time.</p>
+          <div className="bg-[#2C4A6E] rounded-2xl p-5">
+            <NewsletterSignup />
+          </div>
         </div>
       </section>
 

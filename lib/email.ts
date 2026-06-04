@@ -423,3 +423,35 @@ export async function sendApplicationDeclinedEmail({
   `)
   return getResend().emails.send({ from: FROM, to: email, subject: 'Your cleanngo application', html })
 }
+
+// ─── 9. Newsletter (per-subscriber, with unsubscribe) ─────────────
+type NewsletterSection = { heading?: string; paragraphs?: string[]; bullets?: string[] }
+export async function sendNewsletterEmail({
+  to, token, title, excerpt, sections, slug,
+}: {
+  to: string; token: string; title: string; excerpt?: string | null
+  sections: NewsletterSection[]; slug: string
+}) {
+  const bodyHtml = (sections || []).map((s) => {
+    const heading = s.heading ? `<h2 style="margin:24px 0 10px;font-size:18px;font-weight:700;color:#ffffff;">${s.heading}</h2>` : ''
+    const paras = (s.paragraphs || []).map((t) => p(t)).join('')
+    const bullets = s.bullets && s.bullets.length
+      ? `<ul style="margin:0 0 16px;padding-left:20px;color:rgba(255,255,255,0.7);font-size:15px;line-height:1.7;">${s.bullets.map((b) => `<li style="margin-bottom:6px;">${b}</li>`).join('')}</ul>`
+      : ''
+    return heading + paras + bullets
+  }).join('')
+
+  const unsub = `${APP_URL}/api/newsletter/unsubscribe?token=${token}`
+  const html = base(`
+    ${h1(title)}
+    ${excerpt ? p(`<em style="color:rgba(255,255,255,0.8);">${excerpt}</em>`) : ''}
+    ${bodyHtml}
+    ${btn(`${APP_URL}/blog/${slug}`, 'Read it on the blog →')}
+    <p style="margin:28px 0 0;font-size:12px;color:rgba(255,255,255,0.35);line-height:1.6;">
+      You’re receiving this because you opted in to cleanngo cleaning tips &amp; offers.
+      <a href="${unsub}" style="color:rgba(255,255,255,0.5);">Unsubscribe</a> · cleanngo, Australia-wide.
+    </p>
+  `)
+
+  return getResend().emails.send({ from: FROM, to, subject: title, html })
+}

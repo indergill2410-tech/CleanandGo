@@ -12,6 +12,7 @@ const NAV = [
   { href: '/admin/applications', label: 'Applications' },
   { href: '/admin/team', label: 'Team' },
   { href: '/admin/timesheets', label: 'Timesheets' },
+  { href: '/admin/newsletter', label: 'Newsletter' },
   { href: '/admin/notifications', label: 'Notifications' },
   { href: '/admin/account', label: 'Account' },
 ]
@@ -162,7 +163,8 @@ export default function AdminDashboard() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-5">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-white">Admin Dashboard</h1>
+            <Link href="/" className="text-white/40 text-xs hover:text-white/80 transition-colors">← cleanngo home</Link>
+            <h1 className="text-2xl sm:text-3xl font-bold text-white mt-1">Admin Dashboard</h1>
             <p className="text-white/50 mt-1">Manage quote requests &amp; jobs</p>
           </div>
           <div className="flex flex-col gap-2 items-end">

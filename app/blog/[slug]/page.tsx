@@ -3,7 +3,13 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
-import { BLOG_POSTS, getPost } from '@/lib/content'
+import JsonLd from '@/components/JsonLd'
+import { BLOG_POSTS } from '@/lib/content'
+import { getAnyPost } from '@/lib/blog'
+import { SITE_URL } from '@/lib/seo'
+
+// Pre-render the static posts; DB posts render on demand and are cached.
+export const revalidate = 600
 
 export function generateStaticParams() {
   return BLOG_POSTS.map((p) => ({ slug: p.slug }))
@@ -11,7 +17,7 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params
-  const post = getPost(slug)
+  const post = await getAnyPost(slug)
   if (!post) return { title: 'Post not found' }
   return {
     title: post.title,
@@ -33,19 +39,36 @@ function formatDate(iso: string) {
 
 export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
-  const post = getPost(slug)
+  const post = await getAnyPost(slug)
   if (!post) notFound()
 
   // JSON-LD structured data for rich search results.
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'Article',
-    headline: post.title,
-    description: post.excerpt,
-    datePublished: post.date,
-    author: { '@type': 'Organization', name: 'cleanngo' },
-    publisher: { '@type': 'Organization', name: 'cleanngo' },
-  }
+  const url = `${SITE_URL}/blog/${post.slug}`
+  const jsonLd = [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'BlogPosting',
+      headline: post.title,
+      description: post.excerpt,
+      datePublished: post.date,
+      dateModified: post.date,
+      keywords: post.keywords.join(', '),
+      articleSection: post.category,
+      mainEntityOfPage: { '@type': 'WebPage', '@id': url },
+      image: `${url}/opengraph-image`,
+      author: { '@type': 'Organization', name: 'cleanngo', url: SITE_URL },
+      publisher: { '@type': 'Organization', name: 'cleanngo', url: SITE_URL, logo: { '@type': 'ImageObject', url: `${SITE_URL}/favicon.svg` } },
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL },
+        { '@type': 'ListItem', position: 2, name: 'Blog', item: `${SITE_URL}/blog` },
+        { '@type': 'ListItem', position: 3, name: post.title, item: url },
+      ],
+    },
+  ]
 
   const related = BLOG_POSTS.filter((p) => p.slug !== post.slug).slice(0, 2)
 
@@ -53,7 +76,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
     <main className="min-h-screen" style={{ background: '#F5F0EB' }}>
       <Navbar />
 
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <JsonLd data={jsonLd} />
 
       {/* HERO */}
       <section className="gradient-hero pt-36 pb-20 px-6 relative overflow-hidden">

@@ -1,5 +1,7 @@
 import Link from 'next/link'
 import BrandMark from './BrandMark'
+import NewsletterSignup from './NewsletterSignup'
+import { CITIES } from '@/lib/seo'
 
 const COLUMNS = [
   {
@@ -47,9 +49,13 @@ export default function Footer() {
               </div>
               <span className="font-bold text-lg text-white">cleanngo</span>
             </Link>
-            <p className="text-white/40 text-sm leading-relaxed max-w-xs">
+            <p className="text-white/40 text-sm leading-relaxed max-w-xs mb-5">
               Australia&apos;s reliable cleaning service for homes &amp; offices. Recurring, one-off and end-of-lease cleans, fully insured and bond-back guaranteed.
             </p>
+            <div className="max-w-xs">
+              <div className="text-white/70 text-sm font-medium mb-2">Cleaning tips in your inbox</div>
+              <NewsletterSignup compact />
+            </div>
           </div>
 
           {COLUMNS.map((col) => (
@@ -66,6 +72,17 @@ export default function Footer() {
               </ul>
             </div>
           ))}
+        </div>
+
+        <div className="border-t border-white/10 pt-6 mb-6">
+          <div className="text-white/90 font-semibold text-sm mb-3">Popular locations</div>
+          <div className="flex flex-wrap gap-x-4 gap-y-2">
+            {CITIES.map((c) => (
+              <Link key={c.slug} href={`/cleaning/${c.slug}`} className="text-white/50 text-sm hover:text-white transition-colors">
+                Cleaning {c.name}
+              </Link>
+            ))}
+          </div>
         </div>
 
         <div className="border-t border-white/10 pt-6 flex flex-col md:flex-row items-center justify-between gap-4">

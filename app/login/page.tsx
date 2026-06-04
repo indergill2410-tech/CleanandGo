@@ -4,6 +4,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import BrandMark from '@/components/BrandMark'
+import HomeLink from '@/components/HomeLink'
 
 function LoginForm() {
   const router = useRouter()
@@ -18,6 +19,7 @@ function LoginForm() {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [optIn, setOptIn] = useState(false)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
@@ -43,6 +45,13 @@ function LoginForm() {
     if (tab === 'client') {
       // Link (or create) the customer record for this user, then continue.
       await fetch('/api/account/claim', { method: 'POST' }).catch(() => {})
+      if (optIn) {
+        fetch('/api/newsletter/subscribe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, name, source: 'signup' }),
+        }).catch(() => {})
+      }
       router.push(redirectTo || '/account')
     } else if (redirectTo) {
       router.push(redirectTo)
@@ -81,6 +90,12 @@ function LoginForm() {
         )}
         <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} required className={inputCls} />
         <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} required minLength={6} className={inputCls} />
+        {tab === 'client' && mode === 'signup' && (
+          <label className="flex items-start gap-2.5 text-white/70 text-sm cursor-pointer">
+            <input type="checkbox" checked={optIn} onChange={e => setOptIn(e.target.checked)} className="w-4 h-4 mt-0.5 accent-[#4A7FA5]" />
+            Email me cleaning tips &amp; the occasional offer (optional)
+          </label>
+        )}
         {error && <div className="bg-red-500/20 border border-red-500/30 rounded-xl px-4 py-3 text-red-200 text-sm">{error}</div>}
         <button type="submit" disabled={loading} className="w-full py-3.5 rounded-xl bg-white text-[#2C4A6E] font-bold hover:bg-white/90 transition disabled:opacity-50">
           {loading ? 'Please wait…' : tab === 'client' && mode === 'signup' ? 'Create account' : 'Sign in'}
@@ -106,6 +121,7 @@ function LoginForm() {
 export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center px-4" style={{ background: 'linear-gradient(135deg, #1C2B3A 0%, #2C4A6E 100%)' }}>
+      <HomeLink className="fixed top-6 left-6 z-20" />
       <div className="fixed inset-0 pointer-events-none">
         <div className="absolute top-20 right-20 w-80 h-80 rounded-full blur-3xl opacity-20" style={{ background: '#7BA7C7' }} />
         <div className="absolute bottom-20 left-20 w-96 h-96 rounded-full blur-3xl opacity-10" style={{ background: '#4A7FA5' }} />
