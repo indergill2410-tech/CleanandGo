@@ -10,10 +10,11 @@ function getResend(): Resend {
 
 const FROM = process.env.RESEND_FROM_EMAIL || 'noreply@cleanngo.com.au'
 // Admin notifications go to every configured inbox (env + the owner), deduped.
-const ADMIN = Array.from(new Set([
-  process.env.ADMIN_EMAIL || 'admin@cleanngo.com.au',
-  'indergill2410@gmail.com',
-]))
+const ADMIN = Array.from(new Set(
+  (process.env.ADMIN_EMAIL || 'admin@cleanngo.com.au')
+    .split(',')
+    .map(email => email.trim())
+))
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://cleanngo.com.au'
 
 // ─── Shared styles ───────────────────────────────────────────────
