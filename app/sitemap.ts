@@ -1,5 +1,5 @@
 import { MetadataRoute } from 'next'
-import { BLOG_POSTS, SERVICES } from '@/lib/content'
+import { BLOG_POSTS } from '@/lib/content'
 import { SITE_URL, CITIES } from '@/lib/seo'
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -23,13 +23,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/login`,          lastModified: now, changeFrequency: 'yearly',  priority: 0.2 },
   ]
 
-  const serviceRoutes: MetadataRoute.Sitemap = SERVICES.map((s) => ({
-    url: `${base}/services#${s.slug}`,
-    lastModified: now,
-    changeFrequency: 'monthly',
-    priority: 0.7,
-  }))
-
   const cityRoutes: MetadataRoute.Sitemap = CITIES.map((c) => ({
     url: `${base}/cleaning/${c.slug}`,
     lastModified: now,
@@ -44,5 +37,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.6,
   }))
 
-  return [...staticRoutes, ...serviceRoutes, ...cityRoutes, ...blogRoutes]
+  return [...staticRoutes, ...cityRoutes, ...blogRoutes]
 }

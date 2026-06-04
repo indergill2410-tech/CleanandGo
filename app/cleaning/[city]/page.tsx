@@ -14,7 +14,7 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ city: string }> }): Promise<Metadata> {
   const { city } = await params
   const c = getCity(city)
-  if (!c) return { title: 'Page not found' }
+  if (!c) return { title: 'Page not found', robots: { index: false } }
   const title = `Cleaning Services in ${c.name}, ${c.state} | House & End of Lease Cleaning`
   const description = `Book trusted, insured cleaners in ${c.name}. Recurring, one-off and end-of-lease cleaning for homes and offices — quoted within 60 minutes, bond-back guaranteed.`
   return {
@@ -107,6 +107,21 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
           <h2 className="text-2xl font-bold text-[#1C2B3A]">Why {c.name} homes choose cleanngo</h2>
           <p>Finding a reliable cleaner in {c.name} shouldn’t be a gamble. Every cleanngo professional is police-checked, ID-verified and fully insured, and every booking is backed by our reliability guarantee — if we ever miss a visit, you’re automatically credited.</p>
           <p>Moving out? Our end-of-lease cleans in {c.name} follow the standard {c.state} real-estate inspection checklist and come with a free re-clean if your property manager isn’t satisfied, so you get your full bond back the first time.</p>
+        </div>
+      </section>
+
+      {/* FAQs — visible content backing the FAQPage schema */}
+      <section className="py-16 px-6 bg-white">
+        <div className="max-w-2xl mx-auto">
+          <h2 className="text-2xl font-bold text-[#1C2B3A] mb-8 text-center">Cleaning in {c.name} — common questions</h2>
+          <div className="space-y-6">
+            {GENERAL_FAQS.slice(0, 5).map((f, i) => (
+              <div key={i} className="border-b border-gray-100 pb-6 last:border-0">
+                <h3 className="font-bold text-[#1C2B3A] mb-2">{f.q}</h3>
+                <p className="text-[#7A8A96] text-sm leading-relaxed">{f.a}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
