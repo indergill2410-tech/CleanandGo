@@ -10,6 +10,8 @@ type Application = {
   suburbs: string | null
   experience: string | null
   availability: string | null
+  tfn: string | null
+  abn: string | null
   has_abn: boolean
   right_to_work: boolean
   resume_url: string | null
@@ -92,7 +94,17 @@ export default function AdminApplications() {
                 </div>
                 <div className="text-white/60 text-sm">{a.email} · {a.phone}</div>
                 <div className="text-white/40 text-xs mt-1">
-                  Area: {a.suburbs || '—'} · Availability: {a.availability || '—'} · ABN: {a.has_abn ? 'yes' : 'no'} · Right to work: {a.right_to_work ? 'yes' : 'no'}
+                  Area: {a.suburbs || '—'} · Availability: {a.availability || '—'} · Right to work: {a.right_to_work ? 'yes' : 'no'}
+                </div>
+                <div className="grid sm:grid-cols-2 gap-2 mt-3">
+                  <div className="bg-white/5 rounded-xl px-3 py-2">
+                    <div className="text-white/35 text-[11px] uppercase tracking-wider">TFN</div>
+                    <div className="text-white/80 text-sm font-semibold">{a.tfn || '—'}</div>
+                  </div>
+                  <div className="bg-white/5 rounded-xl px-3 py-2">
+                    <div className="text-white/35 text-[11px] uppercase tracking-wider">ABN optional</div>
+                    <div className="text-white/80 text-sm font-semibold">{a.abn || 'Not supplied'}</div>
+                  </div>
                 </div>
                 <div className="flex flex-wrap gap-1.5 mt-2">
                   {a.has_police_check && <span className="text-xs px-2 py-0.5 rounded-full bg-green-500/20 text-green-300">✅ Police check</span>}
