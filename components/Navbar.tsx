@@ -1,6 +1,7 @@
 'use client'
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
+import BrandMark from './BrandMark'
 
 const LINKS = [
   { label: 'Services', href: '/services' },
@@ -33,10 +34,10 @@ export default function Navbar() {
     >
       <div className="max-w-6xl mx-auto px-6 flex items-center justify-between">
         <Link href="/" onClick={() => setMenuOpen(false)} className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg gradient-cta flex items-center justify-center">
-            <span className="text-white font-bold text-sm">C</span>
+          <div className="w-8 h-8 rounded-lg gradient-cta flex items-center justify-center text-white">
+            <BrandMark className="w-5 h-5" />
           </div>
-          <span className={`font-bold text-lg tracking-tight ${solid ? 'text-[#1C2B3A]' : 'text-white'}`}>Clean&amp;Go</span>
+          <span className={`font-bold text-lg tracking-tight ${solid ? 'text-[#1C2B3A]' : 'text-white'}`}>cleanngo</span>
         </Link>
 
         {/* Desktop links */}
@@ -48,8 +49,15 @@ export default function Navbar() {
           ))}
         </div>
 
-        <div className="flex items-center gap-3">
-          <Link href="/account" className={`hidden sm:inline text-sm font-medium transition-colors ${linkColor}`}>Log in</Link>
+        <div className="flex items-center gap-2 sm:gap-3">
+          <Link
+            href="/account"
+            className={`hidden sm:inline-flex items-center rounded-full text-sm font-bold px-5 py-2.5 sm:px-6 sm:py-3 border-2 transition-all ${
+              solid
+                ? 'border-[#2C4A6E] text-[#2C4A6E] hover:bg-[#2C4A6E] hover:text-white'
+                : 'border-white/60 text-white hover:bg-white hover:text-[#2C4A6E]'
+            }`}
+          >Log in</Link>
           <Link href="/customer/book" className="btn-primary text-sm px-5 py-2.5 sm:px-6 sm:py-3">Book Now</Link>
 
           {/* Hamburger (mobile only) */}
@@ -77,7 +85,10 @@ export default function Navbar() {
                 {item.label}
               </Link>
             ))}
-            <Link href="/account" onClick={() => setMenuOpen(false)} className="py-3 text-[#1C2B3A] font-medium">Log in</Link>
+            <Link href="/account" onClick={() => setMenuOpen(false)}
+              className="mt-3 text-center rounded-full font-bold px-6 py-3 border-2 border-[#2C4A6E] text-[#2C4A6E] hover:bg-[#2C4A6E] hover:text-white transition-all">
+              Log in / Sign up
+            </Link>
             <Link href="/customer/book" onClick={() => setMenuOpen(false)} className="btn-primary text-sm px-6 py-3 mt-2 text-center">
               Book Now
             </Link>

@@ -7,7 +7,7 @@ import { STEPS, GENERAL_FAQS } from '@/lib/content'
 export const metadata: Metadata = {
   title: 'How It Works — Book a Cleaner Anywhere in Australia in 60 Seconds',
   description:
-    'See how Clean&Go works: request a free quote, get a tailored price within 60 minutes, then relax while a vetted, insured cleaner takes care of your home or office anywhere in Australia.',
+    'See how cleanngo works: request a free quote, get a tailored price within 60 minutes, then relax while a vetted, insured cleaner takes care of your home or office anywhere in Australia.',
   alternates: { canonical: '/how-it-works' },
 }
 

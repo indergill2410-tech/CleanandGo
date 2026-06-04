@@ -45,7 +45,7 @@ export default function SetPasswordPage() {
     <div className="min-h-screen flex items-center justify-center px-4" style={{ background: 'linear-gradient(135deg, #1C2B3A 0%, #2C4A6E 100%)' }}>
       <div className="glass-strong rounded-3xl p-10 w-full max-w-sm">
         <div className="text-center mb-8">
-          <Link href="/" className="text-white/50 text-sm hover:text-white mb-4 inline-block">← Clean&amp;Go</Link>
+          <Link href="/" className="text-white/50 text-sm hover:text-white mb-4 inline-block">← cleanngo</Link>
           <h1 className="text-2xl font-bold text-white">Set your password</h1>
           <p className="text-white/50 text-sm mt-1">Welcome to the team — choose a password to access your portal.</p>
         </div>
@@ -55,7 +55,7 @@ export default function SetPasswordPage() {
         ) : !ready ? (
           <div className="text-center">
             <p className="text-white/70 text-sm mb-4">This invite link is invalid or has expired.</p>
-            <p className="text-white/50 text-xs">Please ask the Clean&amp;Go team to send you a fresh invite.</p>
+            <p className="text-white/50 text-xs">Please ask the cleanngo team to send you a fresh invite.</p>
           </div>
         ) : (
           <form onSubmit={submit} className="space-y-4">

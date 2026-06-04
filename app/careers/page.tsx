@@ -4,9 +4,9 @@ import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 
 export const metadata: Metadata = {
-  title: 'Careers — Join the Clean&Go Team (We\'re Hiring Cleaners)',
+  title: 'Careers — Join the cleanngo Team (We\'re Hiring Cleaners)',
   description:
-    'Join Clean&Go as a cleaner. Steady recurring work, flexible days, choose your suburbs, weekly pay and a supportive team with backup coverage. Apply online today.',
+    'Join cleanngo as a cleaner. Steady recurring work, flexible days, choose your suburbs, weekly pay and a supportive team with backup coverage. Apply online today.',
   alternates: { canonical: '/careers' },
 }
 
@@ -35,7 +35,7 @@ export default function CareersPage() {
         <div className="absolute top-20 right-10 w-96 h-96 rounded-full opacity-20 blur-3xl" style={{ background: '#7BA7C7' }} />
         <div className="relative z-10 max-w-3xl mx-auto text-center">
           <p className="text-white/60 font-semibold text-sm uppercase tracking-widest mb-3">We&apos;re hiring</p>
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-5 leading-tight">Join the Clean&amp;Go team</h1>
+          <h1 className="text-4xl md:text-5xl font-bold text-white mb-5 leading-tight">Join the cleanngo team</h1>
           <p className="text-white/70 text-lg max-w-xl mx-auto">
             We&apos;re growing across Australia and looking for reliable, detail-loving cleaners. Steady work, flexible days, and a team that has your back.
           </p>

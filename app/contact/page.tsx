@@ -4,8 +4,8 @@ import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 
 export const metadata: Metadata = {
-  title: 'Contact Us — Clean&Go',
-  description: 'Get in touch with Clean&Go. Email or call us and our team will help with quotes, bookings and any questions.',
+  title: 'Contact Us — cleanngo',
+  description: 'Get in touch with cleanngo. Email or call us and our team will help with quotes, bookings and any questions.',
   alternates: { canonical: '/contact' },
 }
 

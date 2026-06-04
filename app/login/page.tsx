@@ -3,6 +3,7 @@ import { useState, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
+import BrandMark from '@/components/BrandMark'
 
 function LoginForm() {
   const router = useRouter()
@@ -111,8 +112,8 @@ export default function LoginPage() {
       </div>
       <div className="glass-strong rounded-3xl p-10 w-full max-w-sm relative z-10 shadow-2xl">
         <div className="text-center mb-6">
-          <Link href="/" className="inline-flex items-center justify-center w-14 h-14 rounded-2xl gradient-cta mb-1 shadow-lg">
-            <span className="text-white font-bold text-xl">C</span>
+          <Link href="/" className="inline-flex items-center justify-center w-14 h-14 rounded-2xl gradient-cta mb-1 shadow-lg text-white">
+            <BrandMark className="w-8 h-8" />
           </Link>
         </div>
         <Suspense fallback={<div className="text-center text-white/50 py-8">Loading...</div>}>

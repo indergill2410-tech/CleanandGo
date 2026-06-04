@@ -183,7 +183,7 @@ export default function HomePage() {
                   Apply now →
                 </Link>
                 <Link href="/careers#why-join" className="text-white/60 text-sm hover:text-white transition-colors">
-                  Why join Clean&amp;Go?
+                  Why join cleanngo?
                 </Link>
               </div>
             </div>
