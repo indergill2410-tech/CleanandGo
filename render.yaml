@@ -23,6 +23,8 @@ services:
         sync: false
       - key: RESEND_FROM_EMAIL
         sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false
       - key: ADMIN_EMAIL
         sync: false
       - key: NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
@@ -66,6 +68,20 @@ services:
     schedule: "0 6 * * *"
     buildCommand: "true"
     startCommand: 'curl -fsS -X POST "$NEXT_PUBLIC_APP_URL/api/subscriptions/generate-visits" -H "Authorization: Bearer $CRON_SECRET"'
+    envVars:
+      - key: NEXT_PUBLIC_APP_URL
+        sync: false
+      - key: CRON_SECRET
+        sync: false
+
+  # Research + draft the weekly newsletter — Mondays 23:00 UTC (lands as a draft
+  # for the admin to review, approve and send).
+  - type: cron
+    name: newsletter-weekly
+    runtime: node
+    schedule: "0 23 * * 1"
+    buildCommand: "true"
+    startCommand: 'curl -fsS -X POST "$NEXT_PUBLIC_APP_URL/api/newsletter/generate" -H "Authorization: Bearer $CRON_SECRET"'
     envVars:
       - key: NEXT_PUBLIC_APP_URL
         sync: false

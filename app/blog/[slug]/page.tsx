@@ -4,8 +4,12 @@ import { notFound } from 'next/navigation'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import JsonLd from '@/components/JsonLd'
-import { BLOG_POSTS, getPost } from '@/lib/content'
+import { BLOG_POSTS } from '@/lib/content'
+import { getAnyPost } from '@/lib/blog'
 import { SITE_URL } from '@/lib/seo'
+
+// Pre-render the static posts; DB posts render on demand and are cached.
+export const revalidate = 600
 
 export function generateStaticParams() {
   return BLOG_POSTS.map((p) => ({ slug: p.slug }))
@@ -13,7 +17,7 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params
-  const post = getPost(slug)
+  const post = await getAnyPost(slug)
   if (!post) return { title: 'Post not found' }
   return {
     title: post.title,
@@ -35,7 +39,7 @@ function formatDate(iso: string) {
 
 export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
-  const post = getPost(slug)
+  const post = await getAnyPost(slug)
   if (!post) notFound()
 
   // JSON-LD structured data for rich search results.
