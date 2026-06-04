@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { requireCustomer, requireStaff } from '@/lib/auth'
 import { createAdminClient } from '@/lib/supabase/admin'
-import { sendCustomerMessageNotificationEmail } from '@/lib/email'
+import { sendCustomerMessageNotificationEmail } from '@/lib/message-email'
 
 export const runtime = 'nodejs'
 
