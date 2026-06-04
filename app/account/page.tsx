@@ -100,7 +100,10 @@ export default function AccountPage() {
             <Link href="/" className="text-white/50 text-sm hover:text-white">← cleanngo</Link>
             <h1 className="text-2xl font-bold text-white mt-1">Hi {name.split(' ')[0] || 'there'}</h1>
           </div>
-          <button onClick={signOut} className="text-white/60 text-sm hover:text-white">Sign out</button>
+          <div className="flex items-center gap-3">
+            <Link href="/account/messages" className="text-white/60 text-sm hover:text-white">Messages</Link>
+            <button onClick={signOut} className="text-white/60 text-sm hover:text-white">Sign out</button>
+          </div>
         </div>
 
         {credits.length > 0 && (
