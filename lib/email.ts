@@ -9,12 +9,15 @@ function getResend(): Resend {
 }
 
 const FROM = process.env.RESEND_FROM_EMAIL || 'noreply@cleanngo.com.au'
-// Admin notifications go to every configured inbox (env + the owner), deduped.
-const ADMIN = Array.from(new Set(
-  (process.env.ADMIN_EMAIL || 'admin@cleanngo.com.au')
+// Admin notifications go to every configured inbox (env, comma-separated) plus
+// the owner as an always-on recipient, deduped.
+const ADMIN = Array.from(new Set([
+  ...(process.env.ADMIN_EMAIL || 'admin@cleanngo.com.au')
     .split(',')
     .map(email => email.trim())
-))
+    .filter(Boolean),
+  'indergill2410@gmail.com',
+]))
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://cleanngo.com.au'
 
 // ─── Shared styles ───────────────────────────────────────────────
