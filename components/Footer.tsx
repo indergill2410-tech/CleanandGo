@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import BrandMark from './BrandMark'
+import { CITIES } from '@/lib/seo'
 
 const COLUMNS = [
   {
@@ -66,6 +67,17 @@ export default function Footer() {
               </ul>
             </div>
           ))}
+        </div>
+
+        <div className="border-t border-white/10 pt-6 mb-6">
+          <div className="text-white/90 font-semibold text-sm mb-3">Popular locations</div>
+          <div className="flex flex-wrap gap-x-4 gap-y-2">
+            {CITIES.map((c) => (
+              <Link key={c.slug} href={`/cleaning/${c.slug}`} className="text-white/50 text-sm hover:text-white transition-colors">
+                Cleaning {c.name}
+              </Link>
+            ))}
+          </div>
         </div>
 
         <div className="border-t border-white/10 pt-6 flex flex-col md:flex-row items-center justify-between gap-4">

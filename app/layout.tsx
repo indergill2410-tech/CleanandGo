@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
+import JsonLd from '@/components/JsonLd'
+import { SITE_URL, organizationJsonLd } from '@/lib/seo'
 
 const inter = Inter({ subsets: ['latin'], weight: ['300','400','500','600','700','800'] })
 
@@ -10,7 +12,8 @@ export const metadata: Metadata = {
   keywords: ['cleaning service Australia', 'house cleaning Sydney', 'house cleaning Melbourne', 'house cleaning Brisbane', 'office cleaning', 'end of lease cleaning', 'bond cleaning', 'professional cleaners'],
   authors: [{ name: 'cleanngo' }],
   creator: 'cleanngo',
-  metadataBase: new URL('https://cleanandgo.onrender.com'),
+  metadataBase: new URL(SITE_URL),
+  alternates: { canonical: '/' },
   openGraph: {
     title: 'cleanngo — Your home, spotless. Guaranteed.',
     description: 'Book in 60 seconds. Australia\'s most reliable cleaning service.',
@@ -36,7 +39,10 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+        <JsonLd data={organizationJsonLd} />
+        {children}
+      </body>
     </html>
   )
 }
