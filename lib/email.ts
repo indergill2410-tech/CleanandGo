@@ -9,8 +9,13 @@ function getResend(): Resend {
 }
 
 const FROM = process.env.RESEND_FROM_EMAIL || 'noreply@cleanngo.com.au'
-const ADMIN = process.env.ADMIN_EMAIL || 'admin@cleanngo.com.au'
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://cleanandgo.onrender.com'
+// Admin notifications go to every configured inbox (env + the owner), deduped.
+const ADMIN = Array.from(new Set(
+  (process.env.ADMIN_EMAIL || 'admin@cleanngo.com.au')
+    .split(',')
+    .map(email => email.trim())
+))
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://cleanngo.com.au'
 
 // ─── Shared styles ───────────────────────────────────────────────
 const base = (content: string) => `
@@ -274,4 +279,144 @@ export async function sendPasswordResetEmail({
     subject: 'Reset your Clean&Go password',
     html,
   })
+}
+
+// ─── 6. Customer: Payment receipt ─────────────────────────────────
+export async function sendPaymentReceiptEmail({
+  customerName, customerEmail, amount, description, date,
+}: {
+  customerName: string; customerEmail: string; amount: number; description?: string; date?: string
+}) {
+  const html = base(`
+    <div style="display:inline-block;padding:6px 14px;background:rgba(74,183,165,0.2);border:1px solid rgba(74,183,165,0.4);border-radius:20px;margin-bottom:20px;">
+      <span style="color:#4ab7a5;font-size:13px;font-weight:600;">✅ Payment received</span>
+    </div>
+    ${h1(`Payment received — $${amount}`)}
+    ${p(`Hi ${customerName}, thanks! We've received your payment.`)}
+    ${table(
+      row('Amount', `<strong style="color:#fff;">$${amount}</strong>`) +
+      (description ? row('For', description) : '') +
+      (date ? row('Date', date) : '')
+    )}
+    ${p('A team member will be in touch about scheduling. Thanks for choosing Clean&Go.')}
+    ${btn(`${APP_URL}/account`, 'View Your Account →')}
+  `)
+  return getResend().emails.send({ from: FROM, to: customerEmail, subject: `Payment received — $${amount} · Clean&Go`, html })
+}
+
+// ─── 6b. Admin: Payment received ──────────────────────────────────
+export async function sendAdminPaymentEmail({
+  customerName, amount, description,
+}: {
+  customerName: string; amount: number; description?: string
+}) {
+  const html = base(`
+    <div style="display:inline-block;padding:6px 14px;background:rgba(74,183,165,0.2);border:1px solid rgba(74,183,165,0.4);border-radius:20px;margin-bottom:20px;">
+      <span style="color:#4ab7a5;font-size:13px;font-weight:600;">💳 Payment received</span>
+    </div>
+    ${h1(`$${amount} from ${customerName}`)}
+    ${table(row('Customer', customerName) + row('Amount', `$${amount}`) + (description ? row('For', description) : ''))}
+    ${btn(`${APP_URL}/admin/payments`, 'Open Payments →')}
+  `)
+  return getResend().emails.send({ from: FROM, to: ADMIN, subject: `💳 Payment $${amount} — ${customerName}`, html })
+}
+
+// ─── 7. Customer: Booking confirmed / cleaner assigned ────────────
+export async function sendBookingConfirmedEmail({
+  customerName, customerEmail, service, date, time, address, suburb, cleanerName,
+}: {
+  customerName: string; customerEmail: string; service: string;
+  date: string; time: string; address: string; suburb: string; cleanerName?: string
+}) {
+  const serviceLabel = service === 'endoflease' ? 'End of Lease' : service === 'recurring' ? 'Recurring Clean' : 'One-Off Clean'
+  const html = base(`
+    <div style="display:inline-block;padding:6px 14px;background:rgba(59,130,246,0.2);border:1px solid rgba(59,130,246,0.4);border-radius:20px;margin-bottom:20px;">
+      <span style="color:#60a5fa;font-size:13px;font-weight:600;">📅 Your clean is booked</span>
+    </div>
+    ${h1('You\'re all booked in')}
+    ${p(`Hi ${customerName}, your ${serviceLabel} is confirmed${cleanerName ? ` with <strong style="color:#fff;">${cleanerName}</strong>` : ''}.`)}
+    ${table(
+      row('Service', serviceLabel) +
+      row('Date', date) +
+      row('Time', time) +
+      row('Address', `${address}, ${suburb}`) +
+      (cleanerName ? row('Cleaner', cleanerName) : '')
+    )}
+    ${btn(`${APP_URL}/account`, 'View Your Booking →')}
+  `)
+  return getResend().emails.send({ from: FROM, to: customerEmail, subject: 'Your Clean&Go clean is confirmed', html })
+}
+
+// ─── 7b. Cleaner: You've been assigned a job ──────────────────────
+export async function sendCleanerAssignedEmail({
+  cleanerName, cleanerEmail, service, date, time, address, suburb,
+}: {
+  cleanerName: string; cleanerEmail: string; service: string;
+  date: string; time: string; address: string; suburb: string
+}) {
+  const serviceLabel = service === 'endoflease' ? 'End of Lease' : service === 'recurring' ? 'Recurring Clean' : 'One-Off Clean'
+  const html = base(`
+    <div style="display:inline-block;padding:6px 14px;background:rgba(74,183,165,0.2);border:1px solid rgba(74,183,165,0.4);border-radius:20px;margin-bottom:20px;">
+      <span style="color:#4ab7a5;font-size:13px;font-weight:600;">🧽 New job assigned</span>
+    </div>
+    ${h1('You\'ve got a new job')}
+    ${p(`Hi ${cleanerName}, you've been assigned a ${serviceLabel}. Open your portal for full details and to clock on.`)}
+    ${table(
+      row('Service', serviceLabel) +
+      row('Date', date) +
+      row('Time', time) +
+      row('Address', `${address}, ${suburb}`)
+    )}
+    ${btn(`${APP_URL}/cleaner`, 'Open Your Jobs →')}
+  `)
+  return getResend().emails.send({ from: FROM, to: cleanerEmail, subject: 'New Clean&Go job assigned', html })
+}
+
+// ─── 7c. Customer: Job completed ──────────────────────────────────
+export async function sendJobCompletedEmail({
+  customerName, customerEmail, service, date,
+}: {
+  customerName: string; customerEmail: string; service: string; date: string
+}) {
+  const serviceLabel = service === 'endoflease' ? 'End of Lease' : service === 'recurring' ? 'Recurring Clean' : 'One-Off Clean'
+  const html = base(`
+    <div style="display:inline-block;padding:6px 14px;background:rgba(34,197,94,0.2);border:1px solid rgba(34,197,94,0.4);border-radius:20px;margin-bottom:20px;">
+      <span style="color:#4ade80;font-size:13px;font-weight:600;">✨ Clean complete</span>
+    </div>
+    ${h1('Your clean is done ✨')}
+    ${p(`Hi ${customerName}, your ${serviceLabel} on ${date} is complete. We hope it's spotless! If anything isn't right, just reply and we'll make it right.`)}
+    ${btn(`${APP_URL}/account`, 'View Your Account →')}
+  `)
+  return getResend().emails.send({ from: FROM, to: customerEmail, subject: 'Your Clean&Go clean is complete ✨', html })
+}
+
+// ─── 7d. Customer: Missed visit + credit ──────────────────────────
+export async function sendMissedVisitCreditEmail({
+  customerName, customerEmail, date, creditAmount,
+}: {
+  customerName: string; customerEmail: string; date: string; creditAmount?: number
+}) {
+  const html = base(`
+    <div style="display:inline-block;padding:6px 14px;background:rgba(251,191,36,0.2);border:1px solid rgba(251,191,36,0.4);border-radius:20px;margin-bottom:20px;">
+      <span style="color:#fbbf24;font-size:13px;font-weight:600;">🛟 We missed your visit</span>
+    </div>
+    ${h1('We missed your visit — and we\'re sorry')}
+    ${p(`Hi ${customerName}, we couldn't make your clean on ${date}. That's on us.${creditAmount ? ` We've added a <strong style="color:#fff;">$${creditAmount}</strong> credit to your account.` : ' We\'ve added an account credit to make it right.'} Our reliability guarantee means you're never left stranded.`)}
+    ${btn(`${APP_URL}/account`, 'View Your Credit →')}
+  `)
+  return getResend().emails.send({ from: FROM, to: customerEmail, subject: 'About your missed clean — account credit added', html })
+}
+
+// ─── 8. Applicant: Application not progressing ────────────────────
+export async function sendApplicationDeclinedEmail({
+  name, email,
+}: {
+  name: string; email: string
+}) {
+  const html = base(`
+    ${h1('Thanks for applying to Clean&Go')}
+    ${p(`Hi ${name}, thank you for your interest in joining the Clean&Go team. After reviewing your application, we won't be progressing it at this time. We genuinely appreciate the time you took to apply and wish you all the best.`)}
+    ${p('<span style="font-size:13px;color:rgba(255,255,255,0.4);">You\'re welcome to apply again in the future as our needs change.</span>')}
+  `)
+  return getResend().emails.send({ from: FROM, to: email, subject: 'Your Clean&Go application', html })
 }

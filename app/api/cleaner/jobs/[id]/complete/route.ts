@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { requireStaff } from '@/lib/auth'
+import { sendJobCompletedEmail } from '@/lib/email'
 
 export const runtime = 'nodejs'
 
@@ -21,7 +22,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
   const supabase = createAdminClient()
   const { data: booking } = await supabase
     .from('bookings')
-    .select('id, staff_id, scheduled_date')
+    .select('id, staff_id, scheduled_date, service_type, customers(name, email)')
     .eq('id', id)
     .single()
   if (!booking || booking.staff_id !== auth.staff.id) {
@@ -59,6 +60,17 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     hours_worked: Math.round(hours * 100) / 100,
     xero_synced: false,
   })
+
+  // Let the customer know their clean is done (best-effort).
+  const cust = booking.customers as unknown as { name: string; email: string } | null
+  if (cust?.email) {
+    await sendJobCompletedEmail({
+      customerName: cust.name,
+      customerEmail: cust.email,
+      service: booking.service_type,
+      date: booking.scheduled_date,
+    }).catch(e => console.error('Job completed email failed:', e))
+  }
 
   return NextResponse.json({ ok: true, status: 'completed' })
 }

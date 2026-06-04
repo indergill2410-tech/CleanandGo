@@ -160,9 +160,9 @@ export default function AdminDashboard() {
 
       <div className="relative z-10 p-6 max-w-7xl mx-auto">
         {/* Header */}
-        <div className="flex items-start justify-between gap-4 mb-5">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-5">
           <div>
-            <h1 className="text-3xl font-bold text-white">Admin Dashboard</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold text-white">Admin Dashboard</h1>
             <p className="text-white/50 mt-1">Manage quote requests &amp; jobs</p>
           </div>
           <div className="flex flex-col gap-2 items-end">

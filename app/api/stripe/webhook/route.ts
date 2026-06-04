@@ -2,6 +2,11 @@ import { NextRequest, NextResponse } from 'next/server'
 import type Stripe from 'stripe'
 import { getStripe } from '@/lib/stripe'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { sendPaymentReceiptEmail, sendAdminPaymentEmail } from '@/lib/email'
+
+const SERVICE_LABELS: Record<string, string> = {
+  recurring: 'Recurring Clean', oneoff: 'One-Off Clean', endoflease: 'End of Lease',
+}
 
 // Stripe needs the raw request body to verify the signature.
 export const runtime = 'nodejs'
@@ -33,6 +38,24 @@ async function recordPayment(intent: Stripe.PaymentIntent, status: 'captured' | 
       .update({ status: 'confirmed', updated_at: new Date().toISOString() })
       .eq('id', bookingId)
       .eq('status', 'pending')
+
+    // Receipt to the customer + alert to the admin (best-effort).
+    try {
+      const { data: bk } = await supabase
+        .from('bookings')
+        .select('service_type, customers(name, email)')
+        .eq('id', bookingId)
+        .single()
+      const cust = bk?.customers as unknown as { name: string; email: string } | null
+      const amount = intent.amount / 100
+      const description = bk?.service_type ? (SERVICE_LABELS[bk.service_type] || bk.service_type) : undefined
+      const jobs: Promise<unknown>[] = []
+      if (cust?.email) jobs.push(sendPaymentReceiptEmail({ customerName: cust.name, customerEmail: cust.email, amount, description }))
+      jobs.push(sendAdminPaymentEmail({ customerName: cust?.name || 'Customer', amount, description }))
+      await Promise.allSettled(jobs)
+    } catch (e) {
+      console.error('Payment receipt email failed:', e)
+    }
   }
 }
 

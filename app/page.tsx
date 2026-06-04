@@ -19,19 +19,13 @@ export default function HomePage() {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full opacity-10 blur-3xl" style={{ background: '#2C4A6E' }} />
 
         <div className="relative z-10 text-center px-6 max-w-4xl mx-auto">
-          {/* Social proof pill */}
-          <div className="inline-flex items-center gap-2 glass rounded-full px-5 py-2.5 mb-8 animate-fade-up">
-            <span className="text-amber-400">★★★★★</span>
-            <span className="text-white/90 text-sm font-medium">Trusted by 500+ Australian homes &amp; offices</span>
-          </div>
-
-          <h1 className="text-6xl md:text-7xl font-bold text-white mb-6 leading-tight animate-fade-up delay-100">
+          <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold text-white mb-6 leading-tight animate-fade-up delay-100">
             Your home,<br />
             <span style={{ color: '#7BA7C7' }}>spotless.</span><br />
             Guaranteed.
           </h1>
 
-          <p className="text-white/70 text-xl mb-10 max-w-xl mx-auto leading-relaxed animate-fade-up delay-200">
+          <p className="text-white/70 text-lg sm:text-xl mb-10 max-w-xl mx-auto leading-relaxed animate-fade-up delay-200">
             Book in 60 seconds. We handle everything else.
           </p>
 
