@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { requireAdmin } from '@/lib/auth'
+import { sendBookingConfirmedEmail, sendCleanerAssignedEmail, sendMissedVisitCreditEmail } from '@/lib/email'
+
+export const runtime = 'nodejs'
 
 // Fields an admin is allowed to update on a booking. Anything else is ignored
 // so callers can't overwrite ids, prices, timestamps, etc. via PATCH.
@@ -72,6 +75,34 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
         status: 'available',
       })
     }
+  }
+
+  // Notify the people affected by this change (best-effort).
+  try {
+    const { data: full } = await supabase
+      .from('bookings')
+      .select('service_type, scheduled_date, scheduled_time, address, suburb, price_cents, customers(name, email), staff:staff_id(name, email)')
+      .eq('id', id)
+      .single()
+    const cust = full?.customers as unknown as { name: string; email: string } | null
+    const cleaner = full?.staff as unknown as { name: string; email: string } | null
+    const when = { service: full?.service_type ?? '', date: full?.scheduled_date ?? '', time: (full?.scheduled_time ?? '').slice(0, 5), address: full?.address ?? '', suburb: full?.suburb ?? '' }
+    const assigned = 'staff_id' in updates && !!updates.staff_id
+    const confirmedNow = updates.status === 'confirmed'
+
+    const jobs: Promise<unknown>[] = []
+    if ((assigned || confirmedNow) && cust?.email) {
+      jobs.push(sendBookingConfirmedEmail({ customerName: cust.name, customerEmail: cust.email, cleanerName: cleaner?.name, ...when }))
+    }
+    if (assigned && cleaner?.email) {
+      jobs.push(sendCleanerAssignedEmail({ cleanerName: cleaner.name, cleanerEmail: cleaner.email, ...when }))
+    }
+    if (updates.status === 'missed' && cust?.email) {
+      jobs.push(sendMissedVisitCreditEmail({ customerName: cust.name, customerEmail: cust.email, date: when.date, creditAmount: (full?.price_cents ?? 0) / 100 }))
+    }
+    await Promise.allSettled(jobs)
+  } catch (e) {
+    console.error('Booking notification email failed:', e)
   }
 
   return NextResponse.json({ booking: data })

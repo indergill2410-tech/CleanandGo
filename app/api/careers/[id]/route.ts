@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { requireAdmin } from '@/lib/auth'
 import { provisionStaffLogin } from '@/lib/onboarding'
-import { sendStaffInviteEmail } from '@/lib/email'
+import { sendStaffInviteEmail, sendApplicationDeclinedEmail } from '@/lib/email'
 
 export const runtime = 'nodejs'
 
@@ -36,6 +36,8 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
 
   if (action === 'reject') {
     await supabase.from('job_applications').update({ status: 'rejected' }).eq('id', id)
+    await sendApplicationDeclinedEmail({ name: app.name, email: app.email })
+      .catch(e => console.error('Application declined email failed:', e))
     return NextResponse.json({ ok: true, status: 'rejected' })
   }
 
