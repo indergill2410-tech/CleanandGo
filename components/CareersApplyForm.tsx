@@ -6,7 +6,7 @@ type DocKey = 'resume' | 'police' | 'wwcc'
 export default function CareersApplyForm() {
   const [form, setForm] = useState({
     name: '', email: '', phone: '', suburbs: '', experience: '', availability: '',
-    hasAbn: false, rightToWork: false, hasPoliceCheck: false, hasWwcc: false,
+    tfn: '', abn: '', rightToWork: false, hasPoliceCheck: false, hasWwcc: false,
   })
   const [docs, setDocs] = useState<Record<DocKey, { url: string; name: string }>>({
     resume: { url: '', name: '' },
@@ -95,14 +95,14 @@ export default function CareersApplyForm() {
         <input type="tel" placeholder="Phone" value={form.phone} onChange={e => set('phone', e.target.value)} required className={inputCls} />
       </div>
       <input type="email" placeholder="Email" value={form.email} onChange={e => set('email', e.target.value)} required className={inputCls} />
+      <div className="grid sm:grid-cols-2 gap-4">
+        <input inputMode="numeric" placeholder="TFN" value={form.tfn} onChange={e => set('tfn', e.target.value)} required className={inputCls} />
+        <input inputMode="numeric" placeholder="ABN (optional)" value={form.abn} onChange={e => set('abn', e.target.value)} className={inputCls} />
+      </div>
       <input placeholder="Suburbs / areas you can cover" value={form.suburbs} onChange={e => set('suburbs', e.target.value)} className={inputCls} />
       <input placeholder="Availability (e.g. weekdays, Tue–Thu, mornings)" value={form.availability} onChange={e => set('availability', e.target.value)} className={inputCls} />
       <textarea placeholder="Cleaning experience (optional)" value={form.experience} onChange={e => set('experience', e.target.value)} rows={3} className={inputCls} />
 
-      <label className="flex items-center gap-3 text-white/80 text-sm">
-        <input type="checkbox" checked={form.hasAbn} onChange={e => set('hasAbn', e.target.checked)} className="w-4 h-4 accent-[#4A7FA5]" />
-        I have an ABN (or am willing to register one)
-      </label>
       <label className="flex items-center gap-3 text-white/80 text-sm">
         <input type="checkbox" checked={form.rightToWork} onChange={e => set('rightToWork', e.target.checked)} className="w-4 h-4 accent-[#4A7FA5]" />
         I have the right to work in Australia
