@@ -6,7 +6,7 @@ import Footer from '@/components/Footer'
 export const metadata: Metadata = {
   title: 'The Reliability Guarantee — We Never Leave You Hanging',
   description:
-    "Most cleaners are reliable until they're not. Clean&Go gives every recurring plan a named cleaner AND a guaranteed backup, plus a missed-visit credit. Never get cancelled on again.",
+    "Most cleaners are reliable until they're not. cleanngo gives every recurring plan a named cleaner AND a guaranteed backup, plus a missed-visit credit. Never get cancelled on again.",
   alternates: { canonical: '/reliability' },
 }
 

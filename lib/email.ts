@@ -30,12 +30,12 @@ const base = (content: string) => `
     <tr><td align="center">
       <table width="560" cellpadding="0" cellspacing="0" style="background:#1C2B3A;border-radius:24px;overflow:hidden;max-width:560px;width:100%;">
         <tr><td style="background:linear-gradient(135deg,#1C2B3A,#2C4A6E);padding:32px 40px;text-align:center;">
-          <div style="font-size:28px;font-weight:800;color:#ffffff;letter-spacing:-0.5px;">Clean&amp;Go</div>
+          <div style="font-size:28px;font-weight:800;color:#ffffff;letter-spacing:-0.5px;">cleanngo</div>
           <div style="font-size:13px;color:rgba(255,255,255,0.5);margin-top:4px;">cleanngo.com.au</div>
         </td></tr>
         <tr><td style="padding:36px 40px;">${content}</td></tr>
         <tr><td style="padding:24px 40px;border-top:1px solid rgba(255,255,255,0.1);text-align:center;">
-          <div style="font-size:12px;color:rgba(255,255,255,0.3);">Clean&amp;Go · Australia-wide · <a href="https://cleanngo.com.au" style="color:rgba(255,255,255,0.4);">cleanngo.com.au</a></div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.3);">cleanngo · Australia-wide · <a href="https://cleanngo.com.au" style="color:rgba(255,255,255,0.4);">cleanngo.com.au</a></div>
         </td></tr>
       </table>
     </td></tr>
@@ -85,7 +85,7 @@ export async function sendBookingConfirmationEmail({
   return getResend().emails.send({
     from: FROM,
     to: customerEmail,
-    subject: `Quote request received — Clean&Go`,
+    subject: `Quote request received — cleanngo`,
     html,
   })
 }
@@ -160,7 +160,7 @@ export async function sendQuoteReadyEmail({
   return getResend().emails.send({
     from: FROM,
     to: customerEmail,
-    subject: `Your Clean&Go quote is ready — $${price}`,
+    subject: `Your cleanngo quote is ready — $${price}`,
     html,
   })
 }
@@ -251,7 +251,7 @@ export async function sendStaffInviteEmail({
       <span style="color:#4ab7a5;font-size:13px;font-weight:600;">🎉 Welcome to the team</span>
     </div>
     ${h1(`Welcome aboard, ${name}!`)}
-    ${p(`Your Clean&Go ${roleLabel} account is ready. Set your password to log in${role === 'admin' ? '' : ' and start receiving jobs'}.`)}
+    ${p(`Your cleanngo ${roleLabel} account is ready. Set your password to log in${role === 'admin' ? '' : ' and start receiving jobs'}.`)}
     ${btn(actionLink, 'Set Your Password →')}
     ${p('<span style="font-size:13px;color:rgba(255,255,255,0.4);">This link expires for security. If it does, contact us and we\'ll send a fresh one.</span>')}
   `)
@@ -259,7 +259,7 @@ export async function sendStaffInviteEmail({
   return getResend().emails.send({
     from: FROM,
     to: email,
-    subject: 'Welcome to Clean&Go — set your password',
+    subject: 'Welcome to cleanngo — set your password',
     html,
   })
 }
@@ -272,14 +272,14 @@ export async function sendPasswordResetEmail({
 }) {
   const html = base(`
     ${h1('Reset your password')}
-    ${p('We received a request to reset your Clean&Go password. Click below to choose a new one. If you didn\'t request this, you can safely ignore this email.')}
+    ${p('We received a request to reset your cleanngo password. Click below to choose a new one. If you didn\'t request this, you can safely ignore this email.')}
     ${btn(actionLink, 'Reset Password →')}
   `)
 
   return getResend().emails.send({
     from: FROM,
     to: email,
-    subject: 'Reset your Clean&Go password',
+    subject: 'Reset your cleanngo password',
     html,
   })
 }
@@ -301,10 +301,10 @@ export async function sendPaymentReceiptEmail({
       (description ? row('For', description) : '') +
       (date ? row('Date', date) : '')
     )}
-    ${p('A team member will be in touch about scheduling. Thanks for choosing Clean&Go.')}
+    ${p('A team member will be in touch about scheduling. Thanks for choosing cleanngo.')}
     ${btn(`${APP_URL}/account`, 'View Your Account →')}
   `)
-  return getResend().emails.send({ from: FROM, to: customerEmail, subject: `Payment received — $${amount} · Clean&Go`, html })
+  return getResend().emails.send({ from: FROM, to: customerEmail, subject: `Payment received — $${amount} · cleanngo`, html })
 }
 
 // ─── 6b. Admin: Payment received ──────────────────────────────────
@@ -347,7 +347,7 @@ export async function sendBookingConfirmedEmail({
     )}
     ${btn(`${APP_URL}/account`, 'View Your Booking →')}
   `)
-  return getResend().emails.send({ from: FROM, to: customerEmail, subject: 'Your Clean&Go clean is confirmed', html })
+  return getResend().emails.send({ from: FROM, to: customerEmail, subject: 'Your cleanngo clean is confirmed', html })
 }
 
 // ─── 7b. Cleaner: You've been assigned a job ──────────────────────
@@ -372,7 +372,7 @@ export async function sendCleanerAssignedEmail({
     )}
     ${btn(`${APP_URL}/cleaner`, 'Open Your Jobs →')}
   `)
-  return getResend().emails.send({ from: FROM, to: cleanerEmail, subject: 'New Clean&Go job assigned', html })
+  return getResend().emails.send({ from: FROM, to: cleanerEmail, subject: 'New cleanngo job assigned', html })
 }
 
 // ─── 7c. Customer: Job completed ──────────────────────────────────
@@ -390,7 +390,7 @@ export async function sendJobCompletedEmail({
     ${p(`Hi ${customerName}, your ${serviceLabel} on ${date} is complete. We hope it's spotless! If anything isn't right, just reply and we'll make it right.`)}
     ${btn(`${APP_URL}/account`, 'View Your Account →')}
   `)
-  return getResend().emails.send({ from: FROM, to: customerEmail, subject: 'Your Clean&Go clean is complete ✨', html })
+  return getResend().emails.send({ from: FROM, to: customerEmail, subject: 'Your cleanngo clean is complete ✨', html })
 }
 
 // ─── 7d. Customer: Missed visit + credit ──────────────────────────
@@ -417,9 +417,9 @@ export async function sendApplicationDeclinedEmail({
   name: string; email: string
 }) {
   const html = base(`
-    ${h1('Thanks for applying to Clean&Go')}
-    ${p(`Hi ${name}, thank you for your interest in joining the Clean&Go team. After reviewing your application, we won't be progressing it at this time. We genuinely appreciate the time you took to apply and wish you all the best.`)}
+    ${h1('Thanks for applying to cleanngo')}
+    ${p(`Hi ${name}, thank you for your interest in joining the cleanngo team. After reviewing your application, we won't be progressing it at this time. We genuinely appreciate the time you took to apply and wish you all the best.`)}
     ${p('<span style="font-size:13px;color:rgba(255,255,255,0.4);">You\'re welcome to apply again in the future as our needs change.</span>')}
   `)
-  return getResend().emails.send({ from: FROM, to: email, subject: 'Your Clean&Go application', html })
+  return getResend().emails.send({ from: FROM, to: email, subject: 'Your cleanngo application', html })
 }

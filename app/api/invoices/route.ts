@@ -48,7 +48,7 @@ export async function POST(request: Request) {
       customer: stripeCustomerId,
       amount: amountCents,
       currency: 'aud',
-      description: description || 'Clean&Go cleaning service',
+      description: description || 'cleanngo cleaning service',
     })
 
     const invoice = await stripe.invoices.create({

@@ -5,8 +5,8 @@ import Footer from '@/components/Footer'
 import CareersApplyForm from '@/components/CareersApplyForm'
 
 export const metadata: Metadata = {
-  title: 'Apply to Join — Clean&Go Cleaner Application',
-  description: 'Apply to join the Clean&Go cleaning team. Tell us about your experience and availability — it takes a couple of minutes.',
+  title: 'Apply to Join — cleanngo Cleaner Application',
+  description: 'Apply to join the cleanngo cleaning team. Tell us about your experience and availability — it takes a couple of minutes.',
   alternates: { canonical: '/careers/apply' },
   robots: { index: false }, // application form — keep it off search results
 }

@@ -250,7 +250,7 @@ export const BLOG_POSTS: BlogPost[] = [
         heading: 'Should you DIY or hire a professional?',
         paragraphs: [
           'A full vacate clean on a two-bedroom apartment typically takes one person 8–12 hours. If your lease requires a professional carpet steam clean — many do — you will need to hire that separately anyway. A professional end-of-lease service that includes a bond-back guarantee removes the risk: if the agent is not satisfied, the cleaner returns free of charge.',
-          'At Clean&Go our end-of-lease checklist mirrors the standard real estate inspection used across Australia, and every bond clean is backed by a free re-clean guarantee.',
+          'At cleanngo our end-of-lease checklist mirrors the standard real estate inspection used across Australia, and every bond clean is backed by a free re-clean guarantee.',
         ],
       },
     ],
@@ -283,7 +283,7 @@ export const BLOG_POSTS: BlogPost[] = [
       {
         heading: 'Why recurring cleans are the best value',
         paragraphs: [
-          'A home that is cleaned every week or fortnight never accumulates heavy build-up, so each visit is faster and better value than a one-off clean. Recurring Clean&Go customers also receive a loyalty discount on every visit.',
+          'A home that is cleaned every week or fortnight never accumulates heavy build-up, so each visit is faster and better value than a one-off clean. Recurring cleanngo customers also receive a loyalty discount on every visit.',
         ],
       },
       {
@@ -334,7 +334,7 @@ export const BLOG_POSTS: BlogPost[] = [
       {
         heading: 'The cost difference',
         paragraphs: [
-          'Weekly cleaning costs more per month but each visit is quick and your home never falls behind. Fortnightly roughly halves the monthly spend while still keeping things under control. Both options at Clean&Go include the same cleaner each visit and a 10% loyalty discount.',
+          'Weekly cleaning costs more per month but each visit is quick and your home never falls behind. Fortnightly roughly halves the monthly spend while still keeping things under control. Both options at cleanngo include the same cleaner each visit and a 10% loyalty discount.',
         ],
       },
       {

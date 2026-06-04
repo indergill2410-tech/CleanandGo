@@ -5,7 +5,7 @@ import Footer from '@/components/Footer'
 import { BLOG_POSTS } from '@/lib/content'
 
 export const metadata: Metadata = {
-  title: 'Cleaning Tips & Guides — The Clean&Go Blog',
+  title: 'Cleaning Tips & Guides — The cleanngo Blog',
   description:
     'Expert cleaning tips, pricing guides, and end-of-lease advice for Australian homes and offices. Learn how to keep your space spotless and get your full bond back.',
   alternates: { canonical: '/blog' },

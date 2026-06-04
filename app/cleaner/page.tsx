@@ -77,7 +77,7 @@ export default function CleanerPortal() {
       <div className="fixed top-0 left-0 right-0 z-50 glass border-b border-white/20 px-6 py-4">
         <div className="max-w-lg mx-auto flex items-center justify-between">
           <div>
-            <div className="text-white font-bold">Clean&amp;Go Staff</div>
+            <div className="text-white font-bold">cleanngo Staff</div>
             <div className="text-white/50 text-xs">{staffName}</div>
           </div>
           <button onClick={signOut} className="text-white/60 text-sm hover:text-white">Sign out</button>

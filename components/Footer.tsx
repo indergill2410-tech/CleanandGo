@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import BrandMark from './BrandMark'
 
 const COLUMNS = [
   {
@@ -41,10 +42,10 @@ export default function Footer() {
         <div className="grid gap-10 md:grid-cols-4 mb-12">
           <div>
             <Link href="/" className="flex items-center gap-2 mb-3">
-              <div className="w-8 h-8 rounded-lg gradient-cta flex items-center justify-center">
-                <span className="text-white font-bold text-sm">C</span>
+              <div className="w-8 h-8 rounded-lg gradient-cta flex items-center justify-center text-white">
+                <BrandMark className="w-5 h-5" />
               </div>
-              <span className="font-bold text-lg text-white">Clean&amp;Go</span>
+              <span className="font-bold text-lg text-white">cleanngo</span>
             </Link>
             <p className="text-white/40 text-sm leading-relaxed max-w-xs">
               Australia&apos;s reliable cleaning service for homes &amp; offices. Recurring, one-off and end-of-lease cleans, fully insured and bond-back guaranteed.
@@ -69,7 +70,7 @@ export default function Footer() {
 
         <div className="border-t border-white/10 pt-6 flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="text-white/40 text-xs">Servicing homes &amp; offices Australia-wide</div>
-          <div className="text-white/30 text-xs">© {new Date().getFullYear()} Clean&amp;Go. All rights reserved.</div>
+          <div className="text-white/30 text-xs">© {new Date().getFullYear()} cleanngo. All rights reserved.</div>
         </div>
       </div>
     </footer>

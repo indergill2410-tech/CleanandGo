@@ -8,7 +8,7 @@ import { SERVICES, PRICING_FAQS } from '@/lib/content'
 export const metadata: Metadata = {
   title: 'Cleaning Prices Australia — Transparent, No Hidden Fees',
   description:
-    "How Clean&Go pricing works Australia-wide: every job is quoted individually based on your home and service. Free, no-obligation quotes and no hidden fees.",
+    "How cleanngo pricing works Australia-wide: every job is quoted individually based on your home and service. Free, no-obligation quotes and no hidden fees.",
   alternates: { canonical: '/pricing' },
 }
 

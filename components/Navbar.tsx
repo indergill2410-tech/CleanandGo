@@ -1,6 +1,7 @@
 'use client'
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
+import BrandMark from './BrandMark'
 
 const LINKS = [
   { label: 'Services', href: '/services' },
@@ -33,10 +34,10 @@ export default function Navbar() {
     >
       <div className="max-w-6xl mx-auto px-6 flex items-center justify-between">
         <Link href="/" onClick={() => setMenuOpen(false)} className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg gradient-cta flex items-center justify-center">
-            <span className="text-white font-bold text-sm">C</span>
+          <div className="w-8 h-8 rounded-lg gradient-cta flex items-center justify-center text-white">
+            <BrandMark className="w-5 h-5" />
           </div>
-          <span className={`font-bold text-lg tracking-tight ${solid ? 'text-[#1C2B3A]' : 'text-white'}`}>Clean&amp;Go</span>
+          <span className={`font-bold text-lg tracking-tight ${solid ? 'text-[#1C2B3A]' : 'text-white'}`}>cleanngo</span>
         </Link>
 
         {/* Desktop links */}

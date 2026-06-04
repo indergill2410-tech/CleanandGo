@@ -97,7 +97,7 @@ export default function AccountPage() {
       <div className="max-w-2xl mx-auto">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <Link href="/" className="text-white/50 text-sm hover:text-white">← Clean&amp;Go</Link>
+            <Link href="/" className="text-white/50 text-sm hover:text-white">← cleanngo</Link>
             <h1 className="text-2xl font-bold text-white mt-1">Hi {name.split(' ')[0] || 'there'}</h1>
           </div>
           <button onClick={signOut} className="text-white/60 text-sm hover:text-white">Sign out</button>

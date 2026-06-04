@@ -8,7 +8,7 @@ import { SERVICES, TRUST_BADGES } from '@/lib/content'
 export const metadata: Metadata = {
   title: 'Cleaning Services Australia — Recurring, One-Off & End of Lease',
   description:
-    'Explore Clean&Go cleaning services across Australia: recurring weekly and fortnightly cleans, one-off deep cleans, and bond-back end-of-lease cleaning. Fully insured and guaranteed.',
+    'Explore cleanngo cleaning services across Australia: recurring weekly and fortnightly cleans, one-off deep cleans, and bond-back end-of-lease cleaning. Fully insured and guaranteed.',
   alternates: { canonical: '/services' },
 }
 

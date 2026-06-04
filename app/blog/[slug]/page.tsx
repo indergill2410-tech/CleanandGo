@@ -43,8 +43,8 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
     headline: post.title,
     description: post.excerpt,
     datePublished: post.date,
-    author: { '@type': 'Organization', name: 'Clean&Go' },
-    publisher: { '@type': 'Organization', name: 'Clean&Go' },
+    author: { '@type': 'Organization', name: 'cleanngo' },
+    publisher: { '@type': 'Organization', name: 'cleanngo' },
   }
 
   const related = BLOG_POSTS.filter((p) => p.slug !== post.slug).slice(0, 2)
