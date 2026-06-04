@@ -1,5 +1,6 @@
 'use client'
 import { useCallback, useEffect, useState } from 'react'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import PhotoUpload from '@/components/PhotoUpload'
@@ -76,10 +77,10 @@ export default function CleanerPortal() {
     <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #1C2B3A 0%, #2C4A6E 100%)' }}>
       <div className="fixed top-0 left-0 right-0 z-50 glass border-b border-white/20 px-6 py-4">
         <div className="max-w-lg mx-auto flex items-center justify-between">
-          <div>
-            <div className="text-white font-bold">cleanngo Staff</div>
+          <Link href="/" className="group">
+            <div className="text-white font-bold group-hover:text-white/80 transition-colors">cleanngo Staff</div>
             <div className="text-white/50 text-xs">{staffName}</div>
-          </div>
+          </Link>
           <button onClick={signOut} className="text-white/60 text-sm hover:text-white">Sign out</button>
         </div>
       </div>

@@ -1,6 +1,7 @@
 'use client'
 import { useState } from 'react'
 import Link from 'next/link'
+import HomeLink from '@/components/HomeLink'
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('')
@@ -25,6 +26,7 @@ export default function ForgotPasswordPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4" style={{ background: 'linear-gradient(135deg, #1C2B3A 0%, #2C4A6E 100%)' }}>
+      <HomeLink className="fixed top-6 left-6 z-20" />
       <div className="glass-strong rounded-3xl p-10 w-full max-w-sm">
         <div className="text-center mb-8">
           <Link href="/login" className="text-white/50 text-sm hover:text-white mb-4 inline-block">← Back to login</Link>
