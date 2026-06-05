@@ -1,27 +1,24 @@
 import type { Metadata, Viewport } from 'next'
-import { Inter } from 'next/font/google'
 import './globals.css'
 import JsonLd from '@/components/JsonLd'
 import { SITE_URL, organizationJsonLd } from '@/lib/seo'
 
-const inter = Inter({ subsets: ['latin'], weight: ['300','400','500','600','700','800'] })
-
 export const metadata: Metadata = {
-  title: { default: 'cleanngo | Professional Cleaning Australia-Wide', template: '%s | cleanngo' },
-  description: 'Book trusted professional cleaners across Australia. Recurring, one-off, and end-of-lease cleaning for homes and offices. Bond-back guaranteed.',
-  keywords: ['cleaning service Australia', 'house cleaning Sydney', 'house cleaning Melbourne', 'house cleaning Brisbane', 'office cleaning', 'end of lease cleaning', 'bond cleaning', 'professional cleaners'],
+  title: { default: 'Cleanngo | Weekly Home Resets From $49/Week', template: '%s | Cleanngo' },
+  description: 'Weekly home cleaning from $49/week, Airbnb turnover cleaning, office cleaning, and end-of-lease resets from insured cleaners across Australia.',
+  keywords: ['weekly cleaning Australia', 'house cleaning Sydney', 'house cleaning Melbourne', 'Airbnb turnover cleaning', 'office cleaning', 'end of lease cleaning', 'bond cleaning', 'professional cleaners'],
   authors: [{ name: 'cleanngo' }],
   creator: 'cleanngo',
   metadataBase: new URL(SITE_URL),
   alternates: { canonical: '/' },
   openGraph: {
-    title: 'cleanngo — Your home, spotless. Guaranteed.',
-    description: 'Book in 60 seconds. Australia\'s most reliable cleaning service.',
+    title: 'Cleanngo - Your weekly home reset.',
+    description: 'Come home to calm with weekly cleaning from $49/week, plus Airbnb turnovers and office plans.',
     type: 'website',
     locale: 'en_AU',
     siteName: 'cleanngo',
   },
-  twitter: { card: 'summary_large_image', title: 'cleanngo', description: 'Book a professional cleaner anywhere in Australia in 60 seconds.' },
+  twitter: { card: 'summary_large_image', title: 'Cleanngo', description: 'Weekly home resets, Airbnb turnovers, and office cleaning across Australia.' },
   icons: {
     icon: '/favicon.svg',
     shortcut: '/favicon.svg',
@@ -39,7 +36,7 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body>
         <JsonLd data={organizationJsonLd} />
         {children}
       </body>

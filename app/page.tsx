@@ -1,209 +1,416 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
+import {
+  ArrowRight,
+  BadgeCheck,
+  BedDouble,
+  BriefcaseBusiness,
+  CalendarCheck,
+  Camera,
+  Check,
+  Home,
+  Hotel,
+  KeyRound,
+  ShieldCheck,
+  Sparkles,
+  Star,
+  Timer,
+  WandSparkles,
+} from 'lucide-react'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
-import ServiceCard from '@/components/ServiceCard'
-import TrustBadge from '@/components/TrustBadge'
-import TestimonialCard from '@/components/TestimonialCard'
-import { SERVICES, STEPS, TESTIMONIALS, TRUST_BADGES } from '@/lib/content'
+
+export const metadata: Metadata = {
+  title: 'Cleanngo | Weekly Home Cleaning From $49/Week',
+  description:
+    'Meet Cleanngo, your weekly home reset. Weekly house cleaning from $49/week, Airbnb turnover cleaning, office cleaning, add-ons, and insured cleaners across Australia.',
+  alternates: { canonical: '/' },
+}
+
+const PRICE_POINTS = [
+  { label: '1-2 beds', price: '$49', detail: 'weekly reset starter' },
+  { label: '3-4 beds', price: '$79', detail: 'family-home favourite' },
+]
+
+const TRUST_ITEMS = [
+  { icon: ShieldCheck, label: '$20M insured' },
+  { icon: BadgeCheck, label: 'Police-checked cleaners' },
+  { icon: Star, label: '4.9 average rating' },
+  { icon: CalendarCheck, label: 'Weekly or fortnightly' },
+]
+
+const RESET_STEPS = [
+  {
+    icon: CalendarCheck,
+    title: 'Pick your rhythm',
+    text: 'Weekly, fortnightly, one-off, Airbnb turnover, or office schedule. No awkward back-and-forth.',
+  },
+  {
+    icon: WandSparkles,
+    title: 'We reset the space',
+    text: 'Surfaces sanitized, rooms tidied, bathrooms scrubbed, floors finished, and the little things noticed.',
+  },
+  {
+    icon: Home,
+    title: 'Walk in and exhale',
+    text: 'Come home to calm, host your next guest, or open the office without chasing anyone.',
+  },
+]
+
+const REVENUE_LANES = [
+  {
+    icon: Home,
+    eyebrow: 'Best default',
+    title: 'Weekly home resets',
+    text: 'Recurring plans for busy households who want the same clean feeling every week without spending Saturday scrubbing.',
+    cta: 'Start a weekly plan',
+    href: '/customer/plan',
+  },
+  {
+    icon: Hotel,
+    eyebrow: 'For hosts',
+    title: 'Airbnb turnovers',
+    text: 'Checkout-to-checkin resets with linen change, bathroom sparkle, restock checks, and photo-ready reporting.',
+    cta: 'Request host pricing',
+    href: '/commercial#airbnb',
+  },
+  {
+    icon: BriefcaseBusiness,
+    eyebrow: 'For teams',
+    title: 'Office cleaning',
+    text: 'Fixed monthly commercial plans for offices, studios, salons, clinics, and high-touch workspaces.',
+    cta: 'Get business quote',
+    href: '/commercial',
+  },
+]
+
+const ADD_ONS = [
+  'Oven deep clean',
+  'Fridge reset',
+  'Fresh linen change',
+  'Laundry fold',
+  'Inside windows',
+  'Pantry tidy',
+  'Pet hair detail',
+  'Balcony sweep',
+]
+
+const HOST_FEATURES = [
+  'Same-day checkout cleans',
+  'Beds reset and linen changed',
+  'Essentials restock checks',
+  'Damage notes and photo proof',
+  'Weekend priority available',
+  'Multi-property host plans',
+]
+
+const EMOTIONAL_WINS = [
+  'No more cleaning guilt sitting in the corner of your weekend.',
+  'No frantic bathroom wipe-down before someone drops by.',
+  'No checkout-day panic when guests are arriving at 3pm.',
+]
 
 export default function HomePage() {
   return (
-    <main className="min-h-screen" style={{ background: '#F5F0EB' }}>
+    <main className="min-h-screen bg-[#F7F3EE] text-[#172434]">
       <Navbar />
 
-      {/* HERO */}
-      <section className="gradient-hero min-h-screen flex items-center justify-center relative overflow-hidden">
-        {/* Glassmorphism blobs */}
-        <div className="absolute top-20 left-10 w-96 h-96 rounded-full opacity-20 blur-3xl" style={{ background: '#7BA7C7' }} />
-        <div className="absolute bottom-20 right-10 w-80 h-80 rounded-full opacity-15 blur-3xl" style={{ background: '#4A7FA5' }} />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full opacity-10 blur-3xl" style={{ background: '#2C4A6E' }} />
+      <section className="relative overflow-hidden pt-28 lg:pt-32">
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage:
+              "linear-gradient(90deg, rgba(23,36,52,0.94) 0%, rgba(23,36,52,0.82) 42%, rgba(23,36,52,0.35) 100%), url('https://images.unsplash.com/photo-1556911220-bff31c812dba?auto=format&fit=crop&w=1800&q=85')",
+            backgroundPosition: 'center',
+            backgroundSize: 'cover',
+          }}
+        />
+        <div className="relative mx-auto grid min-h-[760px] max-w-6xl items-center gap-12 px-6 pb-16 lg:grid-cols-[1.05fr_0.95fr]">
+          <div className="max-w-2xl pt-10">
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold text-white backdrop-blur-md">
+              <Sparkles className="h-4 w-4 text-[#F2C14E]" />
+              Weekly home resets from $49/week
+            </div>
 
-        <div className="relative z-10 text-center px-6 max-w-4xl mx-auto">
-          <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold text-white mb-6 leading-tight animate-fade-up delay-100">
-            Your home,<br />
-            <span style={{ color: '#7BA7C7' }}>spotless.</span><br />
-            Guaranteed.
-          </h1>
+            <h1 className="text-5xl font-black leading-[0.98] tracking-normal text-white sm:text-6xl lg:text-7xl">
+              Come home to calm.
+            </h1>
 
-          <p className="text-white/70 text-lg sm:text-xl mb-10 max-w-xl mx-auto leading-relaxed animate-fade-up delay-200">
-            Book in 60 seconds. We handle everything else.
-          </p>
+            <p className="mt-6 max-w-xl text-lg leading-8 text-white/82 sm:text-xl">
+              Meet Cleanngo: your weekly home reset. We swoop in, sanitize, tidy, and vanish,
+              like friendly cleaning ninjas. You come home to a spotless house, like magic.
+            </p>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-up delay-300">
-            <Link href="/customer/book" className="btn-primary text-lg px-10 py-4">
-              Book a Clean →
-            </Link>
-            <Link href="/how-it-works" className="inline-flex items-center justify-center gap-2 text-white/80 hover:text-white font-medium py-4 px-6 transition-colors">
-              How it works →
-            </Link>
-          </div>
-
-          {/* Trust strip */}
-          <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 mt-10 animate-fade-up delay-300">
-            {[
-              { icon: '✅', label: 'Police-checked' },
-              { icon: '🛡️', label: 'Fully insured ($20M)' },
-              { icon: '👤', label: 'ID-verified' },
-              { icon: '⭐', label: 'Vetted professionals' },
-            ].map(b => (
-              <span key={b.label} className="inline-flex items-center gap-1.5 text-white/80 text-sm font-medium">
-                <span>{b.icon}</span>{b.label}
-              </span>
-            ))}
-          </div>
-
-          {/* Glass stats */}
-          <div className="grid grid-cols-3 gap-4 mt-16 animate-fade-up delay-400">
-            {[
-              { value: '500+', label: 'Happy homes' },
-              { value: '4.9★', label: 'Average rating' },
-              { value: '100%', label: 'Bond success rate' },
-            ].map(s => (
-              <div key={s.label} className="glass rounded-2xl py-4 px-3">
-                <div className="text-white font-bold text-2xl">{s.value}</div>
-                <div className="text-white/60 text-xs mt-1">{s.label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* HOW IT WORKS */}
-      <section id="how-it-works" className="py-24 px-6">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-16">
-            <p className="text-[#4A7FA5] font-semibold text-sm uppercase tracking-widest mb-3">Simple process</p>
-            <h2 className="text-4xl font-bold text-[#1C2B3A]">Three steps to a clean home</h2>
-          </div>
-          <div className="grid md:grid-cols-3 gap-8">
-            {STEPS.map((step, i) => (
-              <div key={step.number} className="relative text-center">
-                {i < STEPS.length - 1 && (
-                  <div className="hidden md:block absolute top-10 left-[60%] w-[80%] h-px" style={{ background: 'linear-gradient(90deg, #4A7FA5, transparent)' }} />
-                )}
-                <div className="w-20 h-20 rounded-2xl gradient-cta flex items-center justify-center text-3xl mx-auto mb-6 shadow-lg">
-                  {step.icon}
+            <div className="mt-8 grid max-w-xl gap-3 sm:grid-cols-2">
+              {PRICE_POINTS.map((item) => (
+                <div key={item.label} className="rounded-[8px] border border-white/20 bg-white/12 p-4 backdrop-blur-md">
+                  <div className="flex items-end gap-2">
+                    <span className="text-4xl font-black text-white">{item.price}</span>
+                    <span className="pb-1 text-sm font-semibold text-white/72">/week</span>
+                  </div>
+                  <div className="mt-2 text-sm font-bold text-white">{item.label}</div>
+                  <div className="text-xs uppercase tracking-[0.16em] text-white/50">{item.detail}</div>
                 </div>
-                <div className="text-[#7BA7C7] font-bold text-xs tracking-widest mb-2">{step.number}</div>
-                <h3 className="text-lg font-bold text-[#1C2B3A] mb-2">{step.title}</h3>
-                <p className="text-[#7A8A96] text-sm leading-relaxed">{step.desc}</p>
-              </div>
-            ))}
-          </div>
-          <div className="text-center mt-12">
-            <Link href="/how-it-works" className="text-[#2C4A6E] font-semibold text-sm hover:text-[#4A7FA5] transition-colors">
-              Learn how it works →
-            </Link>
-          </div>
-        </div>
-      </section>
+              ))}
+            </div>
 
-      {/* SERVICES */}
-      <section id="services" className="py-24 px-6" style={{ background: 'linear-gradient(180deg, #F5F0EB 0%, #EBF0F5 100%)' }}>
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-16">
-            <p className="text-[#4A7FA5] font-semibold text-sm uppercase tracking-widest mb-3">Services</p>
-            <h2 className="text-4xl font-bold text-[#1C2B3A] mb-4">Pick your clean</h2>
-            <p className="text-[#7A8A96] max-w-md mx-auto">Every service is fully insured, background-checked, and backed by our satisfaction guarantee.</p>
-          </div>
-          <div className="grid md:grid-cols-3 gap-8 items-center">
-            {SERVICES.map((s) => (
-              <ServiceCard
-                key={s.slug}
-                icon={s.icon}
-                title={s.title}
-                description={s.description}
-                tag={s.tag}
-                tagColor={s.tagColor}
-                features={s.features}
-                highlight={s.highlight}
-              />
-            ))}
-          </div>
-          <div className="text-center mt-12 flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/services" className="text-[#2C4A6E] font-semibold text-sm hover:text-[#4A7FA5] transition-colors">
-              Explore all services →
-            </Link>
-            <span className="hidden sm:inline text-[#7A8A96]">·</span>
-            <Link href="/pricing" className="text-[#2C4A6E] font-semibold text-sm hover:text-[#4A7FA5] transition-colors">
-              See full pricing →
-            </Link>
-          </div>
-        </div>
-      </section>
+            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+              <Link
+                href="/customer/plan"
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-[#F2C14E] px-8 py-4 text-base font-black text-[#172434] shadow-[0_18px_60px_rgba(242,193,78,0.35)] transition hover:-translate-y-0.5 hover:bg-[#F6CF72]"
+              >
+                Start my weekly reset
+                <ArrowRight className="h-5 w-5" />
+              </Link>
+              <Link
+                href="/customer/book"
+                className="inline-flex items-center justify-center gap-2 rounded-full border border-white/30 bg-white/10 px-8 py-4 text-base font-bold text-white backdrop-blur-md transition hover:-translate-y-0.5 hover:bg-white/18"
+              >
+                Book a one-off clean
+              </Link>
+            </div>
 
-      {/* TRUST */}
-      <section className="py-24 px-6">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-[#1C2B3A] mb-3">Why Australia trusts us</h2>
-            <p className="text-[#7A8A96]">Every job backed by real guarantees — not just promises.</p>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {TRUST_BADGES.map((b) => (
-              <TrustBadge key={b.title} {...b} />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* TESTIMONIALS */}
-      <section className="py-24 px-6" style={{ background: 'linear-gradient(180deg, #EBF0F5 0%, #F5F0EB 100%)' }}>
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-16">
-            <p className="text-[#4A7FA5] font-semibold text-sm uppercase tracking-widest mb-3">Reviews</p>
-            <h2 className="text-4xl font-bold text-[#1C2B3A]">What Australia says</h2>
-          </div>
-          <div className="grid md:grid-cols-3 gap-8">
-            {TESTIMONIALS.map((t) => (
-              <TestimonialCard key={t.name} {...t} />
-            ))}
-          </div>
-          <div className="text-center mt-8">
-            <p className="text-[#7A8A96] text-sm">Hundreds of cleans completed across Australia this month</p>
-          </div>
-        </div>
-      </section>
-
-      {/* HIRING */}
-      <section className="py-20 px-6">
-        <div className="max-w-4xl mx-auto">
-          <div className="relative overflow-hidden rounded-3xl p-10 md:p-12 shadow-xl" style={{ background: 'linear-gradient(135deg, #1C2B3A 0%, #2C4A6E 100%)' }}>
-            <div className="absolute -top-10 -right-10 w-64 h-64 rounded-full blur-3xl opacity-20" style={{ background: '#7BA7C7' }} />
-            <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-              <div>
-                <span className="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-4 py-1.5 text-white/90 text-xs font-semibold mb-4">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" /> We&apos;re hiring
+            <div className="mt-8 flex flex-wrap gap-3">
+              {TRUST_ITEMS.map((item) => (
+                <span key={item.label} className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-2 text-sm font-semibold text-white/80 backdrop-blur-md">
+                  <item.icon className="h-4 w-4 text-[#8FD8B4]" />
+                  {item.label}
                 </span>
-                <h2 className="text-2xl md:text-3xl font-bold text-white mb-2">Join our team of cleaners</h2>
-                <p className="text-white/70 max-w-md">Steady recurring work, flexible days, and a team that has your back — across Australia.</p>
+              ))}
+            </div>
+          </div>
+
+          <div className="rounded-[8px] border border-white/18 bg-white/92 p-5 shadow-2xl backdrop-blur-md lg:ml-auto lg:max-w-md">
+            <div className="rounded-[8px] bg-[#172434] p-5 text-white">
+              <div className="flex items-center justify-between gap-4">
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#8FD8B4]">This week</p>
+                  <h2 className="mt-2 text-2xl font-black">Your reset checklist</h2>
+                </div>
+                <div className="flex h-12 w-12 items-center justify-center rounded-[8px] bg-white/10">
+                  <Sparkles className="h-6 w-6 text-[#F2C14E]" />
+                </div>
               </div>
-              <div className="flex flex-col items-start md:items-end gap-2 flex-shrink-0">
-                <Link href="/careers#apply" className="inline-flex items-center gap-2 bg-white text-[#2C4A6E] font-bold px-8 py-4 rounded-full hover:bg-white/90 transition-all hover:-translate-y-0.5">
-                  Apply now →
-                </Link>
-                <Link href="/careers#why-join" className="text-white/60 text-sm hover:text-white transition-colors">
-                  Why join cleanngo?
-                </Link>
+              <div className="mt-5 space-y-3">
+                {['Bathrooms sanitized', 'Kitchen surfaces shining', 'Floors vacuumed and mopped', 'Beds and living areas tidied'].map((item) => (
+                  <div key={item} className="flex items-center gap-3 rounded-[8px] bg-white/8 px-3 py-3 text-sm font-semibold text-white/84">
+                    <Check className="h-4 w-4 text-[#8FD8B4]" />
+                    {item}
+                  </div>
+                ))}
               </div>
+            </div>
+            <div className="grid grid-cols-3 gap-3 pt-4">
+              {[
+                ['500+', 'homes reset'],
+                ['60 sec', 'quote start'],
+                ['100%', 'guaranteed'],
+              ].map(([value, label]) => (
+                <div key={label} className="rounded-[8px] bg-[#F7F3EE] p-3 text-center">
+                  <div className="text-xl font-black text-[#172434]">{value}</div>
+                  <div className="mt-1 text-[11px] font-bold uppercase tracking-[0.12em] text-[#687A86]">{label}</div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
       </section>
 
-      {/* FINAL CTA */}
-      <section className="py-24 px-6 gradient-cta relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-0 left-0 w-96 h-96 rounded-full blur-3xl" style={{ background: '#7BA7C7' }} />
-          <div className="absolute bottom-0 right-0 w-80 h-80 rounded-full blur-3xl" style={{ background: '#1C2B3A' }} />
+      <section className="px-6 py-20">
+        <div className="mx-auto max-w-6xl">
+          <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
+            <div>
+              <p className="text-sm font-black uppercase tracking-[0.18em] text-[#2F7D6B]">Why it sells</p>
+              <h2 className="mt-3 text-4xl font-black leading-tight text-[#172434] md:text-5xl">
+                Clean is not the product. Relief is.
+              </h2>
+            </div>
+            <p className="max-w-2xl text-lg leading-8 text-[#5F6E78]">
+              Cleanngo should feel like the weekly reset button for people with full calendars, kids, guests,
+              tenants, teams, and lives that already have enough friction.
+            </p>
+          </div>
+
+          <div className="mt-10 grid gap-4 md:grid-cols-3">
+            {EMOTIONAL_WINS.map((item) => (
+              <div key={item} className="rounded-[8px] border border-[#E5DDD3] bg-white p-6 shadow-sm">
+                <Sparkles className="mb-5 h-6 w-6 text-[#C58A24]" />
+                <p className="text-lg font-bold leading-7 text-[#172434]">{item}</p>
+              </div>
+            ))}
+          </div>
         </div>
-        <div className="relative z-10 max-w-2xl mx-auto text-center">
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">Ready for a cleaner home?</h2>
-          <p className="text-white/70 text-lg mb-10">Join 500+ Australian homes &amp; offices. Book in 60 seconds.</p>
-          <Link href="/customer/book" className="inline-flex items-center gap-2 bg-white text-[#2C4A6E] font-bold px-12 py-5 rounded-full text-lg hover:bg-white/90 transition-all hover:shadow-2xl hover:-translate-y-1">
-            Book Now — It&apos;s Free to Quote
-          </Link>
-          <p className="text-white/50 text-sm mt-6">No commitment. Cancel anytime. Insured &amp; guaranteed.</p>
+      </section>
+
+      <section className="bg-[#172434] px-6 py-20 text-white">
+        <div className="mx-auto max-w-6xl">
+          <div className="max-w-3xl">
+            <p className="text-sm font-black uppercase tracking-[0.18em] text-[#8FD8B4]">Monetisation built in</p>
+            <h2 className="mt-3 text-4xl font-black leading-tight md:text-5xl">
+              Three offers on the homepage. More revenue in every booking.
+            </h2>
+          </div>
+
+          <div className="mt-10 grid gap-5 lg:grid-cols-3">
+            {REVENUE_LANES.map((lane) => (
+              <div key={lane.title} className="rounded-[8px] border border-white/12 bg-white/[0.06] p-6">
+                <div className="mb-6 flex items-center justify-between gap-4">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-[8px] bg-white/10">
+                    <lane.icon className="h-6 w-6 text-[#F2C14E]" />
+                  </div>
+                  <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-black uppercase tracking-[0.14em] text-white/62">
+                    {lane.eyebrow}
+                  </span>
+                </div>
+                <h3 className="text-2xl font-black">{lane.title}</h3>
+                <p className="mt-4 min-h-24 text-sm leading-6 text-white/66">{lane.text}</p>
+                <Link href={lane.href} className="mt-6 inline-flex items-center gap-2 text-sm font-black text-[#8FD8B4] transition hover:text-white">
+                  {lane.cta}
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="px-6 py-20">
+        <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
+          <div className="overflow-hidden rounded-[8px] bg-white shadow-xl">
+            <div
+              className="min-h-[460px]"
+              style={{
+                backgroundImage:
+                  "linear-gradient(180deg, rgba(23,36,52,0.03), rgba(23,36,52,0.24)), url('https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=1200&q=85')",
+                backgroundPosition: 'center',
+                backgroundSize: 'cover',
+              }}
+            />
+          </div>
+
+          <div id="airbnb">
+            <p className="text-sm font-black uppercase tracking-[0.18em] text-[#2F7D6B]">For Airbnb hosts</p>
+            <h2 className="mt-3 text-4xl font-black leading-tight text-[#172434] md:text-5xl">
+              Checkout at 10. New guest at 3. We handle the reset.
+            </h2>
+            <p className="mt-5 text-lg leading-8 text-[#5F6E78]">
+              Fast, repeatable turnover cleaning for short-stay hosts who need fresh beds, spotless bathrooms,
+              stocked essentials, and proof the place is guest-ready.
+            </p>
+            <div className="mt-8 grid gap-3 sm:grid-cols-2">
+              {HOST_FEATURES.map((feature) => (
+                <div key={feature} className="flex items-start gap-3 rounded-[8px] border border-[#E5DDD3] bg-white px-4 py-3 text-sm font-bold text-[#172434]">
+                  <Check className="mt-0.5 h-4 w-4 flex-none text-[#2F7D6B]" />
+                  {feature}
+                </div>
+              ))}
+            </div>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <Link href="/commercial#airbnb" className="inline-flex items-center justify-center gap-2 rounded-full bg-[#172434] px-7 py-4 font-black text-white transition hover:-translate-y-0.5 hover:bg-[#24384F]">
+                Build my host plan
+                <ArrowRight className="h-5 w-5" />
+              </Link>
+              <Link href="/customer/book" className="inline-flex items-center justify-center rounded-full border border-[#CBBFB2] px-7 py-4 font-black text-[#172434] transition hover:-translate-y-0.5 hover:bg-white">
+                Book one turnover
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-white px-6 py-20">
+        <div className="mx-auto max-w-6xl">
+          <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+            <div>
+              <p className="text-sm font-black uppercase tracking-[0.18em] text-[#C58A24]">Bigger basket size</p>
+              <h2 className="mt-3 text-4xl font-black leading-tight text-[#172434] md:text-5xl">
+                Add the little luxuries at checkout.
+              </h2>
+              <p className="mt-5 text-lg leading-8 text-[#5F6E78]">
+                The base clean gets the home reset. Add-ons create margin, solve specific pain, and make Cleanngo feel tailored.
+              </p>
+            </div>
+
+            <div className="grid gap-3 sm:grid-cols-2">
+              {ADD_ONS.map((addon) => (
+                <div key={addon} className="flex items-center gap-3 rounded-[8px] border border-[#E8E2DA] bg-[#F7F3EE] p-4">
+                  <div className="flex h-10 w-10 flex-none items-center justify-center rounded-[8px] bg-white">
+                    <Sparkles className="h-5 w-5 text-[#C58A24]" />
+                  </div>
+                  <span className="font-black text-[#172434]">{addon}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="px-6 py-20">
+        <div className="mx-auto max-w-6xl">
+          <div className="text-center">
+            <p className="text-sm font-black uppercase tracking-[0.18em] text-[#2F7D6B]">How it works</p>
+            <h2 className="mx-auto mt-3 max-w-3xl text-4xl font-black leading-tight text-[#172434] md:text-5xl">
+              A calm home in three clean moves.
+            </h2>
+          </div>
+
+          <div className="mt-10 grid gap-5 md:grid-cols-3">
+            {RESET_STEPS.map((step, index) => (
+              <div key={step.title} className="rounded-[8px] border border-[#E5DDD3] bg-white p-6 shadow-sm">
+                <div className="mb-8 flex items-center justify-between">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-[8px] bg-[#172434] text-white">
+                    <step.icon className="h-6 w-6" />
+                  </div>
+                  <span className="text-sm font-black text-[#B4A79A]">0{index + 1}</span>
+                </div>
+                <h3 className="text-xl font-black text-[#172434]">{step.title}</h3>
+                <p className="mt-3 text-sm leading-6 text-[#5F6E78]">{step.text}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="px-6 py-20">
+        <div className="mx-auto max-w-6xl overflow-hidden rounded-[8px] bg-[#172434] shadow-2xl">
+          <div className="grid lg:grid-cols-[1.05fr_0.95fr]">
+            <div className="p-8 text-white md:p-12">
+              <p className="text-sm font-black uppercase tracking-[0.18em] text-[#8FD8B4]">Start here</p>
+              <h2 className="mt-3 text-4xl font-black leading-tight md:text-5xl">
+                Make next week feel lighter.
+              </h2>
+              <p className="mt-5 max-w-xl text-lg leading-8 text-white/70">
+                Choose a weekly reset, ask about Airbnb turnovers, or get a fixed office quote.
+                Cleanngo turns cleaning into one less thing your brain has to carry.
+              </p>
+              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                <Link href="/customer/plan" className="inline-flex items-center justify-center gap-2 rounded-full bg-[#F2C14E] px-8 py-4 font-black text-[#172434] transition hover:-translate-y-0.5 hover:bg-[#F6CF72]">
+                  Get my reset price
+                  <ArrowRight className="h-5 w-5" />
+                </Link>
+                <Link href="/commercial" className="inline-flex items-center justify-center rounded-full border border-white/20 px-8 py-4 font-black text-white transition hover:-translate-y-0.5 hover:bg-white/10">
+                  I am a business or host
+                </Link>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-px bg-white/10 p-px">
+              {[
+                { icon: BedDouble, label: 'Homes', value: '$49+' },
+                { icon: Hotel, label: 'Airbnbs', value: 'turnover' },
+                { icon: BriefcaseBusiness, label: 'Offices', value: 'monthly' },
+                { icon: KeyRound, label: 'End of lease', value: 'bond-ready' },
+                { icon: Timer, label: 'Fast quote', value: '60 sec' },
+                { icon: Camera, label: 'Proof', value: 'photos' },
+              ].map((stat) => (
+                <div key={stat.label} className="bg-[#203149] p-6 text-white">
+                  <stat.icon className="h-6 w-6 text-[#8FD8B4]" />
+                  <div className="mt-6 text-2xl font-black">{stat.value}</div>
+                  <div className="mt-1 text-xs font-black uppercase tracking-[0.16em] text-white/48">{stat.label}</div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 

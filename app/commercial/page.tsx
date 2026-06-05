@@ -28,6 +28,15 @@ const INCLUDED = [
   'Consumables monitored (soap, paper, etc.)',
 ]
 
+const AIRBNB_INCLUDED = [
+  'Same-day checkout-to-checkin turnover cleans',
+  'Beds made and linen changed where supplied',
+  'Bathrooms and kitchens sanitized for the next guest',
+  'Essentials checked and restock notes sent',
+  'Damage, missing items and guest mess flagged',
+  'Photo proof after every completed turnover',
+]
+
 export default function CommercialPage() {
   return (
     <main className="min-h-screen" style={{ background: '#F5F0EB' }}>
@@ -75,6 +84,46 @@ export default function CommercialPage() {
             ))}
           </div>
           <p className="text-center text-[#7A8A96] text-sm mt-6">Bespoke scope and frequency? We tailor every commercial quote to your site.</p>
+        </div>
+      </section>
+
+      <section id="airbnb" className="py-20 px-6">
+        <div className="max-w-5xl mx-auto grid gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
+          <div>
+            <p className="text-[#4A7FA5] font-semibold text-sm uppercase tracking-widest mb-3">For Airbnb hosts</p>
+            <h2 className="text-3xl md:text-4xl font-bold text-[#1C2B3A] mb-5 leading-tight">
+              Guest leaves at 10. Next guest arrives at 3. We reset everything between.
+            </h2>
+            <p className="text-[#7A8A96] leading-relaxed">
+              Built for short-stay hosts and property managers who need speed, consistency and proof.
+              We handle fresh beds, spotless bathrooms, kitchen reset, restock checks and photo-ready reporting.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3 mt-8">
+              <Link href="/customer/plan" className="inline-flex items-center justify-center gap-2 bg-[#2C4A6E] text-white font-bold px-8 py-4 rounded-full hover:bg-[#1C2B3A] transition-all hover:-translate-y-0.5">
+                Request Host Plan →
+              </Link>
+              <Link href="/customer/book" className="inline-flex items-center justify-center gap-2 border-2 border-[#2C4A6E] text-[#2C4A6E] font-bold px-8 py-4 rounded-full hover:bg-[#2C4A6E] hover:text-white transition-all">
+                Book One Turnover
+              </Link>
+            </div>
+          </div>
+
+          <div className="bg-white/80 backdrop-blur-sm border border-white/60 rounded-3xl p-8 shadow-lg">
+            <div className="grid sm:grid-cols-2 gap-3">
+              {AIRBNB_INCLUDED.map(item => (
+                <div key={item} className="flex items-start gap-3 text-sm text-[#1C2B3A]">
+                  <span className="text-[#4A7FA5] mt-0.5">✓</span>{item}
+                </div>
+              ))}
+            </div>
+            <div className="mt-6 rounded-2xl bg-[#F5F0EB] p-5">
+              <div className="text-[#1C2B3A] font-bold">Monetisation options</div>
+              <p className="text-[#7A8A96] text-sm mt-2 leading-relaxed">
+                Charge per turnover, offer monthly host plans, add weekend priority, linen service,
+                restocking, deep cleans and multi-property discounts.
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 

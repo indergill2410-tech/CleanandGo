@@ -5,6 +5,7 @@ import BrandMark from './BrandMark'
 
 const LINKS = [
   { label: 'Services', href: '/services' },
+  { label: 'Airbnb', href: '/#airbnb' },
   { label: 'For Offices', href: '/commercial' },
   { label: 'Pricing', href: '/pricing' },
   { label: 'Reliability', href: '/reliability' },

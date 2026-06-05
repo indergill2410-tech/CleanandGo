@@ -8,6 +8,7 @@ const COLUMNS = [
     heading: 'Services',
     links: [
       { label: 'Recurring Clean', href: '/services#recurring' },
+      { label: 'Airbnb Turnovers', href: '/commercial#airbnb' },
       { label: 'One-Off Clean', href: '/services#oneoff' },
       { label: 'End of Lease', href: '/services#endoflease' },
       { label: 'All Services', href: '/services' },
@@ -20,6 +21,7 @@ const COLUMNS = [
       { label: 'Pricing', href: '/pricing' },
       { label: 'Reliability Guarantee', href: '/reliability' },
       { label: 'For Offices', href: '/commercial' },
+      { label: 'For Airbnb Hosts', href: '/commercial#airbnb' },
       { label: 'Blog', href: '/blog' },
       { label: 'Careers', href: '/careers' },
       { label: 'Contact Us', href: '/contact' },
