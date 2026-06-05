@@ -136,17 +136,32 @@ export default function HomePage() {
               Come home to calm.
             </h1>
 
-            <p className="mt-6 max-w-xl text-lg leading-8 text-white/82 sm:text-xl">
+            <p className="mt-6 max-w-xl rounded-[8px] border border-white/20 bg-[#172434]/72 p-5 text-lg font-semibold leading-8 text-white shadow-2xl backdrop-blur-md sm:text-xl">
               Meet Cleanngo: your weekly home reset. We swoop in, sanitize, tidy, and vanish,
               like friendly cleaning ninjas. You come home to a spotless house, like magic.
             </p>
+
+            <div className="mt-4 flex max-w-xl flex-col gap-2 rounded-[8px] border border-white/16 bg-white/12 p-3 text-sm font-bold text-white backdrop-blur-md sm:flex-row sm:items-center sm:justify-between">
+              <span className="inline-flex items-center gap-2">
+                <Hotel className="h-4 w-4 text-[#8FD8B4]" />
+                Airbnb turnovers
+              </span>
+              <span className="hidden h-4 w-px bg-white/20 sm:block" />
+              <span className="inline-flex items-center gap-2">
+                <BriefcaseBusiness className="h-4 w-4 text-[#F2C14E]" />
+                Office cleaning plans
+              </span>
+              <Link href="/commercial" className="inline-flex items-center gap-1 text-[#8FD8B4] transition hover:text-white">
+                business quotes <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            </div>
 
             <div className="mt-8 grid max-w-xl gap-3 sm:grid-cols-2">
               {PRICE_POINTS.map((item) => (
                 <div key={item.label} className="rounded-[8px] border border-white/20 bg-white/12 p-4 backdrop-blur-md">
                   <div className="flex items-end gap-2">
                     <span className="text-4xl font-black text-white">{item.price}</span>
-                    <span className="pb-1 text-sm font-semibold text-white/72">/week</span>
+                    <span className="pb-1 text-sm font-semibold text-white/70">/week</span>
                   </div>
                   <div className="mt-2 text-sm font-bold text-white">{item.label}</div>
                   <div className="text-xs uppercase tracking-[0.16em] text-white/50">{item.detail}</div>
