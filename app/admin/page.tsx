@@ -186,7 +186,7 @@ export default function AdminDashboard() {
         <div className="absolute top-0 right-0 w-96 h-96 rounded-full blur-3xl opacity-15" style={{ background: '#7BA7C7' }} />
       </div>
 
-      <div className="relative z-10 p-6 max-w-7xl mx-auto">
+      <div className="relative z-10 mx-auto max-w-7xl p-4 sm:p-6">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-5">
           <div>
@@ -194,9 +194,9 @@ export default function AdminDashboard() {
             <h1 className="text-2xl sm:text-3xl font-bold text-white mt-1">Admin Dashboard</h1>
             <p className="text-white/50 mt-1">Manage quote requests &amp; jobs</p>
           </div>
-          <div className="flex flex-col gap-2 items-end">
+          <div className="flex w-full flex-col gap-2 sm:w-auto sm:items-end">
             <button type="button" onClick={signOut}
-              className="inline-flex items-center gap-2 text-sm font-medium px-4 py-2 rounded-lg border border-white/15 text-white/70 hover:text-white hover:bg-white/10 transition-colors">
+              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-white/15 px-4 py-2 text-sm font-medium text-white/70 transition-colors hover:bg-white/10 hover:text-white">
               <span aria-hidden="true">⎋</span> Sign out
             </button>
             {unread > 0 && (
@@ -215,10 +215,10 @@ export default function AdminDashboard() {
         </div>
 
         {/* Section nav */}
-        <nav className="flex flex-wrap gap-2 mb-8">
+        <nav className="-mx-4 mb-8 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 sm:pb-0">
           {NAV.map(item => (
             <Link key={item.href} href={item.href}
-              className="px-3.5 py-2 rounded-lg bg-white/5 border border-white/10 text-white/70 hover:text-white hover:bg-white/10 text-sm font-medium transition-colors">
+              className="shrink-0 px-3.5 py-2 rounded-lg bg-white/5 border border-white/10 text-white/70 hover:text-white hover:bg-white/10 text-sm font-medium transition-colors">
               {item.label}
             </Link>
           ))}
@@ -232,8 +232,8 @@ export default function AdminDashboard() {
             { label: 'In Progress', value: bookings.filter(b => b.status === 'in_progress').length, color: 'text-purple-300' },
             { label: 'Completed', value: bookings.filter(b => b.status === 'completed').length, color: 'text-green-300' },
           ].map(stat => (
-            <div key={stat.label} className="glass-strong rounded-2xl p-5">
-              <div className={`text-3xl font-bold ${stat.color}`}>{stat.value}</div>
+            <div key={stat.label} className="glass-strong rounded-2xl p-4 sm:p-5">
+              <div className={`text-2xl font-bold sm:text-3xl ${stat.color}`}>{stat.value}</div>
               <div className="text-white/50 text-sm mt-1">{stat.label}</div>
             </div>
           ))}
@@ -248,7 +248,7 @@ export default function AdminDashboard() {
             </div>
             <div className="space-y-2">
               {apps.slice(0, 4).map(a => (
-                <Link key={a.id} href="/admin/applications" className="flex items-center justify-between bg-white/5 hover:bg-white/10 rounded-xl px-4 py-2.5 transition-colors">
+                <Link key={a.id} href="/admin/applications" className="flex flex-col gap-2 bg-white/5 hover:bg-white/10 rounded-xl px-4 py-2.5 transition-colors min-[520px]:flex-row min-[520px]:items-center min-[520px]:justify-between">
                   <span className="text-white/90 text-sm">{a.name} <span className="text-white/40">· {a.suburbs || 'area not set'}</span></span>
                   <span className={`text-xs px-2 py-0.5 rounded-full ${a.status === 'new' ? 'bg-amber-500/20 text-amber-300' : 'bg-white/10 text-white/50'}`}>{a.status}</span>
                 </Link>
@@ -289,16 +289,16 @@ export default function AdminDashboard() {
                 className={`w-full glass-strong rounded-2xl p-5 text-left transition-all hover:bg-white/20 border-2 ${
                   selected?.id === b.id ? 'border-white/50' : 'border-transparent'
                 } ${b.status === 'pending' ? 'ring-1 ring-amber-400/30' : ''}`}>
-                <div className="flex items-start justify-between mb-3">
+                <div className="flex flex-col gap-3 mb-3 min-[520px]:flex-row min-[520px]:items-start min-[520px]:justify-between">
                   <div>
                     <div className="text-white font-semibold">{b.customers?.name || 'Customer'}</div>
                     <div className="text-white/50 text-sm">{SERVICE_LABELS[b.service_type] || b.service_type}</div>
                   </div>
-                  <span className={`text-xs font-medium px-3 py-1 rounded-full border ${STATUS_STYLES[b.status] || STATUS_STYLES.pending}`}>
+                  <span className={`w-fit text-xs font-medium px-3 py-1 rounded-full border ${STATUS_STYLES[b.status] || STATUS_STYLES.pending}`}>
                     {b.status === 'pending' ? '⏳ Awaiting Quote' : b.status.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
                   </span>
                 </div>
-                <div className="flex items-center gap-4 text-white/40 text-xs">
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-white/40 text-xs">
                   <span>📅 {b.scheduled_date}</span>
                   <span>🛏 {b.bedrooms}bed · {b.bathrooms}bath</span>
                   <span>📍 {b.suburb || b.address?.split(',').pop()?.trim()}</span>
@@ -311,7 +311,7 @@ export default function AdminDashboard() {
           {/* Job detail + quote panel */}
           <div className="lg:col-span-1">
             {selected ? (
-              <div className="glass-strong rounded-2xl p-6 sticky top-6">
+              <div className="glass-strong rounded-2xl p-5 sm:p-6 lg:sticky lg:top-6">
                 <div className="flex items-center justify-between mb-5">
                   <h3 className="text-white font-bold text-lg">Job Detail</h3>
                   <button onClick={() => setSelected(null)} className="text-white/40 hover:text-white text-xl">✕</button>
@@ -354,15 +354,15 @@ export default function AdminDashboard() {
                     { label: 'Time', value: selected.scheduled_time },
                     { label: 'Address', value: selected.address },
                   ].map(row => (
-                    <div key={row.label} className="flex justify-between text-sm">
+                    <div key={row.label} className="flex flex-col gap-1 text-sm sm:flex-row sm:justify-between">
                       <span className="text-white/40">{row.label}</span>
-                      <span className="text-white font-medium text-right max-w-[160px]">{row.value}</span>
+                      <span className="text-white font-medium sm:max-w-[160px] sm:text-right">{row.value}</span>
                     </div>
                   ))}
                   {selected.extras?.length > 0 && (
-                    <div className="flex justify-between text-sm">
+                    <div className="flex flex-col gap-1 text-sm sm:flex-row sm:justify-between">
                       <span className="text-white/40">Extras</span>
-                      <span className="text-white font-medium text-right max-w-[160px]">{selected.extras.join(', ')}</span>
+                      <span className="text-white font-medium sm:max-w-[160px] sm:text-right">{selected.extras.join(', ')}</span>
                     </div>
                   )}
                   {selected.notes && (

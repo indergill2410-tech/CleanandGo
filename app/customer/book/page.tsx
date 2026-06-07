@@ -100,18 +100,18 @@ export default function BookingPage() {
         <div className="absolute top-20 right-20 w-80 h-80 rounded-full blur-3xl opacity-20" style={{ background: '#7BA7C7' }} />
         <div className="absolute bottom-20 left-20 w-96 h-96 rounded-full blur-3xl opacity-10" style={{ background: '#4A7FA5' }} />
       </div>
-      <div className="relative z-10 min-h-screen flex flex-col items-center justify-center py-12 px-4">
-        <div className="text-center mb-8">
+      <div className="relative z-10 flex min-h-screen flex-col items-center justify-center px-4 py-8 sm:py-12">
+        <div className="text-center mb-6 sm:mb-8">
           <Link href="/" className="text-white/60 text-sm hover:text-white mb-4 inline-block">← Back to home</Link>
-          <h1 className="text-3xl font-bold text-white">Request a Quote</h1>
-          <p className="text-white/60 mt-1">Tell us about your job — we'll send a price within the hour</p>
+          <h1 className="text-2xl font-bold text-white sm:text-3xl">Request a Quote</h1>
+          <p className="mx-auto mt-1 max-w-sm text-sm text-white/60 sm:text-base">Tell us about your job — we'll send a price within the hour</p>
         </div>
 
         {/* Progress */}
-        <div className="w-full max-w-xl mb-8">
+        <div className="w-full max-w-xl mb-6 sm:mb-8">
           <div className="flex items-center justify-between mb-3">
             {STEPS.map((s, i) => (
-              <div key={i} className="flex flex-col items-center gap-1">
+              <div key={i} className="flex min-w-0 flex-col items-center gap-1">
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all ${
                   i < step ? 'bg-white text-[#2C4A6E]' : i === step ? 'bg-white text-[#2C4A6E] ring-4 ring-white/30' : 'bg-white/20 text-white/50'
                 }`}>{i < step ? '✓' : i + 1}</div>
@@ -124,7 +124,7 @@ export default function BookingPage() {
           </div>
         </div>
 
-        <div className="glass-strong rounded-3xl p-8 w-full max-w-xl shadow-2xl">
+        <div className="glass-strong w-full max-w-xl rounded-2xl p-5 shadow-2xl sm:rounded-3xl sm:p-8">
 
           {/* STEP 0 — Service */}
           {step === 0 && (
@@ -139,14 +139,14 @@ export default function BookingPage() {
                         ? 'bg-white/30 border-white text-white'
                         : 'bg-white/10 border-white/20 text-white/80 hover:bg-white/20'
                     }`}>
-                    <div className="flex items-center gap-4">
-                      <span className="text-3xl">{s.icon}</span>
+                    <div className="flex items-center gap-3 sm:gap-4">
+                      <span className="text-2xl sm:text-3xl">{s.icon}</span>
                       <div>
                         <div className="font-semibold">{s.label}</div>
                         <div className="text-sm opacity-70">{s.sub}</div>
                       </div>
                       {form.service === s.id && (
-                        <div className="ml-auto text-white/80 text-sm font-medium">Selected ✓</div>
+                        <div className="ml-auto hidden text-white/80 text-sm font-medium sm:block">Selected ✓</div>
                       )}
                     </div>
                   </button>
@@ -165,7 +165,7 @@ export default function BookingPage() {
             <div>
               <h2 className="text-xl font-bold text-white mb-2">Size &amp; extras</h2>
               <p className="text-white/50 text-sm mb-6">This helps us quote accurately.</p>
-              <div className="grid grid-cols-2 gap-4 mb-6">
+              <div className="grid grid-cols-1 gap-4 mb-6 min-[420px]:grid-cols-2">
                 {[{ label: 'Bedrooms', key: 'beds', min: 1, max: 8 }, { label: 'Bathrooms', key: 'baths', min: 1, max: 6 }].map(f => (
                   <div key={f.key}>
                     <label className="text-white/70 text-sm mb-2 block">{f.label}</label>
@@ -178,7 +178,7 @@ export default function BookingPage() {
                 ))}
               </div>
               <label className="text-white/70 text-sm mb-3 block">Any extras? (optional)</label>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-1 gap-2 min-[420px]:grid-cols-2">
                 {EXTRAS.map(e => (
                   <button key={e.id} onClick={() => toggleExtra(e.id)}
                     className={`p-3 rounded-xl text-left transition-all border ${
@@ -205,7 +205,7 @@ export default function BookingPage() {
               </div>
               <div>
                 <label className="text-white/70 text-sm mb-2 block">Preferred start time</label>
-                <div className="grid grid-cols-4 gap-2">
+                <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
                   {TIMES.map(t => (
                     <button key={t} onClick={() => setForm(f => ({ ...f, time: t }))}
                       className={`py-2.5 rounded-xl text-sm font-medium transition-all ${
@@ -258,7 +258,7 @@ export default function BookingPage() {
                     className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 text-sm"
                   />
                 </div>
-                <div className="grid grid-cols-3 gap-3">
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
                   <div>
                     <label className="text-white/70 text-sm mb-1 block">Suburb</label>
                     <input value={form.suburb} onChange={e => setForm(f => ({ ...f, suburb: e.target.value }))} className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 text-sm" />
@@ -300,9 +300,9 @@ export default function BookingPage() {
                   { label: 'Address', value: `${form.address}, ${form.suburb}` },
                   { label: 'Contact', value: `${form.name} · ${form.email}` },
                 ].filter(Boolean).map((row: any) => (
-                  <div key={row.label} className="flex justify-between text-sm">
+                  <div key={row.label} className="flex flex-col gap-1 text-sm sm:flex-row sm:justify-between">
                     <span className="text-white/50">{row.label}</span>
-                    <span className="text-white font-medium text-right max-w-[220px]">{row.value}</span>
+                    <span className="text-white font-medium sm:max-w-[220px] sm:text-right">{row.value}</span>
                   </div>
                 ))}
               </div>
@@ -333,7 +333,7 @@ export default function BookingPage() {
           )}
 
           {/* Navigation */}
-          <div className="flex gap-3 mt-6">
+          <div className="flex flex-col gap-3 mt-6 sm:flex-row">
             {step > 0 && (
               <button onClick={() => setStep(s => s - 1)} className="flex-1 py-3 rounded-xl border border-white/30 text-white/70 hover:bg-white/10 transition font-medium">← Back</button>
             )}

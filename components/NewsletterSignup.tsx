@@ -40,9 +40,9 @@ export default function NewsletterSignup({ compact = false }: { compact?: boolea
       {!compact && (
         <input value={name} onChange={(e) => setName(e.target.value)} placeholder="First name (optional)" className={inputCls} />
       )}
-      <div className="flex gap-2">
+      <div className="flex flex-col gap-2 min-[420px]:flex-row">
         <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Your email" className={inputCls} />
-        <button type="submit" disabled={busy} className="shrink-0 px-5 py-2.5 rounded-xl bg-white text-[#2C4A6E] font-bold text-sm hover:bg-white/90 disabled:opacity-50">
+        <button type="submit" disabled={busy} className="min-h-11 shrink-0 px-5 py-2.5 rounded-xl bg-white text-[#2C4A6E] font-bold text-sm hover:bg-white/90 disabled:opacity-50">
           {busy ? '…' : 'Subscribe'}
         </button>
       </div>
