@@ -191,9 +191,5 @@ input:focus, select:focus, textarea:focus {
     font-size: 0.95rem;
   }
 
-  .btn-primary:hover,
-  .btn-secondary:hover,
-  .card-hover:hover {
-    transform: none;
-  }
+  /* Hover overrides removed in favor of wrapping original hover styles in @media (hover: hover) */
 }
