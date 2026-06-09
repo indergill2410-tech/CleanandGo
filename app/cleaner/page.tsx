@@ -75,13 +75,13 @@ export default function CleanerPortal() {
 
   return (
     <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #1C2B3A 0%, #2C4A6E 100%)' }}>
-      <div className="fixed top-0 left-0 right-0 z-50 glass border-b border-white/20 px-6 py-4">
+      <div className="fixed top-0 left-0 right-0 z-50 glass border-b border-white/20 px-4 py-4 sm:px-6">
         <div className="max-w-lg mx-auto flex items-center justify-between">
           <Link href="/" className="group">
             <div className="text-white font-bold group-hover:text-white/80 transition-colors">cleanngo Staff</div>
             <div className="text-white/50 text-xs">{staffName}</div>
           </Link>
-          <button onClick={signOut} className="text-white/60 text-sm hover:text-white">Sign out</button>
+          <button onClick={signOut} className="min-h-11 rounded-lg px-3 text-white/60 text-sm hover:bg-white/10 hover:text-white">Sign out</button>
         </div>
       </div>
 
@@ -103,15 +103,15 @@ export default function CleanerPortal() {
             {jobs.map(job => (
               <div key={job.id} className="glass rounded-2xl overflow-hidden">
                 <button onClick={() => setExpanded(expanded === job.id ? null : job.id)} className="w-full p-5 text-left">
-                  <div className="flex items-start justify-between">
-                    <div>
+                  <div className="flex flex-col gap-3 min-[420px]:flex-row min-[420px]:items-start min-[420px]:justify-between">
+                    <div className="min-w-0">
                       <div className="text-white font-semibold text-sm mb-1">{job.address}</div>
                       <div className="text-white/60 text-xs">
                         {job.scheduled_date} {job.scheduled_time?.slice(0, 5)} · {SERVICE_LABELS[job.service_type] || job.service_type} · {job.bedrooms ?? '?'}bed/{job.bathrooms ?? '?'}bath
                       </div>
                       {job.covered_by_backup && <div className="text-amber-300 text-xs mt-1">🛟 Backup coverage</div>}
                     </div>
-                    <span className={`text-xs font-semibold px-3 py-1 rounded-full ${job.status === 'in_progress' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'}`}>
+                    <span className={`w-fit shrink-0 text-xs font-semibold px-3 py-1 rounded-full ${job.status === 'in_progress' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'}`}>
                       {job.status === 'in_progress' ? 'In progress' : 'Confirmed'}
                     </span>
                   </div>

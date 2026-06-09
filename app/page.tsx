@@ -125,18 +125,18 @@ export default function HomePage() {
             backgroundSize: 'cover',
           }}
         />
-        <div className="relative mx-auto grid min-h-[760px] max-w-6xl items-center gap-12 px-6 pb-16 lg:grid-cols-[1.05fr_0.95fr]">
-          <div className="max-w-2xl pt-10">
+        <div className="relative mx-auto grid min-h-[calc(100svh-4rem)] max-w-6xl items-center gap-10 px-4 pb-12 pt-8 sm:px-6 sm:pb-16 lg:min-h-[760px] lg:grid-cols-[1.05fr_0.95fr]">
+          <div className="max-w-2xl pt-8 sm:pt-10">
             <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold text-white backdrop-blur-md">
               <Sparkles className="h-4 w-4 text-[#F2C14E]" />
               Weekly home resets from $49/week
             </div>
 
-            <h1 className="text-5xl font-black leading-[0.98] tracking-normal text-white sm:text-6xl lg:text-7xl">
+            <h1 className="text-4xl font-black leading-[1.02] tracking-normal text-white sm:text-6xl lg:text-7xl">
               Come home to calm.
             </h1>
 
-            <p className="mt-6 max-w-xl rounded-[8px] border border-white/20 bg-[#172434]/72 p-5 text-lg font-semibold leading-8 text-white shadow-2xl backdrop-blur-md sm:text-xl">
+            <p className="mt-6 max-w-xl rounded-[8px] border border-white/20 bg-[#172434]/72 p-4 text-base font-semibold leading-7 text-white shadow-2xl backdrop-blur-md sm:p-5 sm:text-xl sm:leading-8">
               Meet Cleanngo: your weekly home reset. We swoop in, sanitize, tidy, and vanish,
               like friendly cleaning ninjas. You come home to a spotless house, like magic.
             </p>
@@ -195,7 +195,7 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="rounded-[8px] border border-white/18 bg-white/92 p-5 shadow-2xl backdrop-blur-md lg:ml-auto lg:max-w-md">
+          <div className="rounded-[8px] border border-white/18 bg-white/92 p-4 shadow-2xl backdrop-blur-md sm:p-5 lg:ml-auto lg:max-w-md">
             <div className="rounded-[8px] bg-[#172434] p-5 text-white">
               <div className="flex items-center justify-between gap-4">
                 <div>
@@ -231,12 +231,12 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="px-6 py-20">
+      <section className="px-4 py-16 sm:px-6 sm:py-20">
         <div className="mx-auto max-w-6xl">
           <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
             <div>
               <p className="text-sm font-black uppercase tracking-[0.18em] text-[#2F7D6B]">Why it sells</p>
-              <h2 className="mt-3 text-4xl font-black leading-tight text-[#172434] md:text-5xl">
+              <h2 className="mt-3 text-3xl font-black leading-tight text-[#172434] sm:text-4xl md:text-5xl">
                 Clean is not the product. Relief is.
               </h2>
             </div>
@@ -257,11 +257,11 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="bg-[#172434] px-6 py-20 text-white">
+      <section className="bg-[#172434] px-4 py-16 text-white sm:px-6 sm:py-20">
         <div className="mx-auto max-w-6xl">
           <div className="max-w-3xl">
             <p className="text-sm font-black uppercase tracking-[0.18em] text-[#8FD8B4]">Monetisation built in</p>
-            <h2 className="mt-3 text-4xl font-black leading-tight md:text-5xl">
+            <h2 className="mt-3 text-3xl font-black leading-tight sm:text-4xl md:text-5xl">
               Three offers on the homepage. More revenue in every booking.
             </h2>
           </div>
@@ -289,11 +289,11 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="px-6 py-20">
+      <section className="px-4 py-16 sm:px-6 sm:py-20">
         <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
           <div className="overflow-hidden rounded-[8px] bg-white shadow-xl">
             <div
-              className="min-h-[460px]"
+              className="min-h-[280px] sm:min-h-[360px] lg:min-h-[460px]"
               style={{
                 backgroundImage:
                   "linear-gradient(180deg, rgba(23,36,52,0.03), rgba(23,36,52,0.24)), url('https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=1200&q=85')",
@@ -305,7 +305,7 @@ export default function HomePage() {
 
           <div id="airbnb">
             <p className="text-sm font-black uppercase tracking-[0.18em] text-[#2F7D6B]">For Airbnb hosts</p>
-            <h2 className="mt-3 text-4xl font-black leading-tight text-[#172434] md:text-5xl">
+            <h2 className="mt-3 text-3xl font-black leading-tight text-[#172434] sm:text-4xl md:text-5xl">
               Checkout at 10. New guest at 3. We handle the reset.
             </h2>
             <p className="mt-5 text-lg leading-8 text-[#5F6E78]">
@@ -333,12 +333,12 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="bg-white px-6 py-20">
+      <section className="bg-white px-4 py-16 sm:px-6 sm:py-20">
         <div className="mx-auto max-w-6xl">
           <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
             <div>
               <p className="text-sm font-black uppercase tracking-[0.18em] text-[#C58A24]">Bigger basket size</p>
-              <h2 className="mt-3 text-4xl font-black leading-tight text-[#172434] md:text-5xl">
+              <h2 className="mt-3 text-3xl font-black leading-tight text-[#172434] sm:text-4xl md:text-5xl">
                 Add the little luxuries at checkout.
               </h2>
               <p className="mt-5 text-lg leading-8 text-[#5F6E78]">
@@ -360,11 +360,11 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="px-6 py-20">
+      <section className="px-4 py-16 sm:px-6 sm:py-20">
         <div className="mx-auto max-w-6xl">
           <div className="text-center">
             <p className="text-sm font-black uppercase tracking-[0.18em] text-[#2F7D6B]">How it works</p>
-            <h2 className="mx-auto mt-3 max-w-3xl text-4xl font-black leading-tight text-[#172434] md:text-5xl">
+            <h2 className="mx-auto mt-3 max-w-3xl text-3xl font-black leading-tight text-[#172434] sm:text-4xl md:text-5xl">
               A calm home in three clean moves.
             </h2>
           </div>
@@ -386,12 +386,12 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="px-6 py-20">
+      <section className="px-4 py-16 sm:px-6 sm:py-20">
         <div className="mx-auto max-w-6xl overflow-hidden rounded-[8px] bg-[#172434] shadow-2xl">
           <div className="grid lg:grid-cols-[1.05fr_0.95fr]">
             <div className="p-8 text-white md:p-12">
               <p className="text-sm font-black uppercase tracking-[0.18em] text-[#8FD8B4]">Start here</p>
-              <h2 className="mt-3 text-4xl font-black leading-tight md:text-5xl">
+              <h2 className="mt-3 text-3xl font-black leading-tight sm:text-4xl md:text-5xl">
                 Make next week feel lighter.
               </h2>
               <p className="mt-5 max-w-xl text-lg leading-8 text-white/70">
