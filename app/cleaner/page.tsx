@@ -81,7 +81,7 @@ export default function CleanerPortal() {
             <div className="text-white font-bold group-hover:text-white/80 transition-colors">cleanngo Staff</div>
             <div className="text-white/50 text-xs">{staffName}</div>
           </Link>
-          <button onClick={signOut} className="min-h-10 rounded-lg px-3 text-white/60 text-sm hover:bg-white/10 hover:text-white">Sign out</button>
+          <button onClick={signOut} className="min-h-11 rounded-lg px-3 text-white/60 text-sm hover:bg-white/10 hover:text-white">Sign out</button>
         </div>
       </div>
 
