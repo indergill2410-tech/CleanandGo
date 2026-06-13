@@ -93,7 +93,7 @@ export async function GET(request: Request) {
 
     let query = supabase
       .from('bookings')
-      .select('*, customers(name, email, phone)')
+      .select('*, customers(name, email, phone), staff:staff_id(name, email, phone, suburb, role, status), original_staff:original_staff_id(name, email, phone), job_completions(start_time, end_time, submitted_at, before_photos, after_photos, notes)')
       .order('created_at', { ascending: false })
 
     if (status) query = query.eq('status', status)

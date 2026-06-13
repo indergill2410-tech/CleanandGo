@@ -6,6 +6,8 @@ export type StaffRecord = {
   user_id: string
   name: string
   email: string
+  phone: string | null
+  suburb: string | null
   role: string
   status: string
 }
@@ -38,7 +40,7 @@ export async function requireAdmin(): Promise<AuthResult> {
   const admin = createAdminClient()
   const { data: staff } = await admin
     .from('staff')
-    .select('id, user_id, name, email, role, status')
+    .select('id, user_id, name, email, phone, suburb, role, status')
     .eq('user_id', user.id)
     .maybeSingle()
 
@@ -60,7 +62,7 @@ export async function requireStaff(): Promise<AuthResult> {
   const admin = createAdminClient()
   const { data: staff } = await admin
     .from('staff')
-    .select('id, user_id, name, email, role, status')
+    .select('id, user_id, name, email, phone, suburb, role, status')
     .eq('user_id', user.id)
     .maybeSingle()
 
@@ -76,6 +78,7 @@ export type CustomerRecord = {
   user_id: string
   name: string
   email: string
+  phone: string | null
 }
 
 type CustomerAuthResult =
@@ -93,7 +96,7 @@ export async function requireCustomer(): Promise<CustomerAuthResult> {
   const admin = createAdminClient()
   const { data: customer } = await admin
     .from('customers')
-    .select('id, user_id, name, email')
+    .select('id, user_id, name, email, phone')
     .eq('user_id', user.id)
     .maybeSingle()
 

@@ -9,10 +9,10 @@ export async function GET() {
 
   const supabase = createAdminClient()
 
-  const [{ data: subscriptions }, { data: credits }, { data: invoices }, { data: bookings }] = await Promise.all([
+  const [{ data: subscriptions }, { data: credits }, { data: invoices }, { data: bookings }, { data: conversations }] = await Promise.all([
     supabase
       .from('subscriptions')
-      .select('id, property_type, frequency, address, suburb, status, price_cents, preferred_day, stripe_subscription_id')
+      .select('id, property_type, frequency, address, suburb, state, postcode, status, price_cents, preferred_day, preferred_time, stripe_subscription_id, primary_staff:primary_staff_id(name, phone, suburb), backup_staff:backup_staff_id(name, phone, suburb)')
       .eq('customer_id', auth.customer.id)
       .order('created_at', { ascending: false }),
     supabase
@@ -28,18 +28,24 @@ export async function GET() {
       .order('created_at', { ascending: false }),
     supabase
       .from('bookings')
-      .select('id, service_type, status, scheduled_date, scheduled_time, suburb, price_cents')
+      .select('id, service_type, status, scheduled_date, scheduled_time, address, suburb, state, postcode, bedrooms, bathrooms, extras, notes, photos, price_cents, covered_by_backup, staff:staff_id(name, phone, suburb), job_completions(start_time, end_time, submitted_at, before_photos, after_photos, notes)')
       .eq('customer_id', auth.customer.id)
       .is('subscription_id', null)
       .order('scheduled_date', { ascending: false })
       .limit(50),
+    supabase
+      .from('conversations')
+      .select('id, subject, booking_id, last_message_at')
+      .eq('customer_id', auth.customer.id)
+      .order('last_message_at', { ascending: false }),
   ])
 
   return NextResponse.json({
-    customer: { name: auth.customer.name, email: auth.customer.email },
+    customer: { name: auth.customer.name, email: auth.customer.email, phone: auth.customer.phone },
     subscriptions: subscriptions || [],
     credits: credits || [],
     invoices: invoices || [],
     bookings: bookings || [],
+    conversations: conversations || [],
   })
 }

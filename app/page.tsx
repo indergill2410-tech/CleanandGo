@@ -60,10 +60,10 @@ const RESET_STEPS = [
 const REVENUE_LANES = [
   {
     icon: Home,
-    eyebrow: 'Best default',
+    eyebrow: 'Most popular',
     title: 'Weekly home resets',
     text: 'Recurring plans for busy households who want the same clean feeling every week without spending Saturday scrubbing.',
-    cta: 'Start a weekly plan',
+    cta: 'Start your weekly reset',
     href: '/customer/plan',
   },
   {
@@ -79,7 +79,7 @@ const REVENUE_LANES = [
     eyebrow: 'For teams',
     title: 'Office cleaning',
     text: 'Fixed monthly commercial plans for offices, studios, salons, clinics, and high-touch workspaces.',
-    cta: 'Get business quote',
+    cta: 'Get an office quote',
     href: '/commercial',
   },
 ]
@@ -137,8 +137,8 @@ export default function HomePage() {
             </h1>
 
             <p className="mt-6 max-w-xl rounded-[8px] border border-white/20 bg-[#172434]/72 p-4 text-base font-semibold leading-7 text-white shadow-2xl backdrop-blur-md sm:p-5 sm:text-xl sm:leading-8">
-              Meet Cleanngo: your weekly home reset. We swoop in, sanitize, tidy, and vanish,
-              like friendly cleaning ninjas. You come home to a spotless house, like magic.
+              Meet Cleanngo: your weekly home reset. We sanitize, tidy, polish, and leave
+              everything ready for the part of life you actually want to enjoy.
             </p>
 
             <div className="mt-4 flex max-w-xl flex-col gap-2 rounded-[8px] border border-white/16 bg-white/12 p-3 text-sm font-bold text-white backdrop-blur-md sm:flex-row sm:items-center sm:justify-between">
@@ -152,7 +152,7 @@ export default function HomePage() {
                 Office cleaning plans
               </span>
               <Link href="/commercial" className="inline-flex items-center gap-1 text-[#8FD8B4] transition hover:text-white">
-                business quotes <ArrowRight className="h-3.5 w-3.5" />
+                office quotes <ArrowRight className="h-3.5 w-3.5" />
               </Link>
             </div>
 
@@ -235,7 +235,7 @@ export default function HomePage() {
         <div className="mx-auto max-w-6xl">
           <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
             <div>
-              <p className="text-sm font-black uppercase tracking-[0.18em] text-[#2F7D6B]">Why it sells</p>
+              <p className="text-sm font-black uppercase tracking-[0.18em] text-[#2F7D6B]">Why it feels different</p>
               <h2 className="mt-3 text-3xl font-black leading-tight text-[#172434] sm:text-4xl md:text-5xl">
                 Clean is not the product. Relief is.
               </h2>
@@ -260,9 +260,9 @@ export default function HomePage() {
       <section className="bg-[#172434] px-4 py-16 text-white sm:px-6 sm:py-20">
         <div className="mx-auto max-w-6xl">
           <div className="max-w-3xl">
-            <p className="text-sm font-black uppercase tracking-[0.18em] text-[#8FD8B4]">Monetisation built in</p>
+            <p className="text-sm font-black uppercase tracking-[0.18em] text-[#8FD8B4]">Choose your clean</p>
             <h2 className="mt-3 text-3xl font-black leading-tight sm:text-4xl md:text-5xl">
-              Three offers on the homepage. More revenue in every booking.
+              One trusted team for homes, hosts, and workplaces.
             </h2>
           </div>
 
@@ -337,12 +337,12 @@ export default function HomePage() {
         <div className="mx-auto max-w-6xl">
           <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
             <div>
-              <p className="text-sm font-black uppercase tracking-[0.18em] text-[#C58A24]">Bigger basket size</p>
+              <p className="text-sm font-black uppercase tracking-[0.18em] text-[#C58A24]">Finishing touches</p>
               <h2 className="mt-3 text-3xl font-black leading-tight text-[#172434] sm:text-4xl md:text-5xl">
                 Add the little luxuries at checkout.
               </h2>
               <p className="mt-5 text-lg leading-8 text-[#5F6E78]">
-                The base clean gets the home reset. Add-ons create margin, solve specific pain, and make Cleanngo feel tailored.
+                Start with the essentials, then add the extras that make your place feel properly reset.
               </p>
             </div>
 

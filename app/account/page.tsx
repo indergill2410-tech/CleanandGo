@@ -1,9 +1,25 @@
 'use client'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import {
+  ArrowRight,
+  CalendarDays,
+  CheckCircle2,
+  CreditCard,
+  Home,
+  MessageCircle,
+  Pause,
+  Play,
+  ShieldCheck,
+  Sparkles,
+  UserRound,
+} from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import PaymentForm from '@/components/PaymentForm'
+
+type StaffPerson = { name: string; phone: string | null; suburb: string | null }
+type StaffRef = StaffPerson | StaffPerson[] | null
 
 type Sub = {
   id: string
@@ -11,56 +27,116 @@ type Sub = {
   frequency: string
   address: string
   suburb: string
+  state: string | null
+  postcode: string | null
   status: string
   price_cents: number | null
   preferred_day: string | null
+  preferred_time: string | null
   stripe_subscription_id: string | null
+  primary_staff: StaffRef
+  backup_staff: StaffRef
 }
 type Credit = { id: string; amount_cents: number; reason: string | null }
 type Invoice = { id: string; amount_cents: number; description: string | null; hosted_invoice_url: string | null }
-type Booking = { id: string; service_type: string; status: string; scheduled_date: string; scheduled_time: string | null; suburb: string | null; price_cents: number }
-
-const SERVICE_LABELS: Record<string, string> = { recurring: 'Recurring Clean', oneoff: 'One-Off Clean', endoflease: 'End of Lease' }
-
-const STATUS_STYLES: Record<string, string> = {
-  requested: 'bg-amber-500/20 text-amber-300',
-  active:    'bg-green-500/20 text-green-300',
-  paused:    'bg-purple-500/20 text-purple-300',
-  cancelled: 'bg-red-500/20 text-red-300',
-  pending:     'bg-amber-500/20 text-amber-300',
-  confirmed:   'bg-blue-500/20 text-blue-300',
-  in_progress: 'bg-purple-500/20 text-purple-300',
-  completed:   'bg-green-500/20 text-green-300',
-  missed:      'bg-red-500/20 text-red-300',
+type Completion = {
+  start_time: string | null
+  end_time: string | null
+  submitted_at: string | null
+  before_photos: string[] | null
+  after_photos: string[] | null
+  notes: string | null
 }
+type Booking = {
+  id: string
+  service_type: string
+  status: string
+  scheduled_date: string
+  scheduled_time: string | null
+  address: string
+  suburb: string | null
+  state: string | null
+  postcode: string | null
+  bedrooms: number | null
+  bathrooms: number | null
+  extras: string[] | null
+  notes: string | null
+  photos: string[] | null
+  price_cents: number
+  covered_by_backup: boolean
+  staff: StaffRef
+  job_completions: Completion[] | Completion | null
+}
+type Conversation = { id: string; subject: string | null; booking_id: string | null; last_message_at: string | null }
+
+const SERVICE_LABELS: Record<string, string> = {
+  recurring: 'Recurring clean',
+  oneoff: 'One-off clean',
+  endoflease: 'End-of-lease clean',
+}
+
+const STATUS_COPY: Record<string, { label: string; className: string; helper: string }> = {
+  requested: { label: 'Quote requested', className: 'bg-amber-100 text-amber-800', helper: 'We are preparing your tailored price.' },
+  active: { label: 'Plan active', className: 'bg-emerald-100 text-emerald-800', helper: 'Your recurring clean is ready to run.' },
+  paused: { label: 'Paused', className: 'bg-purple-100 text-purple-800', helper: 'Your plan is paused until you resume it.' },
+  cancelled: { label: 'Cancelled', className: 'bg-red-100 text-red-800', helper: 'This plan is no longer active.' },
+  pending: { label: 'Quote requested', className: 'bg-amber-100 text-amber-800', helper: 'We are reviewing your request.' },
+  confirmed: { label: 'Booked', className: 'bg-blue-100 text-blue-800', helper: 'Your clean is confirmed.' },
+  in_progress: { label: 'In progress', className: 'bg-purple-100 text-purple-800', helper: 'Your cleaner is working through the checklist.' },
+  completed: { label: 'Completed', className: 'bg-emerald-100 text-emerald-800', helper: 'Your clean has been completed.' },
+  missed: { label: 'Credited', className: 'bg-red-100 text-red-800', helper: 'A service credit has been added to your account.' },
+}
+
+const money = (cents?: number | null) => cents ? `$${(cents / 100).toFixed(2)}` : 'Price pending'
+const dateLabel = (value?: string | null) => value ? new Date(`${value}T00:00:00`).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' }) : 'Date pending'
+const timeLabel = (value?: string | null) => value ? value.slice(0, 5) : 'Time pending'
+const person = (value: StaffRef): StaffPerson | undefined => Array.isArray(value) ? value[0] : value || undefined
+const completion = (value: Booking['job_completions']) => Array.isArray(value) ? value[0] : value
+const statusInfo = (status: string) => STATUS_COPY[status] || { label: status.replace('_', ' '), className: 'bg-slate-100 text-slate-700', helper: 'We will keep this updated.' }
 
 export default function AccountPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(true)
   const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
   const [subs, setSubs] = useState<Sub[]>([])
   const [credits, setCredits] = useState<Credit[]>([])
   const [invoices, setInvoices] = useState<Invoice[]>([])
   const [bookings, setBookings] = useState<Booking[]>([])
+  const [conversations, setConversations] = useState<Conversation[]>([])
   const [busy, setBusy] = useState<string>('')
   const [pay, setPay] = useState<{ id: string; clientSecret: string; amountCents: number } | null>(null)
+  const [request, setRequest] = useState<{ type: string; title: string; bookingId?: string; message: string } | null>(null)
+  const [requestStatus, setRequestStatus] = useState('')
+  const [sendingRequest, setSendingRequest] = useState(false)
 
   const load = useCallback(async () => {
-    // Ensure the signed-in user is linked to their customer record (e.g. after
-    // confirming a sign-up made during checkout), then load their data.
     await fetch('/api/account/claim', { method: 'POST' }).catch(() => {})
     const res = await fetch('/api/account/data')
     if (res.status === 401 || res.status === 403) { router.push('/login?tab=client'); return }
     const data = await res.json()
     setName(data.customer?.name || '')
+    setEmail(data.customer?.email || '')
     setSubs(data.subscriptions || [])
     setCredits(data.credits || [])
     setInvoices(data.invoices || [])
     setBookings(data.bookings || [])
+    setConversations(data.conversations || [])
     setLoading(false)
   }, [router])
 
   useEffect(() => { load() }, [load])
+
+  const firstName = name.split(' ')[0] || 'there'
+  const openInvoiceTotal = invoices.reduce((sum, invoice) => sum + invoice.amount_cents, 0)
+  const creditTotal = credits.reduce((sum, credit) => sum + credit.amount_cents, 0)
+  const activePlans = subs.filter((plan) => plan.status === 'active').length
+  const nextBooking = useMemo(() => {
+    const upcoming = bookings
+      .filter((booking) => ['pending', 'confirmed', 'in_progress'].includes(booking.status))
+      .sort((a, b) => `${a.scheduled_date} ${a.scheduled_time || ''}`.localeCompare(`${b.scheduled_date} ${b.scheduled_time || ''}`))
+    return upcoming[0] || bookings[0]
+  }, [bookings])
 
   const act = async (id: string, action: 'pause' | 'resume' | 'cancel') => {
     if (action === 'cancel' && !confirm('Cancel this plan? You can always start a new one later.')) return
@@ -83,128 +159,361 @@ export default function AccountPage() {
     if (data.clientSecret) setPay({ id, clientSecret: data.clientSecret, amountCents: data.amountCents })
   }
 
+  const openRequest = (type: string, title: string, message: string, bookingId?: string) => {
+    setRequest({ type, title, bookingId, message })
+    setRequestStatus('')
+  }
+
+  const submitRequest = async () => {
+    if (!request || !request.message.trim()) return
+    setSendingRequest(true)
+    setRequestStatus('')
+    try {
+      const res = await fetch('/api/account/service-requests', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          requestType: request.type,
+          bookingId: request.bookingId,
+          message: request.message,
+        }),
+      })
+      const data = await res.json().catch(() => ({}))
+      if (!res.ok) {
+        setRequestStatus(data.error || 'Could not send request.')
+        return
+      }
+      await load()
+      setRequestStatus('Request sent. Your Cleanngo team will reply in Messages.')
+      setTimeout(() => router.push(`/account/messages?conversation=${data.conversationId}`), 650)
+    } catch {
+      setRequestStatus('Network error. Please try again.')
+    } finally {
+      setSendingRequest(false)
+    }
+  }
+
   const signOut = async () => {
     await createClient().auth.signOut()
     router.push('/login?tab=client')
   }
 
   if (loading) {
-    return <div className="min-h-screen flex items-center justify-center text-white/60" style={{ background: 'linear-gradient(135deg, #1C2B3A, #2C4A6E)' }}>Loading…</div>
+    return <div className="min-h-screen flex items-center justify-center bg-[#F6F1EA] text-[#2C4A6E]">Preparing your dashboard...</div>
   }
 
   return (
-    <div className="min-h-screen py-12 px-4" style={{ background: 'linear-gradient(135deg, #1C2B3A 0%, #2C4A6E 100%)' }}>
-      <div className="max-w-2xl mx-auto">
-        <div className="flex items-center justify-between mb-8">
+    <main className="min-h-screen bg-[#F6F1EA] text-[#172434]">
+      <header className="border-b border-[#E3DBD0] bg-white/80 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-5 sm:px-6 lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <Link href="/" className="text-white/50 text-sm hover:text-white">← cleanngo</Link>
-            <h1 className="text-2xl font-bold text-white mt-1">Hi {name.split(' ')[0] || 'there'}</h1>
+            <Link href="/" className="text-sm font-bold text-[#4A7FA5] hover:text-[#2C4A6E]">cleanngo home</Link>
+            <h1 className="mt-2 text-3xl font-black tracking-normal sm:text-4xl">Welcome back, {firstName}</h1>
+            <p className="mt-1 text-sm text-[#657380]">Your clean schedule, quotes, messages, and service upgrades in one calm place.</p>
           </div>
-          <div className="flex items-center gap-3">
-            <Link href="/account/messages" className="text-white/60 text-sm hover:text-white">Messages</Link>
-            <button onClick={signOut} className="text-white/60 text-sm hover:text-white">Sign out</button>
+          <div className="flex flex-wrap gap-2">
+            <Link href="/account/messages" className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-[#C9D7E2] bg-white px-5 text-sm font-black text-[#2C4A6E] hover:border-[#2C4A6E]">
+              <MessageCircle className="h-4 w-4" />
+              Messages
+            </Link>
+            <Link href="/customer/book" className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-[#2C4A6E] px-5 text-sm font-black text-white hover:bg-[#1C2B3A]">
+              Book a clean
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+            <button onClick={signOut} className="min-h-11 rounded-full px-4 text-sm font-bold text-[#657380] hover:bg-white">Sign out</button>
           </div>
         </div>
+      </header>
 
-        {credits.length > 0 && (
-          <div className="glass rounded-2xl p-4 mb-6 text-green-200 text-sm">
-            🎉 You have ${(credits.reduce((s, c) => s + c.amount_cents, 0) / 100).toFixed(2)} in account credit.
+      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
+        <section className="grid gap-4 md:grid-cols-4">
+          {[
+            { label: 'Active plans', value: activePlans, icon: ShieldCheck },
+            { label: 'Upcoming jobs', value: bookings.filter((b) => ['pending', 'confirmed', 'in_progress'].includes(b.status)).length, icon: CalendarDays },
+            { label: 'Account credit', value: money(creditTotal), icon: CheckCircle2 },
+            { label: 'Open invoices', value: money(openInvoiceTotal), icon: CreditCard },
+          ].map((item) => (
+            <div key={item.label} className="rounded-[8px] border border-[#E3DBD0] bg-white p-5 shadow-sm">
+              <item.icon className="h-5 w-5 text-[#4A7FA5]" />
+              <div className="mt-4 text-2xl font-black">{item.value}</div>
+              <div className="mt-1 text-sm font-semibold text-[#657380]">{item.label}</div>
+            </div>
+          ))}
+        </section>
+
+        <section className="mt-6 grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
+          <div className="rounded-[8px] bg-[#172434] p-6 text-white shadow-xl">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+              <div>
+                <p className="text-sm font-black uppercase tracking-[0.16em] text-[#8FD8B4]">Your next clean</p>
+                <h2 className="mt-2 text-3xl font-black">{nextBooking ? SERVICE_LABELS[nextBooking.service_type] || nextBooking.service_type : 'No clean scheduled yet'}</h2>
+                <p className="mt-2 text-white/64">
+                  {nextBooking ? `${dateLabel(nextBooking.scheduled_date)} at ${timeLabel(nextBooking.scheduled_time)} · ${nextBooking.address}` : 'Start with a one-off clean or create a recurring plan.'}
+                </p>
+              </div>
+              {nextBooking && (
+                <span className={`w-fit rounded-full px-3 py-1 text-xs font-black ${statusInfo(nextBooking.status).className}`}>
+                  {statusInfo(nextBooking.status).label}
+                </span>
+              )}
+            </div>
+
+            {nextBooking ? (
+              <div className="mt-6 grid gap-4 md:grid-cols-3">
+                <div className="rounded-[8px] bg-white/8 p-4">
+                  <UserRound className="h-5 w-5 text-[#8FD8B4]" />
+                  <div className="mt-3 text-sm text-white/50">Cleaner</div>
+                  <div className="font-black">{person(nextBooking.staff)?.name || 'Being assigned'}</div>
+                  <div className="mt-1 text-xs text-white/45">{nextBooking.covered_by_backup ? 'Backup coverage active' : 'Primary assignment'}</div>
+                </div>
+                <div className="rounded-[8px] bg-white/8 p-4">
+                  <Home className="h-5 w-5 text-[#F2C14E]" />
+                  <div className="mt-3 text-sm text-white/50">Home details</div>
+                  <div className="font-black">{nextBooking.bedrooms || '?'} bed · {nextBooking.bathrooms || '?'} bath</div>
+                  <div className="mt-1 text-xs text-white/45">{nextBooking.suburb || 'Address confirmed'}</div>
+                </div>
+                <div className="rounded-[8px] bg-white/8 p-4">
+                  <Sparkles className="h-5 w-5 text-[#8FD8B4]" />
+                  <div className="mt-3 text-sm text-white/50">Price</div>
+                  <div className="font-black">{money(nextBooking.price_cents)}</div>
+                  <div className="mt-1 text-xs text-white/45">{statusInfo(nextBooking.status).helper}</div>
+                </div>
+              </div>
+            ) : (
+              <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+                <Link href="/customer/plan" className="inline-flex justify-center rounded-full bg-[#F2C14E] px-6 py-3 font-black text-[#172434]">Start a weekly reset</Link>
+                <Link href="/customer/book" className="inline-flex justify-center rounded-full border border-white/20 px-6 py-3 font-black text-white">Book a one-off clean</Link>
+              </div>
+            )}
           </div>
+
+          <div className="rounded-[8px] border border-[#E3DBD0] bg-white p-6 shadow-sm">
+            <p className="text-sm font-black uppercase tracking-[0.16em] text-[#4A7FA5]">Recommended for you</p>
+            <h2 className="mt-2 text-2xl font-black">Make the next clean feel even lighter</h2>
+            <div className="mt-5 space-y-3">
+              {[
+                { title: 'Add an oven or fridge reset', text: 'Perfect before guests, inspections, or a fresh start.', type: 'oven_fridge', message: 'I would like to add an oven or fridge reset to my next clean. Please confirm the best option and price.' },
+                { title: 'Move to a recurring plan', text: 'Keep the same clean feeling every week or fortnight.', type: 'recurring_plan', message: 'I am interested in a recurring cleaning plan. Please recommend the best frequency for my home.' },
+                { title: 'Need office or Airbnb support?', text: 'Get a fixed plan for workspaces or turnovers.', type: 'office_airbnb', message: 'I would like help with office cleaning or Airbnb turnover support. Please send me the best next step.' },
+              ].map((item) => (
+                <button
+                  key={item.title}
+                  type="button"
+                  onClick={() => openRequest(item.type, item.title, item.message, nextBooking?.id)}
+                  className="block w-full rounded-[8px] border border-[#E8E2DA] p-4 text-left transition hover:border-[#4A7FA5] hover:bg-[#F7F3EE]"
+                >
+                  <div className="font-black">{item.title}</div>
+                  <div className="mt-1 text-sm text-[#657380]">{item.text}</div>
+                </button>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {request && (
+          <section className="mt-6 rounded-[8px] border border-[#C9D7E2] bg-white p-5 shadow-sm">
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+              <div className="lg:max-w-md">
+                <p className="text-sm font-black uppercase tracking-[0.16em] text-[#4A7FA5]">Service request</p>
+                <h2 className="mt-1 text-2xl font-black">{request.title}</h2>
+                <p className="mt-2 text-sm text-[#657380]">Send this to the Cleanngo team. They will reply inside your message centre.</p>
+              </div>
+              <div className="flex-1">
+                <textarea
+                  value={request.message}
+                  onChange={(event) => setRequest({ ...request, message: event.target.value })}
+                  rows={4}
+                  className="w-full rounded-[8px] border border-[#D8E1E8] bg-[#F8FAFB] p-4 text-sm outline-none focus:border-[#4A7FA5]"
+                />
+                {requestStatus && <p className={`mt-2 text-sm font-bold ${requestStatus.startsWith('Request sent') ? 'text-emerald-700' : 'text-red-600'}`}>{requestStatus}</p>}
+                <div className="mt-3 flex flex-col gap-2 sm:flex-row">
+                  <button
+                    type="button"
+                    onClick={submitRequest}
+                    disabled={sendingRequest || !request.message.trim()}
+                    className="min-h-11 rounded-full bg-[#2C4A6E] px-5 text-sm font-black text-white disabled:opacity-50"
+                  >
+                    {sendingRequest ? 'Sending...' : 'Send request'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setRequest(null)}
+                    className="min-h-11 rounded-full border border-[#C9D7E2] px-5 text-sm font-black text-[#2C4A6E]"
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
         )}
 
         {invoices.length > 0 && (
-          <div className="mb-6">
-            <h2 className="text-white/70 text-sm font-semibold uppercase tracking-wider mb-3">Outstanding invoices</h2>
-            <div className="space-y-3">
-              {invoices.map(inv => (
-                <div key={inv.id} className="glass-strong rounded-2xl p-5 flex items-center justify-between">
-                  <div>
-                    <div className="text-white font-semibold">${(inv.amount_cents / 100).toFixed(2)}</div>
-                    <div className="text-white/50 text-sm">{inv.description || 'Cleaning service'}</div>
-                  </div>
-                  {inv.hosted_invoice_url && (
-                    <a href={inv.hosted_invoice_url} target="_blank" rel="noopener noreferrer"
-                      className="text-sm font-semibold px-5 py-2.5 rounded-full bg-white text-[#2C4A6E] hover:bg-white/90">
-                      Pay now →
-                    </a>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        <h2 className="text-white/70 text-sm font-semibold uppercase tracking-wider mb-3">Your plans</h2>
-
-        {subs.length === 0 ? (
-          <div className="glass-strong rounded-2xl p-8 text-center">
-            <p className="text-white/60 text-sm mb-4">You don&apos;t have any plans yet.</p>
-            <Link href="/customer/plan" className="btn-primary text-sm px-6 py-3">Start a recurring plan →</Link>
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {subs.map(s => (
-              <div key={s.id} className="glass-strong rounded-2xl p-5">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-white font-semibold capitalize">{s.property_type} · {s.frequency}</span>
-                  <span className={`text-xs px-2.5 py-0.5 rounded-full ${STATUS_STYLES[s.status] || 'bg-white/10 text-white/60'}`}>{s.status}</span>
-                </div>
-                <div className="text-white/60 text-sm">{s.address}, {s.suburb}</div>
-                <div className="text-white/40 text-xs mt-1">
-                  {s.preferred_day ? `${s.preferred_day} · ` : ''}{s.price_cents ? `$${(s.price_cents / 100).toFixed(2)}/visit` : 'awaiting price'}
-                </div>
-
-                <div className="flex flex-wrap gap-2 mt-4">
-                  {s.stripe_subscription_id && s.status === 'requested' && (
-                    <button onClick={() => startPay(s.id)} disabled={busy === s.id} className="text-sm font-semibold px-4 py-2 rounded-full bg-white text-[#2C4A6E] hover:bg-white/90 disabled:opacity-50">
-                      Complete payment
-                    </button>
-                  )}
-                  {s.status === 'active' && (
-                    <button onClick={() => act(s.id, 'pause')} disabled={busy === s.id} className="text-sm px-4 py-2 rounded-full border border-white/20 text-white/80 hover:bg-white/10 disabled:opacity-50">Pause</button>
-                  )}
-                  {s.status === 'paused' && (
-                    <button onClick={() => act(s.id, 'resume')} disabled={busy === s.id} className="text-sm px-4 py-2 rounded-full border border-white/20 text-white/80 hover:bg-white/10 disabled:opacity-50">Resume</button>
-                  )}
-                  {['active', 'paused', 'requested'].includes(s.status) && (
-                    <button onClick={() => act(s.id, 'cancel')} disabled={busy === s.id} className="text-sm px-4 py-2 rounded-full border border-red-400/30 text-red-300 hover:bg-red-500/10 disabled:opacity-50">Cancel</button>
-                  )}
-                </div>
-
-                {pay?.id === s.id && (
-                  <div className="mt-5 border-t border-white/10 pt-5">
-                    <PaymentForm clientSecret={pay.clientSecret} amountCents={pay.amountCents} returnPath="/account" ctaLabel="Confirm & start plan" />
-                  </div>
-                )}
+          <section className="mt-6 rounded-[8px] border border-amber-200 bg-amber-50 p-5">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <h2 className="font-black text-amber-900">Payment needed to keep things moving</h2>
+                <p className="text-sm text-amber-800">You have {invoices.length} open invoice{invoices.length === 1 ? '' : 's'}.</p>
               </div>
-            ))}
-          </div>
-        )}
-
-        {bookings.length > 0 && (
-          <div className="mt-8">
-            <h2 className="text-white/70 text-sm font-semibold uppercase tracking-wider mb-3">Your bookings</h2>
-            <div className="space-y-3">
-              {bookings.map(b => (
-                <div key={b.id} className="glass-strong rounded-2xl p-5 flex items-center justify-between gap-3">
-                  <div>
-                    <div className="text-white font-semibold">{SERVICE_LABELS[b.service_type] || b.service_type}</div>
-                    <div className="text-white/50 text-sm">{b.scheduled_date}{b.scheduled_time ? ` · ${b.scheduled_time.slice(0, 5)}` : ''}{b.suburb ? ` · ${b.suburb}` : ''}</div>
-                  </div>
-                  <div className="text-right">
-                    {b.price_cents > 0 && <div className="text-white font-bold">${(b.price_cents / 100).toFixed(0)}</div>}
-                    <span className={`text-xs px-2.5 py-0.5 rounded-full ${STATUS_STYLES[b.status] || 'bg-white/10 text-white/60'}`}>{b.status.replace('_', ' ')}</span>
-                  </div>
-                </div>
-              ))}
+              {invoices[0]?.hosted_invoice_url && (
+                <a href={invoices[0].hosted_invoice_url} target="_blank" rel="noopener noreferrer" className="inline-flex justify-center rounded-full bg-amber-500 px-5 py-3 text-sm font-black text-white">
+                  Pay {money(invoices[0].amount_cents)}
+                </a>
+              )}
             </div>
-          </div>
+          </section>
         )}
 
-        <div className="text-center mt-8">
-          <Link href="/customer/plan" className="text-[#7BA7C7] text-sm font-semibold hover:text-white">+ Start another plan</Link>
-        </div>
+        <section className="mt-8 grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
+          <div>
+            <div className="mb-3 flex items-end justify-between gap-3">
+              <div>
+                <p className="text-sm font-black uppercase tracking-[0.16em] text-[#4A7FA5]">Plans</p>
+                <h2 className="text-2xl font-black">Recurring service</h2>
+              </div>
+              <Link href="/customer/plan" className="text-sm font-black text-[#2C4A6E]">Add plan</Link>
+            </div>
+
+            {subs.length === 0 ? (
+              <div className="rounded-[8px] border border-[#E3DBD0] bg-white p-6 text-center">
+                <p className="text-[#657380]">No recurring plan yet.</p>
+                <Link href="/customer/plan" className="mt-4 inline-flex rounded-full bg-[#2C4A6E] px-5 py-3 text-sm font-black text-white">Start a recurring plan</Link>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {subs.map((plan) => {
+                  const primary = person(plan.primary_staff)
+                  const backup = person(plan.backup_staff)
+                  return (
+                    <div key={plan.id} className="rounded-[8px] border border-[#E3DBD0] bg-white p-5 shadow-sm">
+                      <div className="flex items-start justify-between gap-3">
+                        <div>
+                          <div className="text-lg font-black capitalize">{plan.property_type} · {plan.frequency}</div>
+                          <div className="mt-1 text-sm text-[#657380]">{plan.address}, {plan.suburb}</div>
+                          <div className="mt-1 text-xs font-bold uppercase tracking-[0.12em] text-[#9AA7B1]">{plan.preferred_day || 'Day pending'} {plan.preferred_time ? `· ${timeLabel(plan.preferred_time)}` : ''}</div>
+                        </div>
+                        <span className={`rounded-full px-3 py-1 text-xs font-black ${statusInfo(plan.status).className}`}>{statusInfo(plan.status).label}</span>
+                      </div>
+                      <div className="mt-4 grid gap-3 sm:grid-cols-3">
+                        <div className="rounded-[8px] bg-[#F7F3EE] p-3">
+                          <div className="text-xs font-bold text-[#657380]">Per visit</div>
+                          <div className="font-black">{money(plan.price_cents)}</div>
+                        </div>
+                        <div className="rounded-[8px] bg-[#F7F3EE] p-3">
+                          <div className="text-xs font-bold text-[#657380]">Primary cleaner</div>
+                          <div className="font-black">{primary?.name || 'Assigning soon'}</div>
+                        </div>
+                        <div className="rounded-[8px] bg-[#F7F3EE] p-3">
+                          <div className="text-xs font-bold text-[#657380]">Backup cover</div>
+                          <div className="font-black">{backup?.name || 'On standby'}</div>
+                        </div>
+                      </div>
+                      <div className="mt-4 flex flex-wrap gap-2">
+                        {plan.stripe_subscription_id && plan.status === 'requested' && (
+                          <button onClick={() => startPay(plan.id)} disabled={busy === plan.id} className="inline-flex items-center gap-2 rounded-full bg-[#2C4A6E] px-4 py-2 text-sm font-black text-white disabled:opacity-50">
+                            <CreditCard className="h-4 w-4" />
+                            Complete payment
+                          </button>
+                        )}
+                        {plan.status === 'active' && (
+                          <button onClick={() => act(plan.id, 'pause')} disabled={busy === plan.id} className="inline-flex items-center gap-2 rounded-full border border-[#C9D7E2] px-4 py-2 text-sm font-black text-[#2C4A6E] disabled:opacity-50">
+                            <Pause className="h-4 w-4" />
+                            Pause plan
+                          </button>
+                        )}
+                        {plan.status === 'paused' && (
+                          <button onClick={() => act(plan.id, 'resume')} disabled={busy === plan.id} className="inline-flex items-center gap-2 rounded-full bg-[#2C4A6E] px-4 py-2 text-sm font-black text-white disabled:opacity-50">
+                            <Play className="h-4 w-4" />
+                            Resume plan
+                          </button>
+                        )}
+                        {['active', 'paused', 'requested'].includes(plan.status) && (
+                          <button onClick={() => act(plan.id, 'cancel')} disabled={busy === plan.id} className="rounded-full border border-red-200 px-4 py-2 text-sm font-black text-red-600 disabled:opacity-50">Cancel</button>
+                        )}
+                      </div>
+                      {pay?.id === plan.id && (
+                        <div className="mt-5 border-t border-[#E3DBD0] pt-5">
+                          <PaymentForm clientSecret={pay.clientSecret} amountCents={pay.amountCents} returnPath="/account" ctaLabel="Confirm and start plan" />
+                        </div>
+                      )}
+                    </div>
+                  )
+                })}
+              </div>
+            )}
+          </div>
+
+          <div>
+            <div className="mb-3 flex items-end justify-between gap-3">
+              <div>
+                <p className="text-sm font-black uppercase tracking-[0.16em] text-[#4A7FA5]">Jobs</p>
+                <h2 className="text-2xl font-black">Quote requests and cleans</h2>
+              </div>
+              <Link href="/account/messages" className="text-sm font-black text-[#2C4A6E]">{conversations.length} message thread{conversations.length === 1 ? '' : 's'}</Link>
+            </div>
+
+            {bookings.length === 0 ? (
+              <div className="rounded-[8px] border border-[#E3DBD0] bg-white p-6 text-center">
+                <p className="text-[#657380]">No one-off jobs yet.</p>
+                <Link href="/customer/book" className="mt-4 inline-flex rounded-full bg-[#2C4A6E] px-5 py-3 text-sm font-black text-white">Request a quote</Link>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {bookings.map((booking) => {
+                  const cleaner = person(booking.staff)
+                  const done = completion(booking.job_completions)
+                  return (
+                    <article key={booking.id} className="rounded-[8px] border border-[#E3DBD0] bg-white p-5 shadow-sm">
+                      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                        <div>
+                          <div className="text-lg font-black">{SERVICE_LABELS[booking.service_type] || booking.service_type}</div>
+                          <div className="mt-1 text-sm text-[#657380]">{dateLabel(booking.scheduled_date)} at {timeLabel(booking.scheduled_time)} · {booking.address}</div>
+                          {booking.notes && <div className="mt-2 rounded-[8px] bg-[#F7F3EE] p-3 text-sm text-[#657380]">{booking.notes}</div>}
+                        </div>
+                        <div className="sm:text-right">
+                          <div className="font-black">{money(booking.price_cents)}</div>
+                          <span className={`mt-1 inline-flex rounded-full px-3 py-1 text-xs font-black ${statusInfo(booking.status).className}`}>{statusInfo(booking.status).label}</span>
+                        </div>
+                      </div>
+                      <div className="mt-4 grid gap-3 sm:grid-cols-3">
+                        <div className="rounded-[8px] bg-[#F7F3EE] p-3">
+                          <div className="text-xs font-bold text-[#657380]">Cleaner</div>
+                          <div className="font-black">{cleaner?.name || 'Being assigned'}</div>
+                        </div>
+                        <div className="rounded-[8px] bg-[#F7F3EE] p-3">
+                          <div className="text-xs font-bold text-[#657380]">Coverage</div>
+                          <div className="font-black">{booking.covered_by_backup ? 'Backup cleaner' : 'Standard cover'}</div>
+                        </div>
+                        <div className="rounded-[8px] bg-[#F7F3EE] p-3">
+                          <div className="text-xs font-bold text-[#657380]">Proof</div>
+                          <div className="font-black">{(done?.after_photos || []).length || (booking.photos || []).length || 0} photo{((done?.after_photos || []).length || (booking.photos || []).length || 0) === 1 ? '' : 's'}</div>
+                        </div>
+                      </div>
+                      <div className="mt-4 flex flex-wrap gap-2">
+                        <Link href={`/account/messages?conversation=${conversations.find((c) => c.booking_id === booking.id)?.id || ''}`} className="rounded-full border border-[#C9D7E2] px-4 py-2 text-sm font-black text-[#2C4A6E]">Message cleanngo</Link>
+                        <button
+                          type="button"
+                          onClick={() => openRequest('reschedule', 'Update this booking', `I would like to update my ${SERVICE_LABELS[booking.service_type] || booking.service_type} on ${dateLabel(booking.scheduled_date)}.`, booking.id)}
+                          className="rounded-full bg-[#F7F3EE] px-4 py-2 text-sm font-black text-[#2C4A6E]"
+                        >
+                          Change booking
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => openRequest('oven_fridge', 'Add service to this booking', `Please add an extra service to my ${SERVICE_LABELS[booking.service_type] || booking.service_type}. I am interested in: `, booking.id)}
+                          className="rounded-full bg-[#F7F3EE] px-4 py-2 text-sm font-black text-[#2C4A6E]"
+                        >
+                          Add extra service
+                        </button>
+                      </div>
+                    </article>
+                  )
+                })}
+              </div>
+            )}
+          </div>
+        </section>
       </div>
-    </div>
+    </main>
   )
 }
