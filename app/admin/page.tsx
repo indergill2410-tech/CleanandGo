@@ -1,7 +1,23 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import {
+  AlertTriangle,
+  CalendarDays,
+  CheckCircle2,
+  ClipboardList,
+  Clock,
+  CreditCard,
+  Home,
+  Mail,
+  MapPin,
+  MessageCircle,
+  Phone,
+  Send,
+  ShieldCheck,
+  UserRound,
+} from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 
 const NAV = [
@@ -14,95 +30,130 @@ const NAV = [
   { href: '/admin/timesheets', label: 'Timesheets' },
   { href: '/admin/newsletter', label: 'Newsletter' },
   { href: '/admin/notifications', label: 'Notifications' },
-  { href: '/admin/account', label: 'Account' },
 ]
 
+type Person = { name: string; email?: string | null; phone?: string | null; suburb?: string | null; role?: string | null; status?: string | null }
+type Relation<T> = T | T[] | null
+type Completion = { start_time: string | null; end_time: string | null; submitted_at: string | null; before_photos: string[] | null; after_photos: string[] | null; notes: string | null }
 type Booking = {
   id: string
+  customer_id: string
   service_type: string
   status: string
   scheduled_date: string
   scheduled_time: string
   address: string
   suburb: string
+  state?: string | null
+  postcode?: string | null
   bedrooms: number
   bathrooms: number
-  extras: string[]
-  notes: string
+  extras: string[] | null
+  photos?: string[] | null
+  notes: string | null
   price_cents: number
   staff_id: string | null
+  covered_by_backup?: boolean
   created_at: string
-  customers?: { name: string; email: string; phone: string }
+  updated_at?: string | null
+  customers?: Relation<Person>
+  staff?: Relation<Person>
+  original_staff?: Relation<Person>
+  job_completions?: Relation<Completion>
 }
 
+type Cleaner = { id: string; name: string; role: string; suburb?: string | null; phone?: string | null; email?: string | null }
+
 const SERVICE_LABELS: Record<string, string> = {
-  recurring: 'Recurring Clean',
-  oneoff: 'One-Off Clean',
-  endoflease: 'End of Lease',
+  recurring: 'Recurring clean',
+  oneoff: 'One-off clean',
+  endoflease: 'End-of-lease clean',
 }
 
 const STATUS_STYLES: Record<string, string> = {
-  pending:     'bg-amber-500/20 text-amber-300 border-amber-400/30',
-  confirmed:   'bg-blue-500/20 text-blue-300 border-blue-400/30',
-  in_progress: 'bg-purple-500/20 text-purple-300 border-purple-400/30',
-  completed:   'bg-green-500/20 text-green-300 border-green-400/30',
-  cancelled:   'bg-red-500/20 text-red-300 border-red-400/30',
+  pending: 'bg-amber-100 text-amber-800 border-amber-200',
+  confirmed: 'bg-blue-100 text-blue-800 border-blue-200',
+  in_progress: 'bg-purple-100 text-purple-800 border-purple-200',
+  completed: 'bg-emerald-100 text-emerald-800 border-emerald-200',
+  missed: 'bg-red-100 text-red-800 border-red-200',
+  cancelled: 'bg-slate-100 text-slate-700 border-slate-200',
 }
+
+const STATUS_ACTIONS = ['pending', 'confirmed', 'in_progress', 'completed', 'missed', 'cancelled'] as const
+const money = (cents?: number | null) => cents ? `$${(cents / 100).toFixed(2)}` : 'Not quoted'
+const one = <T,>(value: Relation<T>) => Array.isArray(value) ? value[0] : value
+const completion = (value: Booking['job_completions']) => one(value)
+const timeLabel = (time?: string | null) => time ? time.slice(0, 5) : 'No time'
+const dateLabel = (date?: string | null) => date ? new Date(`${date}T00:00:00`).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' }) : 'No date'
 
 export default function AdminDashboard() {
   const router = useRouter()
   const [bookings, setBookings] = useState<Booking[]>([])
+  const [selectedId, setSelectedId] = useState('')
   const [loading, setLoading] = useState(true)
-  const [selected, setSelected] = useState<Booking | null>(null)
+  const [filter, setFilter] = useState('pending')
+  const [apps, setApps] = useState<{ id: string; name: string; suburbs: string | null; status: string }[]>([])
+  const [cleaners, setCleaners] = useState<Cleaner[]>([])
+  const [saving, setSaving] = useState(false)
   const [quotePrice, setQuotePrice] = useState('')
   const [quoteNote, setQuoteNote] = useState('')
-  const [quoting, setQuoting] = useState(false)
-  const [quoteSent, setQuoteSent] = useState(false)
-  const [filter, setFilter] = useState('all')
-  const [unread, setUnread] = useState(0)
-  const [apps, setApps] = useState<{ id: string; name: string; suburbs: string | null; status: string; created_at: string }[]>([])
-  const [cleaners, setCleaners] = useState<{ id: string; name: string; role: string }[]>([])
-  const [savingBooking, setSavingBooking] = useState(false)
   const [messageText, setMessageText] = useState('')
   const [messageStatus, setMessageStatus] = useState('')
-  const [sendingMessage, setSendingMessage] = useState(false)
+  const [opsDraft, setOpsDraft] = useState({ scheduled_date: '', scheduled_time: '', address: '', suburb: '', notes: '' })
 
-  const fetchBookings = async () => {
-    try {
-      const res = await fetch('/api/bookings')
-      const data = await res.json()
-      const list = data.bookings || []
-      setBookings(list)
-      setUnread(list.filter((b: Booking) => b.status === 'pending').length)
-    } catch (e) {
-      console.error(e)
-    } finally {
-      setLoading(false)
-    }
-  }
+  const selected = useMemo(() => bookings.find((booking) => booking.id === selectedId) || bookings[0] || null, [bookings, selectedId])
+  const filtered = useMemo(() => filter === 'all' ? bookings : bookings.filter((booking) => booking.status === filter), [bookings, filter])
 
-  const fetchApplications = async () => {
-    try {
-      const data = await fetch('/api/careers/apply').then(r => r.json())
-      setApps(data.applications || [])
-    } catch (e) { console.error(e) }
-  }
+  const fetchBookings = useCallback(async (keepSelected = true) => {
+    const res = await fetch('/api/bookings')
+    const data = await res.json()
+    const list = data.bookings || []
+    setBookings(list)
+    setLoading(false)
+    if (!keepSelected || !selectedId) setSelectedId(list.find((b: Booking) => b.status === filter)?.id || list[0]?.id || '')
+  }, [filter, selectedId])
 
-  const fetchCleaners = async () => {
-    try {
-      const data = await fetch('/api/staff').then(r => r.json())
-      setCleaners((data.staff || []).filter((s: { role: string }) => s.role === 'cleaner'))
-    } catch (e) { console.error(e) }
-  }
+  const fetchApplications = useCallback(async () => {
+    const data = await fetch('/api/careers/apply').then(r => r.json()).catch(() => ({ applications: [] }))
+    setApps(data.applications || [])
+  }, [])
 
-  useEffect(() => { fetchBookings(); fetchApplications(); fetchCleaners() }, [])
+  const fetchCleaners = useCallback(async () => {
+    const data = await fetch('/api/staff').then(r => r.json()).catch(() => ({ staff: [] }))
+    setCleaners((data.staff || []).filter((staff: Cleaner) => staff.role === 'cleaner'))
+  }, [])
 
-  const newApps = apps.filter(a => a.status === 'new').length
+  useEffect(() => { fetchBookings(false); fetchApplications(); fetchCleaners() }, [fetchApplications, fetchBookings, fetchCleaners])
 
-  // Update a booking (assign cleaner / change status) and keep the panel in sync.
-  const patchBooking = async (updates: Record<string, string>) => {
+  useEffect(() => {
     if (!selected) return
-    setSavingBooking(true)
+    setOpsDraft({
+      scheduled_date: selected.scheduled_date || '',
+      scheduled_time: timeLabel(selected.scheduled_time),
+      address: selected.address || '',
+      suburb: selected.suburb || '',
+      notes: selected.notes || '',
+    })
+    setQuotePrice(selected.price_cents > 0 ? String(selected.price_cents / 100) : '')
+    setQuoteNote('')
+    setMessageText('')
+    setMessageStatus('')
+  }, [selected])
+
+  const counts = useMemo(() => ({
+    pending: bookings.filter(b => b.status === 'pending').length,
+    confirmed: bookings.filter(b => b.status === 'confirmed').length,
+    in_progress: bookings.filter(b => b.status === 'in_progress').length,
+    completed: bookings.filter(b => b.status === 'completed').length,
+    missed: bookings.filter(b => b.status === 'missed').length,
+  }), [bookings])
+
+  const newApps = apps.filter(app => app.status === 'new').length
+
+  const patchBooking = async (updates: Record<string, string | null>) => {
+    if (!selected) return
+    if (updates.status === 'missed' && !confirm('Mark this job as missed? This can issue an account credit to the customer.')) return
+    setSaving(true)
     try {
       const res = await fetch(`/api/bookings/${selected.id}`, {
         method: 'PATCH',
@@ -111,42 +162,34 @@ export default function AdminDashboard() {
       })
       const data = await res.json()
       if (!res.ok) { alert(data.error || 'Update failed'); return }
-      setSelected(s => (s ? { ...s, ...updates } as Booking : s))
-      await fetchBookings()
+      await fetchBookings(true)
     } catch {
       alert('Network error')
     } finally {
-      setSavingBooking(false)
+      setSaving(false)
     }
   }
 
   const sendQuote = async () => {
     if (!selected || !quotePrice) return
-    setQuoting(true)
+    setSaving(true)
     try {
-      await fetch(`/api/bookings/${selected.id}/quote`, {
+      const res = await fetch(`/api/bookings/${selected.id}/quote`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ price: parseFloat(quotePrice), note: quoteNote }),
       })
-      setQuoteSent(true)
-      await fetchBookings()
-      setTimeout(() => {
-        setSelected(null)
-        setQuotePrice('')
-        setQuoteNote('')
-        setQuoteSent(false)
-      }, 2000)
-    } catch (e) {
-      console.error(e)
+      const data = await res.json().catch(() => ({}))
+      if (!res.ok) { alert(data.error || 'Quote failed'); return }
+      await fetchBookings(true)
     } finally {
-      setQuoting(false)
+      setSaving(false)
     }
   }
 
   const sendCustomerMessage = async () => {
     if (!selected || !messageText.trim()) return
-    setSendingMessage(true)
+    setSaving(true)
     setMessageStatus('')
     try {
       const res = await fetch('/api/messages', {
@@ -160,316 +203,272 @@ export default function AdminDashboard() {
         return
       }
       setMessageText('')
-      setMessageStatus('Message sent and customer notified by email.')
+      setMessageStatus('Message sent to the customer and saved in their app.')
     } catch {
       setMessageStatus('Network error')
     } finally {
-      setSendingMessage(false)
+      setSaving(false)
     }
   }
 
   const signOut = async () => {
-    try {
-      await createClient().auth.signOut()
-    } catch (error) {
-      console.error('Error signing out:', error)
-    } finally {
-      router.push('/login?tab=staff')
-    }
+    await createClient().auth.signOut()
+    router.push('/login?tab=staff')
   }
 
-  const filtered = filter === 'all' ? bookings : bookings.filter(b => b.status === filter)
+  return (
+    <main className="min-h-screen bg-[#F4F7FA] text-[#172434]">
+      <header className="border-b border-[#DCE5ED] bg-white">
+        <div className="mx-auto max-w-7xl px-4 py-5 sm:px-6">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+              <Link href="/" className="text-sm font-bold text-[#4A7FA5]">cleanngo home</Link>
+              <h1 className="mt-2 text-3xl font-black sm:text-4xl">Operations control centre</h1>
+              <p className="mt-1 text-[#657380]">Quote, assign, message, schedule, and recover every job from one screen.</p>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {counts.pending > 0 && <span className="inline-flex min-h-11 items-center gap-2 rounded-full bg-amber-100 px-5 text-sm font-black text-amber-800"><AlertTriangle className="h-4 w-4" />{counts.pending} quote{counts.pending === 1 ? '' : 's'} waiting</span>}
+              {newApps > 0 && <Link href="/admin/applications" className="inline-flex min-h-11 items-center gap-2 rounded-full bg-emerald-100 px-5 text-sm font-black text-emerald-800">{newApps} new applicant{newApps === 1 ? '' : 's'}</Link>}
+              <button onClick={signOut} className="min-h-11 rounded-full border border-[#DCE5ED] px-5 text-sm font-bold text-[#657380]">Sign out</button>
+            </div>
+          </div>
+          <nav className="-mx-4 mt-6 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:px-0">
+            {NAV.map(item => (
+              <Link key={item.href} href={item.href} className="shrink-0 rounded-full border border-[#DCE5ED] bg-white px-4 py-2 text-sm font-black text-[#2C4A6E] hover:border-[#4A7FA5]">
+                {item.label}
+              </Link>
+            ))}
+          </nav>
+        </div>
+      </header>
+
+      <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6">
+        <section className="grid gap-4 md:grid-cols-5">
+          {[
+            { label: 'Awaiting quote', value: counts.pending, icon: CreditCard, color: 'text-amber-600' },
+            { label: 'Confirmed', value: counts.confirmed, icon: CalendarDays, color: 'text-blue-600' },
+            { label: 'In progress', value: counts.in_progress, icon: Clock, color: 'text-purple-600' },
+            { label: 'Completed', value: counts.completed, icon: CheckCircle2, color: 'text-emerald-600' },
+            { label: 'Needs recovery', value: counts.missed, icon: ShieldCheck, color: 'text-red-600' },
+          ].map((item) => (
+            <button key={item.label} onClick={() => setFilter(item.label === 'Awaiting quote' ? 'pending' : item.label === 'Needs recovery' ? 'missed' : item.label.toLowerCase().replace(' ', '_'))} className="rounded-[8px] border border-[#DCE5ED] bg-white p-4 text-left shadow-sm">
+              <item.icon className={`h-5 w-5 ${item.color}`} />
+              <div className="mt-4 text-3xl font-black">{item.value}</div>
+              <div className="text-sm font-semibold text-[#657380]">{item.label}</div>
+            </button>
+          ))}
+        </section>
+
+        <section className="mt-6 grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
+          <div className="rounded-[8px] border border-[#DCE5ED] bg-white shadow-sm">
+            <div className="border-b border-[#DCE5ED] p-4">
+              <div className="flex flex-wrap gap-2">
+                {['all', 'pending', 'confirmed', 'in_progress', 'completed', 'missed', 'cancelled'].map((status) => (
+                  <button key={status} onClick={() => setFilter(status)} className={`rounded-full px-4 py-2 text-sm font-black ${filter === status ? 'bg-[#172434] text-white' : 'bg-[#F4F7FA] text-[#657380]'}`}>
+                    {status === 'all' ? 'All jobs' : status.replace('_', ' ')}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="max-h-[calc(100vh-22rem)] overflow-y-auto p-3">
+              {loading ? (
+                <div className="p-10 text-center text-[#657380]">Loading jobs...</div>
+              ) : filtered.length === 0 ? (
+                <div className="p-10 text-center text-[#657380]">No jobs in this view.</div>
+              ) : filtered.map((booking) => {
+                const customer = one(booking.customers)
+                const staff = one(booking.staff)
+                return (
+                  <button key={booking.id} onClick={() => setSelectedId(booking.id)} className={`mb-3 w-full rounded-[8px] border p-4 text-left transition ${selected?.id === booking.id ? 'border-[#2C4A6E] bg-[#EEF5FA]' : 'border-[#E4EAF0] bg-white hover:border-[#9DB6CA]'}`}>
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <div className="font-black">{customer?.name || 'Customer'} · {SERVICE_LABELS[booking.service_type] || booking.service_type}</div>
+                        <div className="mt-1 flex flex-wrap gap-x-3 gap-y-1 text-sm text-[#657380]">
+                          <span>{dateLabel(booking.scheduled_date)} {timeLabel(booking.scheduled_time)}</span>
+                          <span>{booking.suburb || booking.address}</span>
+                          <span>{money(booking.price_cents)}</span>
+                        </div>
+                      </div>
+                      <span className={`shrink-0 rounded-full border px-3 py-1 text-xs font-black ${STATUS_STYLES[booking.status] || STATUS_STYLES.pending}`}>{booking.status.replace('_', ' ')}</span>
+                    </div>
+                    <div className="mt-3 grid gap-2 text-xs sm:grid-cols-3">
+                      <span className="rounded bg-[#F4F7FA] px-2 py-1 font-bold text-[#657380]">{booking.bedrooms} bed / {booking.bathrooms} bath</span>
+                      <span className="rounded bg-[#F4F7FA] px-2 py-1 font-bold text-[#657380]">{staff?.name || 'Cleaner unassigned'}</span>
+                      <span className="rounded bg-[#F4F7FA] px-2 py-1 font-bold text-[#657380]">{(booking.extras || []).length} extras</span>
+                    </div>
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+
+          <div className="rounded-[8px] border border-[#DCE5ED] bg-white shadow-sm">
+            {selected ? (
+              <JobInspector
+                booking={selected}
+                cleaners={cleaners}
+                opsDraft={opsDraft}
+                setOpsDraft={setOpsDraft}
+                saving={saving}
+                quotePrice={quotePrice}
+                quoteNote={quoteNote}
+                setQuotePrice={setQuotePrice}
+                setQuoteNote={setQuoteNote}
+                messageText={messageText}
+                setMessageText={setMessageText}
+                messageStatus={messageStatus}
+                onPatch={patchBooking}
+                onQuote={sendQuote}
+                onMessage={sendCustomerMessage}
+              />
+            ) : (
+              <div className="p-10 text-center text-[#657380]">Select a job to see full controls.</div>
+            )}
+          </div>
+        </section>
+      </div>
+    </main>
+  )
+}
+
+function JobInspector({
+  booking,
+  cleaners,
+  opsDraft,
+  setOpsDraft,
+  saving,
+  quotePrice,
+  quoteNote,
+  setQuotePrice,
+  setQuoteNote,
+  messageText,
+  setMessageText,
+  messageStatus,
+  onPatch,
+  onQuote,
+  onMessage,
+}: {
+  booking: Booking
+  cleaners: Cleaner[]
+  opsDraft: { scheduled_date: string; scheduled_time: string; address: string; suburb: string; notes: string }
+  setOpsDraft: (draft: { scheduled_date: string; scheduled_time: string; address: string; suburb: string; notes: string }) => void
+  saving: boolean
+  quotePrice: string
+  quoteNote: string
+  setQuotePrice: (value: string) => void
+  setQuoteNote: (value: string) => void
+  messageText: string
+  setMessageText: (value: string) => void
+  messageStatus: string
+  onPatch: (updates: Record<string, string | null>) => Promise<void>
+  onQuote: () => Promise<void>
+  onMessage: () => Promise<void>
+}) {
+  const customer = one(booking.customers)
+  const staff = one(booking.staff)
+  const done = completion(booking.job_completions)
+  const photoCount = (booking.photos || []).length + (done?.before_photos || []).length + (done?.after_photos || []).length
 
   return (
-    <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #1C2B3A 0%, #2C4A6E 100%)' }}>
-      <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute top-0 right-0 w-96 h-96 rounded-full blur-3xl opacity-15" style={{ background: '#7BA7C7' }} />
+    <div>
+      <div className="border-b border-[#DCE5ED] p-5">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <p className="text-xs font-black uppercase tracking-[0.16em] text-[#4A7FA5]">Job control</p>
+            <h2 className="mt-1 text-2xl font-black">{SERVICE_LABELS[booking.service_type] || booking.service_type}</h2>
+            <p className="mt-1 text-sm text-[#657380]">Ref {booking.id.slice(0, 8)} · created {new Date(booking.created_at).toLocaleDateString()}</p>
+          </div>
+          <span className={`w-fit rounded-full border px-3 py-1 text-xs font-black ${STATUS_STYLES[booking.status] || STATUS_STYLES.pending}`}>{booking.status.replace('_', ' ')}</span>
+        </div>
       </div>
 
-      <div className="relative z-10 mx-auto max-w-7xl p-4 sm:p-6">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-5">
-          <div>
-            <Link href="/" className="text-white/40 text-xs hover:text-white/80 transition-colors">← cleanngo home</Link>
-            <h1 className="text-2xl sm:text-3xl font-bold text-white mt-1">Admin Dashboard</h1>
-            <p className="text-white/50 mt-1">Manage quote requests &amp; jobs</p>
+      <div className="grid gap-5 p-5 xl:grid-cols-2">
+        <section className="rounded-[8px] bg-[#F4F7FA] p-4">
+          <h3 className="flex items-center gap-2 font-black"><UserRound className="h-5 w-5 text-[#4A7FA5]" />Customer</h3>
+          <div className="mt-4 space-y-2 text-sm">
+            <div className="font-black">{customer?.name || 'Customer'}</div>
+            <div className="flex items-center gap-2 text-[#657380]"><Mail className="h-4 w-4" />{customer?.email || 'No email'}</div>
+            <div className="flex items-center gap-2 text-[#657380]"><Phone className="h-4 w-4" />{customer?.phone || 'No phone'}</div>
           </div>
-          <div className="flex w-full flex-col gap-2 sm:w-auto sm:items-end">
-            <button type="button" onClick={signOut}
-              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-white/15 px-4 py-2 text-sm font-medium text-white/70 transition-colors hover:bg-white/10 hover:text-white">
-              <span aria-hidden="true">⎋</span> Sign out
-            </button>
-            {unread > 0 && (
-              <div className="flex items-center gap-3 bg-amber-500/20 border border-amber-400/30 rounded-2xl px-5 py-3">
-                <div className="w-3 h-3 rounded-full bg-amber-400 animate-pulse" />
-                <span className="text-amber-300 font-semibold">{unread} new request{unread > 1 ? 's' : ''} awaiting quote</span>
-              </div>
-            )}
-            {newApps > 0 && (
-              <Link href="/admin/applications" className="flex items-center gap-3 bg-emerald-500/20 border border-emerald-400/30 rounded-2xl px-5 py-3 hover:bg-emerald-500/30 transition-colors">
-                <div className="w-3 h-3 rounded-full bg-emerald-400 animate-pulse" />
-                <span className="text-emerald-300 font-semibold">{newApps} new application{newApps > 1 ? 's' : ''} →</span>
-              </Link>
-            )}
+        </section>
+
+        <section className="rounded-[8px] bg-[#F4F7FA] p-4">
+          <h3 className="flex items-center gap-2 font-black"><Home className="h-5 w-5 text-[#4A7FA5]" />Job detail</h3>
+          <div className="mt-4 grid gap-2 text-sm">
+            <div className="flex items-center gap-2 text-[#657380]"><MapPin className="h-4 w-4" />{booking.address}</div>
+            <div className="flex items-center gap-2 text-[#657380]"><CalendarDays className="h-4 w-4" />{dateLabel(booking.scheduled_date)} at {timeLabel(booking.scheduled_time)}</div>
+            <div className="font-bold">{booking.bedrooms} bedrooms · {booking.bathrooms} bathrooms · {money(booking.price_cents)}</div>
+            {(booking.extras || []).length > 0 && <div className="text-[#657380]">Extras: {(booking.extras || []).join(', ')}</div>}
+            {booking.notes && <div className="rounded bg-white p-3 text-[#657380]">{booking.notes}</div>}
           </div>
-        </div>
+        </section>
 
-        {/* Section nav */}
-        <nav className="-mx-4 mb-8 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 sm:pb-0">
-          {NAV.map(item => (
-            <Link key={item.href} href={item.href}
-              className="shrink-0 px-3.5 py-2 rounded-lg bg-white/5 border border-white/10 text-white/70 hover:text-white hover:bg-white/10 text-sm font-medium transition-colors">
-              {item.label}
-            </Link>
-          ))}
-        </nav>
-
-        {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          {[
-            { label: 'Pending Quotes', value: bookings.filter(b => b.status === 'pending').length, color: 'text-amber-300' },
-            { label: 'Confirmed', value: bookings.filter(b => b.status === 'confirmed').length, color: 'text-blue-300' },
-            { label: 'In Progress', value: bookings.filter(b => b.status === 'in_progress').length, color: 'text-purple-300' },
-            { label: 'Completed', value: bookings.filter(b => b.status === 'completed').length, color: 'text-green-300' },
-          ].map(stat => (
-            <div key={stat.label} className="glass-strong rounded-2xl p-4 sm:p-5">
-              <div className={`text-2xl font-bold sm:text-3xl ${stat.color}`}>{stat.value}</div>
-              <div className="text-white/50 text-sm mt-1">{stat.label}</div>
-            </div>
-          ))}
-        </div>
-
-        {/* Recent applications */}
-        {apps.length > 0 && (
-          <div className="glass-strong rounded-2xl p-5 mb-8">
-            <div className="flex items-center justify-between mb-3">
-              <h2 className="text-white font-semibold">Cleaner applications</h2>
-              <Link href="/admin/applications" className="text-sm text-[#7BA7C7] hover:text-white">View all →</Link>
-            </div>
-            <div className="space-y-2">
-              {apps.slice(0, 4).map(a => (
-                <Link key={a.id} href="/admin/applications" className="flex flex-col gap-2 bg-white/5 hover:bg-white/10 rounded-xl px-4 py-2.5 transition-colors min-[520px]:flex-row min-[520px]:items-center min-[520px]:justify-between">
-                  <span className="text-white/90 text-sm">{a.name} <span className="text-white/40">· {a.suburbs || 'area not set'}</span></span>
-                  <span className={`text-xs px-2 py-0.5 rounded-full ${a.status === 'new' ? 'bg-amber-500/20 text-amber-300' : 'bg-white/10 text-white/50'}`}>{a.status}</span>
-                </Link>
-              ))}
-            </div>
+        <section className="rounded-[8px] border border-[#DCE5ED] p-4">
+          <h3 className="font-black">Quote and payment</h3>
+          <p className="mt-1 text-sm text-[#657380]">Send a clear customer quote and move the job toward confirmation.</p>
+          <div className="mt-4 grid gap-3 sm:grid-cols-[160px_1fr]">
+            <input type="number" placeholder="Price" value={quotePrice} onChange={(e) => setQuotePrice(e.target.value)} className="rounded-xl border border-[#DCE5ED] px-4 py-3 text-sm" />
+            <input placeholder="Customer note, optional" value={quoteNote} onChange={(e) => setQuoteNote(e.target.value)} className="rounded-xl border border-[#DCE5ED] px-4 py-3 text-sm" />
           </div>
-        )}
+          <button onClick={onQuote} disabled={saving || !quotePrice} className="mt-3 inline-flex min-h-11 items-center gap-2 rounded-full bg-[#2C4A6E] px-5 text-sm font-black text-white disabled:opacity-50">
+            <CreditCard className="h-4 w-4" />
+            Send quote
+          </button>
+        </section>
 
-        {/* Filter tabs */}
-        <div className="flex gap-2 mb-6 flex-wrap">
-          {['all','pending','confirmed','in_progress','completed','cancelled'].map(f => (
-            <button key={f} onClick={() => setFilter(f)}
-              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all border ${
-                filter === f
-                  ? 'bg-white text-[#2C4A6E] border-white'
-                  : 'bg-white/10 text-white/60 border-white/20 hover:bg-white/20'
-              }`}>
-              {f === 'all' ? 'All' : f.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
-              {f === 'pending' && unread > 0 && (
-                <span className="ml-2 bg-amber-400 text-amber-900 text-xs font-bold px-1.5 py-0.5 rounded-full">{unread}</span>
-              )}
-            </button>
-          ))}
-        </div>
+        <section className="rounded-[8px] border border-[#DCE5ED] p-4">
+          <h3 className="font-black">Cleaner assignment</h3>
+          <p className="mt-1 text-sm text-[#657380]">Current cleaner: <span className="font-bold text-[#172434]">{staff?.name || 'Unassigned'}</span></p>
+          <select value={booking.staff_id || ''} disabled={saving} onChange={(e) => onPatch({ staff_id: e.target.value || null })} className="mt-4 w-full rounded-xl border border-[#DCE5ED] px-4 py-3 text-sm">
+            <option value="">Unassigned</option>
+            {cleaners.map((cleaner) => <option key={cleaner.id} value={cleaner.id}>{cleaner.name}{cleaner.suburb ? ` · ${cleaner.suburb}` : ''}</option>)}
+          </select>
+          {booking.covered_by_backup && <p className="mt-2 text-sm font-bold text-amber-700">Backup coverage is active for this job.</p>}
+        </section>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Booking list */}
-          <div className="lg:col-span-2 space-y-3">
-            {loading ? (
-              <div className="text-center py-20 text-white/40">Loading bookings...</div>
-            ) : filtered.length === 0 ? (
-              <div className="glass-strong rounded-2xl p-12 text-center">
-                <div className="text-4xl mb-3">📭</div>
-                <div className="text-white/40">No {filter === 'all' ? '' : filter} bookings yet</div>
-              </div>
-            ) : filtered.map(b => (
-              <button key={b.id} onClick={() => { setSelected(b); setQuoteSent(false); setQuotePrice(b.price_cents > 0 ? String(b.price_cents / 100) : ''); setMessageText(''); setMessageStatus('') }}
-                className={`w-full glass-strong rounded-2xl p-5 text-left transition-all hover:bg-white/20 border-2 ${
-                  selected?.id === b.id ? 'border-white/50' : 'border-transparent'
-                } ${b.status === 'pending' ? 'ring-1 ring-amber-400/30' : ''}`}>
-                <div className="flex flex-col gap-3 mb-3 min-[520px]:flex-row min-[520px]:items-start min-[520px]:justify-between">
-                  <div>
-                    <div className="text-white font-semibold">{b.customers?.name || 'Customer'}</div>
-                    <div className="text-white/50 text-sm">{SERVICE_LABELS[b.service_type] || b.service_type}</div>
-                  </div>
-                  <span className={`w-fit text-xs font-medium px-3 py-1 rounded-full border ${STATUS_STYLES[b.status] || STATUS_STYLES.pending}`}>
-                    {b.status === 'pending' ? '⏳ Awaiting Quote' : b.status.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
-                  </span>
-                </div>
-                <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-white/40 text-xs">
-                  <span>📅 {b.scheduled_date}</span>
-                  <span>🛏 {b.bedrooms}bed · {b.bathrooms}bath</span>
-                  <span>📍 {b.suburb || b.address?.split(',').pop()?.trim()}</span>
-                  {b.price_cents > 0 && <span className="text-green-300 font-semibold">${(b.price_cents / 100).toFixed(0)} quoted</span>}
-                </div>
+        <section className="rounded-[8px] border border-[#DCE5ED] p-4 xl:col-span-2">
+          <h3 className="font-black">Schedule and service notes</h3>
+          <div className="mt-4 grid gap-3 md:grid-cols-5">
+            <input type="date" value={opsDraft.scheduled_date} onChange={(e) => setOpsDraft({ ...opsDraft, scheduled_date: e.target.value })} className="rounded-xl border border-[#DCE5ED] px-4 py-3 text-sm" />
+            <input type="time" value={opsDraft.scheduled_time} onChange={(e) => setOpsDraft({ ...opsDraft, scheduled_time: e.target.value })} className="rounded-xl border border-[#DCE5ED] px-4 py-3 text-sm" />
+            <input value={opsDraft.address} onChange={(e) => setOpsDraft({ ...opsDraft, address: e.target.value })} className="rounded-xl border border-[#DCE5ED] px-4 py-3 text-sm md:col-span-2" placeholder="Address" />
+            <input value={opsDraft.suburb} onChange={(e) => setOpsDraft({ ...opsDraft, suburb: e.target.value })} className="rounded-xl border border-[#DCE5ED] px-4 py-3 text-sm" placeholder="Suburb" />
+          </div>
+          <textarea rows={3} value={opsDraft.notes} onChange={(e) => setOpsDraft({ ...opsDraft, notes: e.target.value })} className="mt-3 w-full rounded-xl border border-[#DCE5ED] px-4 py-3 text-sm" placeholder="Internal job notes and customer preferences" />
+          <button disabled={saving} onClick={() => onPatch(opsDraft)} className="mt-3 rounded-full border border-[#2C4A6E] px-5 py-3 text-sm font-black text-[#2C4A6E] disabled:opacity-50">Save schedule and notes</button>
+        </section>
+
+        <section className="rounded-[8px] border border-[#DCE5ED] p-4">
+          <h3 className="font-black">Status controls</h3>
+          <div className="mt-4 flex flex-wrap gap-2">
+            {STATUS_ACTIONS.map((status) => (
+              <button key={status} disabled={saving || booking.status === status} onClick={() => onPatch({ status })} className={`rounded-full border px-4 py-2 text-sm font-black disabled:opacity-40 ${booking.status === status ? 'bg-[#172434] text-white' : 'border-[#DCE5ED] text-[#2C4A6E]'}`}>
+                {status.replace('_', ' ')}
               </button>
             ))}
           </div>
+        </section>
 
-          {/* Job detail + quote panel */}
-          <div className="lg:col-span-1">
-            {selected ? (
-              <div className="glass-strong rounded-2xl p-5 sm:p-6 lg:sticky lg:top-6">
-                <div className="flex items-center justify-between mb-5">
-                  <h3 className="text-white font-bold text-lg">Job Detail</h3>
-                  <button onClick={() => setSelected(null)} className="text-white/40 hover:text-white text-xl">✕</button>
-                </div>
-
-                {/* Customer */}
-                <div className="bg-white/10 rounded-xl p-4 mb-4">
-                  <div className="text-white/50 text-xs uppercase tracking-wider mb-2">Customer</div>
-                  <div className="text-white font-semibold">{selected.customers?.name}</div>
-                  <div className="text-white/60 text-sm">{selected.customers?.email}</div>
-                  <div className="text-white/60 text-sm">{selected.customers?.phone}</div>
-                </div>
-
-                <div className="bg-white/5 rounded-xl p-4 mb-4">
-                  <div className="text-white/50 text-xs uppercase tracking-wider mb-2">Message customer</div>
-                  <textarea
-                    rows={3}
-                    placeholder="Write a message for the customer..."
-                    value={messageText}
-                    onChange={e => setMessageText(e.target.value)}
-                    className="w-full bg-white/10 border border-white/20 rounded-xl px-3 py-2.5 text-white placeholder-white/30 text-sm resize-none"
-                  />
-                  {messageStatus && <div className="text-white/50 text-xs mt-2">{messageStatus}</div>}
-                  <button
-                    type="button"
-                    onClick={sendCustomerMessage}
-                    disabled={sendingMessage || !messageText.trim()}
-                    className="w-full mt-3 py-2.5 rounded-xl bg-white text-[#2C4A6E] text-sm font-bold hover:bg-white/90 transition disabled:opacity-40"
-                  >
-                    {sendingMessage ? 'Sending...' : 'Send message + email'}
-                  </button>
-                </div>
-
-                {/* Job info */}
-                <div className="space-y-2 mb-4">
-                  {[
-                    { label: 'Service', value: SERVICE_LABELS[selected.service_type] },
-                    { label: 'Size', value: `${selected.bedrooms} bed · ${selected.bathrooms} bath` },
-                    { label: 'Date', value: selected.scheduled_date },
-                    { label: 'Time', value: selected.scheduled_time },
-                    { label: 'Address', value: selected.address },
-                  ].map(row => (
-                    <div key={row.label} className="flex flex-col gap-1 text-sm sm:flex-row sm:justify-between">
-                      <span className="text-white/40">{row.label}</span>
-                      <span className="text-white font-medium sm:max-w-[160px] sm:text-right">{row.value}</span>
-                    </div>
-                  ))}
-                  {selected.extras?.length > 0 && (
-                    <div className="flex flex-col gap-1 text-sm sm:flex-row sm:justify-between">
-                      <span className="text-white/40">Extras</span>
-                      <span className="text-white font-medium sm:max-w-[160px] sm:text-right">{selected.extras.join(', ')}</span>
-                    </div>
-                  )}
-                  {selected.notes && (
-                    <div className="mt-3 bg-white/5 rounded-xl p-3">
-                      <div className="text-white/40 text-xs mb-1">Customer notes</div>
-                      <div className="text-white/70 text-sm">{selected.notes}</div>
-                    </div>
-                  )}
-                </div>
-
-                {/* Quote panel */}
-                {selected.status === 'pending' && !quoteSent && (
-                  <div className="border-t border-white/20 pt-4">
-                    <div className="text-white/70 font-semibold text-sm mb-3">💰 Send Quote to Customer</div>
-                    <div className="mb-3">
-                      <label className="text-white/50 text-xs mb-1 block">Quote price ($)</label>
-                      <div className="relative">
-                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-white/50 font-semibold">$</span>
-                        <input
-                          type="number"
-                          placeholder="e.g. 350"
-                          value={quotePrice}
-                          onChange={e => setQuotePrice(e.target.value)}
-                          className="w-full bg-white/10 border border-white/20 rounded-xl pl-7 pr-4 py-3 text-white placeholder-white/30 text-lg font-bold"
-                        />
-                      </div>
-                    </div>
-                    <div className="mb-4">
-                      <label className="text-white/50 text-xs mb-1 block">Note to customer (optional)</label>
-                      <textarea
-                        rows={2}
-                        placeholder="e.g. price includes oven & fridge clean"
-                        value={quoteNote}
-                        onChange={e => setQuoteNote(e.target.value)}
-                        className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 text-sm resize-none"
-                      />
-                    </div>
-                    <button
-                      onClick={sendQuote}
-                      disabled={quoting || !quotePrice}
-                      className="w-full py-3 rounded-xl bg-white text-[#2C4A6E] font-bold hover:bg-white/90 transition disabled:opacity-40"
-                    >
-                      {quoting ? 'Sending...' : `Send $${quotePrice || '—'} Quote →`}
-                    </button>
-                  </div>
-                )}
-
-                {quoteSent && (
-                  <div className="border-t border-white/20 pt-4 text-center">
-                    <div className="text-4xl mb-2">✅</div>
-                    <div className="text-green-300 font-semibold">Quote sent!</div>
-                    <div className="text-white/50 text-sm">Customer has been notified</div>
-                  </div>
-                )}
-
-                {selected.status !== 'pending' && selected.price_cents > 0 && (
-                  <div className="border-t border-white/20 pt-4">
-                    <div className="flex justify-between items-center">
-                      <span className="text-white/50 text-sm">Quoted price</span>
-                      <span className="text-2xl font-bold text-green-300">${(selected.price_cents / 100).toFixed(0)}</span>
-                    </div>
-                  </div>
-                )}
-
-                {/* Job management */}
-                {selected.status !== 'pending' && selected.status !== 'cancelled' && (
-                  <div className="border-t border-white/20 pt-4 mt-4 space-y-4">
-                    <div>
-                      <label className="text-white/50 text-xs uppercase tracking-wider mb-1 block">Assigned cleaner</label>
-                      <select
-                        value={selected.staff_id || ''}
-                        disabled={savingBooking}
-                        onChange={e => patchBooking({ staff_id: e.target.value })}
-                        className="w-full bg-white/10 border border-white/20 rounded-xl px-3 py-2.5 text-white text-sm">
-                        <option value="" className="text-black">— Unassigned —</option>
-                        {cleaners.map(c => <option key={c.id} value={c.id} className="text-black">{c.name}</option>)}
-                      </select>
-                    </div>
-                    <div>
-                      <label className="text-white/50 text-xs uppercase tracking-wider mb-2 block">Status</label>
-                      <div className="flex flex-wrap gap-2">
-                        {(['confirmed', 'in_progress', 'completed', 'missed', 'cancelled'] as const).map(st => (
-                          <button key={st} disabled={savingBooking || selected.status === st}
-                            onClick={() => {
-                              if (st === 'missed' && !confirm('Mark this visit as missed? This issues an account credit to the customer.')) return
-                              patchBooking({ status: st })
-                            }}
-                            className={`text-xs px-3 py-1.5 rounded-full border transition-colors disabled:opacity-40 ${
-                              selected.status === st ? 'bg-white text-[#2C4A6E] border-white' : 'bg-white/10 text-white/70 border-white/20 hover:bg-white/20'
-                            }`}>
-                            {st.replace('_', ' ')}
-                          </button>
-                        ))}
-                      </div>
-                      <p className="text-white/30 text-xs mt-2">Marking “missed” auto-credits the customer (reliability guarantee).</p>
-                    </div>
-                  </div>
-                )}
-              </div>
-            ) : (
-              <div className="glass-strong rounded-2xl p-8 text-center">
-                <div className="text-4xl mb-3">👆</div>
-                <div className="text-white/40 text-sm">Select a booking to view details and send a quote</div>
-              </div>
-            )}
+        <section className="rounded-[8px] border border-[#DCE5ED] p-4">
+          <h3 className="font-black">Proof and completion</h3>
+          <div className="mt-4 grid grid-cols-3 gap-3 text-sm">
+            <div className="rounded bg-[#F4F7FA] p-3"><div className="font-black">{photoCount}</div><div className="text-[#657380]">photos</div></div>
+            <div className="rounded bg-[#F4F7FA] p-3"><div className="font-black">{done?.start_time ? 'Yes' : 'No'}</div><div className="text-[#657380]">started</div></div>
+            <div className="rounded bg-[#F4F7FA] p-3"><div className="font-black">{done?.submitted_at ? 'Yes' : 'No'}</div><div className="text-[#657380]">submitted</div></div>
           </div>
-        </div>
+          {done?.notes && <p className="mt-3 rounded bg-[#F4F7FA] p-3 text-sm text-[#657380]">{done.notes}</p>}
+        </section>
+
+        <section className="rounded-[8px] border border-[#DCE5ED] p-4 xl:col-span-2">
+          <h3 className="flex items-center gap-2 font-black"><MessageCircle className="h-5 w-5 text-[#4A7FA5]" />Message customer in-app</h3>
+          <p className="mt-1 text-sm text-[#657380]">Use clear, reassuring customer language. This appears in their Cleanngo account and sends an email notification.</p>
+          <textarea rows={4} value={messageText} onChange={(e) => setMessageText(e.target.value)} className="mt-4 w-full rounded-xl border border-[#DCE5ED] px-4 py-3 text-sm" placeholder="Example: Hi Jane, your quote is ready. We included the oven reset you requested and can confirm Tuesday at 9:00." />
+          {messageStatus && <p className="mt-2 text-sm font-bold text-[#2C4A6E]">{messageStatus}</p>}
+          <button onClick={onMessage} disabled={saving || !messageText.trim()} className="mt-3 inline-flex min-h-11 items-center gap-2 rounded-full bg-[#172434] px-5 text-sm font-black text-white disabled:opacity-50">
+            <Send className="h-4 w-4" />
+            Send message
+          </button>
+        </section>
       </div>
     </div>
   )

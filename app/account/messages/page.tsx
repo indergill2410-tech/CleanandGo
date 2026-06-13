@@ -78,7 +78,7 @@ function MessagesView() {
   }
 
   if (loading) {
-    return <div className="min-h-screen flex items-center justify-center text-white/60" style={{ background: 'linear-gradient(135deg, #1C2B3A, #2C4A6E)' }}>Loading...</div>
+    return <div className="min-h-screen flex items-center justify-center text-white/60" style={{ background: 'linear-gradient(135deg, #1C2B3A, #2C4A6E)' }}>Opening your messages...</div>
   }
 
   return (
@@ -86,11 +86,12 @@ function MessagesView() {
       <div className="max-w-5xl mx-auto">
         <div className="mb-6">
           <Link href="/account" className="text-white/50 text-sm hover:text-white">← Account</Link>
-          <h1 className="text-3xl font-bold text-white mt-2">Messages</h1>
+          <h1 className="text-3xl font-bold text-white mt-2">Your Cleanngo messages</h1>
+          <p className="text-white/50 text-sm mt-1">Ask about a quote, update access notes, or reply to your service team.</p>
         </div>
 
         {conversations.length === 0 ? (
-          <div className="glass-strong rounded-2xl p-10 text-center text-white/60">No messages yet.</div>
+          <div className="glass-strong rounded-2xl p-10 text-center text-white/60">No messages yet. When your service team sends an update, it will appear here.</div>
         ) : (
           <div className="grid lg:grid-cols-[320px_1fr] gap-4">
             <div className="glass-strong rounded-2xl p-3 space-y-2 h-fit">
@@ -100,7 +101,7 @@ function MessagesView() {
                   onClick={() => setSelectedId(conversation.id)}
                   className={`w-full text-left rounded-xl px-4 py-3 transition-colors ${selected?.id === conversation.id ? 'bg-white text-[#2C4A6E]' : 'bg-white/5 text-white hover:bg-white/10'}`}
                 >
-                  <div className="font-semibold text-sm">{conversation.subject || 'Message from cleanngo'}</div>
+                  <div className="font-semibold text-sm">{conversation.subject || 'Service update'}</div>
                   <div className={`text-xs mt-1 ${selected?.id === conversation.id ? 'text-[#2C4A6E]/60' : 'text-white/45'}`}>
                     {conversation.last_message_at ? timeLabel(conversation.last_message_at) : 'New conversation'}
                   </div>
@@ -110,7 +111,7 @@ function MessagesView() {
 
             <div className="glass-strong rounded-2xl p-5">
               <div className="border-b border-white/10 pb-4 mb-4">
-                <div className="text-white font-semibold">{selected?.subject || 'Message from cleanngo'}</div>
+                <div className="text-white font-semibold">{selected?.subject || 'Service update'}</div>
                 {selected?.booking_id && <div className="text-white/40 text-xs mt-1">Booking: {selected.booking_id}</div>}
               </div>
 
@@ -131,7 +132,7 @@ function MessagesView() {
               <div className="border-t border-white/10 pt-4 mt-5">
                 <textarea
                   rows={3}
-                  placeholder="Write a reply..."
+                  placeholder="Write a reply for the Cleanngo team..."
                   value={reply}
                   onChange={e => setReply(e.target.value)}
                   className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 text-sm resize-none"
@@ -143,7 +144,7 @@ function MessagesView() {
                   disabled={sending || !reply.trim()}
                   className="mt-3 px-5 py-3 rounded-xl bg-white text-[#2C4A6E] font-bold hover:bg-white/90 disabled:opacity-50"
                 >
-                  {sending ? 'Sending...' : 'Send reply'}
+                  {sending ? 'Sending...' : 'Send to Cleanngo'}
                 </button>
               </div>
             </div>

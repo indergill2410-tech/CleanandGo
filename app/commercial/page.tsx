@@ -117,7 +117,7 @@ export default function CommercialPage() {
               ))}
             </div>
             <div className="mt-6 rounded-2xl bg-[#F5F0EB] p-5">
-              <div className="text-[#1C2B3A] font-bold">Monetisation options</div>
+              <div className="text-[#1C2B3A] font-bold">Flexible service options</div>
               <p className="text-[#7A8A96] text-sm mt-2 leading-relaxed">
                 Charge per turnover, offer monthly host plans, add weekend priority, linen service,
                 restocking, deep cleans and multi-property discounts.
