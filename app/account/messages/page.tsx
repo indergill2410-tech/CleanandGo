@@ -45,7 +45,11 @@ function MessagesView() {
     setLoading(false)
   }, [requestedConversation, router])
 
-  useEffect(() => { load() }, [load])
+  useEffect(() => {
+    load()
+    const timer = window.setInterval(load, 20000)
+    return () => window.clearInterval(timer)
+  }, [load])
 
   const selected = useMemo(
     () => conversations.find((conversation) => conversation.id === selectedId) || conversations[0],

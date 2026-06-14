@@ -4,9 +4,10 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import {
   AlertTriangle,
+  Bell,
   CalendarDays,
+  Camera,
   CheckCircle2,
-  ClipboardList,
   Clock,
   CreditCard,
   Home,
@@ -62,7 +63,19 @@ type Booking = {
   job_completions?: Relation<Completion>
 }
 
-type Cleaner = { id: string; name: string; role: string; suburb?: string | null; phone?: string | null; email?: string | null }
+type Cleaner = { id: string; name: string; role: string; status?: string | null; suburb?: string | null; phone?: string | null; email?: string | null }
+type Message = { id: string; sender_type: string; body: string; created_at: string }
+type Conversation = {
+  id: string
+  subject: string | null
+  booking_id: string | null
+  customer_id: string | null
+  last_message_at: string | null
+  unread_admin_count: number
+  last_message: Message | null
+  messages: Message[]
+}
+type Metrics = { unreadNotifications: number; unreadMessages: number; openInvoiceCents: number; capturedPaymentCents: number }
 
 const SERVICE_LABELS: Record<string, string> = {
   recurring: 'Recurring clean',
@@ -94,6 +107,8 @@ export default function AdminDashboard() {
   const [filter, setFilter] = useState('pending')
   const [apps, setApps] = useState<{ id: string; name: string; suburbs: string | null; status: string }[]>([])
   const [cleaners, setCleaners] = useState<Cleaner[]>([])
+  const [conversations, setConversations] = useState<Conversation[]>([])
+  const [metrics, setMetrics] = useState<Metrics>({ unreadNotifications: 0, unreadMessages: 0, openInvoiceCents: 0, capturedPaymentCents: 0 })
   const [saving, setSaving] = useState(false)
   const [quotePrice, setQuotePrice] = useState('')
   const [quoteNote, setQuoteNote] = useState('')
@@ -105,25 +120,23 @@ export default function AdminDashboard() {
   const filtered = useMemo(() => filter === 'all' ? bookings : bookings.filter((booking) => booking.status === filter), [bookings, filter])
 
   const fetchBookings = useCallback(async (keepSelected = true) => {
-    const res = await fetch('/api/bookings')
+    const res = await fetch('/api/admin/operations')
     const data = await res.json()
     const list = data.bookings || []
     setBookings(list)
+    setCleaners((data.staff || []).filter((staff: Cleaner) => staff.role === 'cleaner' && staff.status === 'active'))
+    setApps(data.applications || [])
+    setConversations(data.conversations || [])
+    setMetrics(data.metrics || { unreadNotifications: 0, unreadMessages: 0, openInvoiceCents: 0, capturedPaymentCents: 0 })
     setLoading(false)
     if (!keepSelected || !selectedId) setSelectedId(list.find((b: Booking) => b.status === filter)?.id || list[0]?.id || '')
   }, [filter, selectedId])
 
-  const fetchApplications = useCallback(async () => {
-    const data = await fetch('/api/careers/apply').then(r => r.json()).catch(() => ({ applications: [] }))
-    setApps(data.applications || [])
-  }, [])
-
-  const fetchCleaners = useCallback(async () => {
-    const data = await fetch('/api/staff').then(r => r.json()).catch(() => ({ staff: [] }))
-    setCleaners((data.staff || []).filter((staff: Cleaner) => staff.role === 'cleaner'))
-  }, [])
-
-  useEffect(() => { fetchBookings(false); fetchApplications(); fetchCleaners() }, [fetchApplications, fetchBookings, fetchCleaners])
+  useEffect(() => {
+    fetchBookings(false)
+    const timer = window.setInterval(() => fetchBookings(true), 30000)
+    return () => window.clearInterval(timer)
+  }, [fetchBookings])
 
   useEffect(() => {
     if (!selected) return
@@ -204,6 +217,7 @@ export default function AdminDashboard() {
       }
       setMessageText('')
       setMessageStatus('Message sent to the customer and saved in their app.')
+      await fetchBookings(true)
     } catch {
       setMessageStatus('Network error')
     } finally {
@@ -228,6 +242,7 @@ export default function AdminDashboard() {
             </div>
             <div className="flex flex-wrap gap-2">
               {counts.pending > 0 && <span className="inline-flex min-h-11 items-center gap-2 rounded-full bg-amber-100 px-5 text-sm font-black text-amber-800"><AlertTriangle className="h-4 w-4" />{counts.pending} quote{counts.pending === 1 ? '' : 's'} waiting</span>}
+              {metrics.unreadMessages > 0 && <span className="inline-flex min-h-11 items-center gap-2 rounded-full bg-blue-100 px-5 text-sm font-black text-blue-800"><MessageCircle className="h-4 w-4" />{metrics.unreadMessages} customer message{metrics.unreadMessages === 1 ? '' : 's'}</span>}
               {newApps > 0 && <Link href="/admin/applications" className="inline-flex min-h-11 items-center gap-2 rounded-full bg-emerald-100 px-5 text-sm font-black text-emerald-800">{newApps} new applicant{newApps === 1 ? '' : 's'}</Link>}
               <button onClick={signOut} className="min-h-11 rounded-full border border-[#DCE5ED] px-5 text-sm font-bold text-[#657380]">Sign out</button>
             </div>
@@ -257,6 +272,24 @@ export default function AdminDashboard() {
               <div className="text-sm font-semibold text-[#657380]">{item.label}</div>
             </button>
           ))}
+        </section>
+
+        <section className="mt-4 grid gap-4 lg:grid-cols-3">
+          <div className="rounded-[8px] border border-[#DCE5ED] bg-white p-4 shadow-sm">
+            <Bell className="h-5 w-5 text-[#4A7FA5]" />
+            <div className="mt-3 text-2xl font-black">{metrics.unreadNotifications}</div>
+            <div className="text-sm font-semibold text-[#657380]">Unread admin alerts</div>
+          </div>
+          <div className="rounded-[8px] border border-[#DCE5ED] bg-white p-4 shadow-sm">
+            <MessageCircle className="h-5 w-5 text-[#4A7FA5]" />
+            <div className="mt-3 text-2xl font-black">{metrics.unreadMessages}</div>
+            <div className="text-sm font-semibold text-[#657380]">Unread customer messages</div>
+          </div>
+          <div className="rounded-[8px] border border-[#DCE5ED] bg-white p-4 shadow-sm">
+            <CreditCard className="h-5 w-5 text-[#4A7FA5]" />
+            <div className="mt-3 text-2xl font-black">{money(metrics.openInvoiceCents)}</div>
+            <div className="text-sm font-semibold text-[#657380]">Open invoices</div>
+          </div>
         </section>
 
         <section className="mt-6 grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
@@ -317,6 +350,7 @@ export default function AdminDashboard() {
                 messageText={messageText}
                 setMessageText={setMessageText}
                 messageStatus={messageStatus}
+                conversations={conversations.filter((conversation) => conversation.booking_id === selected.id)}
                 onPatch={patchBooking}
                 onQuote={sendQuote}
                 onMessage={sendCustomerMessage}
@@ -344,6 +378,7 @@ function JobInspector({
   messageText,
   setMessageText,
   messageStatus,
+  conversations,
   onPatch,
   onQuote,
   onMessage,
@@ -360,6 +395,7 @@ function JobInspector({
   messageText: string
   setMessageText: (value: string) => void
   messageStatus: string
+  conversations: Conversation[]
   onPatch: (updates: Record<string, string | null>) => Promise<void>
   onQuote: () => Promise<void>
   onMessage: () => Promise<void>
@@ -367,7 +403,11 @@ function JobInspector({
   const customer = one(booking.customers)
   const staff = one(booking.staff)
   const done = completion(booking.job_completions)
-  const photoCount = (booking.photos || []).length + (done?.before_photos || []).length + (done?.after_photos || []).length
+  const customerPhotos = booking.photos || []
+  const beforePhotos = done?.before_photos || []
+  const afterPhotos = done?.after_photos || []
+  const photoCount = customerPhotos.length + beforePhotos.length + afterPhotos.length
+  const thread = conversations[0]
 
   return (
     <div>
@@ -460,6 +500,14 @@ function JobInspector({
         </section>
 
         <section className="rounded-[8px] border border-[#DCE5ED] p-4 xl:col-span-2">
+          <h3 className="flex items-center gap-2 font-black"><Camera className="h-5 w-5 text-[#4A7FA5]" />Job photos</h3>
+          <p className="mt-1 text-sm text-[#657380]">Customer-uploaded photos and cleaner proof photos stay visible here for admin review.</p>
+          <PhotoStrip title="Customer request photos" photos={customerPhotos} />
+          <PhotoStrip title="Cleaner before photos" photos={beforePhotos} />
+          <PhotoStrip title="Cleaner after photos" photos={afterPhotos} />
+        </section>
+
+        <section className="rounded-[8px] border border-[#DCE5ED] p-4 xl:col-span-2">
           <h3 className="flex items-center gap-2 font-black"><MessageCircle className="h-5 w-5 text-[#4A7FA5]" />Message customer in-app</h3>
           <p className="mt-1 text-sm text-[#657380]">Use clear, reassuring customer language. This appears in their Cleanngo account and sends an email notification.</p>
           <textarea rows={4} value={messageText} onChange={(e) => setMessageText(e.target.value)} className="mt-4 w-full rounded-xl border border-[#DCE5ED] px-4 py-3 text-sm" placeholder="Example: Hi Jane, your quote is ready. We included the oven reset you requested and can confirm Tuesday at 9:00." />
@@ -468,8 +516,48 @@ function JobInspector({
             <Send className="h-4 w-4" />
             Send message
           </button>
+          {thread && (
+            <div className="mt-5 rounded-[8px] bg-[#F4F7FA] p-4">
+              <div className="flex items-center justify-between gap-3">
+                <h4 className="font-black">Conversation history</h4>
+                {thread.unread_admin_count > 0 && <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-black text-blue-800">{thread.unread_admin_count} unread</span>}
+              </div>
+              <div className="mt-3 max-h-72 space-y-3 overflow-y-auto pr-1">
+                {thread.messages.length === 0 ? (
+                  <div className="text-sm text-[#657380]">No messages yet.</div>
+                ) : thread.messages.map((message) => (
+                  <div key={message.id} className={`rounded-[8px] p-3 text-sm ${message.sender_type === 'admin' ? 'bg-white text-[#172434]' : 'bg-[#172434] text-white'}`}>
+                    <div className="whitespace-pre-wrap">{message.body}</div>
+                    <div className={`mt-2 text-xs ${message.sender_type === 'admin' ? 'text-[#657380]' : 'text-white/55'}`}>
+                      {message.sender_type === 'admin' ? 'Admin' : 'Customer'} · {new Date(message.created_at).toLocaleString()}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </section>
       </div>
+    </div>
+  )
+}
+
+function PhotoStrip({ title, photos }: { title: string; photos: string[] }) {
+  return (
+    <div className="mt-4">
+      <div className="text-xs font-black uppercase tracking-[0.14em] text-[#657380]">{title}</div>
+      {photos.length === 0 ? (
+        <div className="mt-2 rounded-[8px] bg-[#F4F7FA] p-4 text-sm text-[#657380]">No photos uploaded.</div>
+      ) : (
+        <div className="mt-2 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {photos.map((src, index) => (
+            <a key={`${src}-${index}`} href={src} target="_blank" rel="noopener noreferrer" className="group block overflow-hidden rounded-[8px] border border-[#DCE5ED] bg-[#F4F7FA]">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={src} alt={`${title} ${index + 1}`} className="aspect-video w-full object-cover transition group-hover:scale-[1.02]" />
+            </a>
+          ))}
+        </div>
+      )}
     </div>
   )
 }

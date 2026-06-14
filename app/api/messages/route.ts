@@ -66,11 +66,21 @@ async function conversationsWithMessages(customerId?: string, bookingId?: string
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
   const bookingId = searchParams.get('bookingId') || undefined
+  const supabase = createAdminClient()
 
   const staffAuth = await requireStaff()
   if (staffAuth.ok && staffAuth.staff.role === 'admin') {
     const result = await conversationsWithMessages(undefined, bookingId)
     if (result.error) return NextResponse.json({ error: result.error.message }, { status: 500 })
+    const ids = (result.conversations || []).map((conversation) => conversation.id)
+    if (ids.length > 0) {
+      await supabase
+        .from('messages')
+        .update({ read_by_admin_at: new Date().toISOString() })
+        .in('conversation_id', ids)
+        .eq('sender_type', 'customer')
+        .is('read_by_admin_at', null)
+    }
     return NextResponse.json({ conversations: result.conversations })
   }
 
@@ -79,6 +89,15 @@ export async function GET(request: Request) {
 
   const result = await conversationsWithMessages(customerAuth.customer.id)
   if (result.error) return NextResponse.json({ error: result.error.message }, { status: 500 })
+  const ids = (result.conversations || []).map((conversation) => conversation.id)
+  if (ids.length > 0) {
+    await supabase
+      .from('messages')
+      .update({ read_by_customer_at: new Date().toISOString() })
+      .in('conversation_id', ids)
+      .eq('sender_type', 'admin')
+      .is('read_by_customer_at', null)
+  }
   return NextResponse.json({ conversations: result.conversations })
 }
 
