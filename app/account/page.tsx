@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import {
   ArrowRight,
+  Camera,
   CalendarDays,
   CheckCircle2,
   CreditCard,
@@ -93,6 +94,13 @@ const timeLabel = (value?: string | null) => value ? value.slice(0, 5) : 'Time p
 const person = (value: StaffRef): StaffPerson | undefined => Array.isArray(value) ? value[0] : value || undefined
 const completion = (value: Booking['job_completions']) => Array.isArray(value) ? value[0] : value
 const statusInfo = (status: string) => STATUS_COPY[status] || { label: status.replace('_', ' '), className: 'bg-slate-100 text-slate-700', helper: 'We will keep this updated.' }
+const TIMELINE = ['pending', 'confirmed', 'in_progress', 'completed'] as const
+const timelineLabel: Record<string, string> = {
+  pending: 'Quote',
+  confirmed: 'Booked',
+  in_progress: 'Cleaning',
+  completed: 'Complete',
+}
 
 export default function AccountPage() {
   const router = useRouter()
@@ -462,6 +470,10 @@ export default function AccountPage() {
                 {bookings.map((booking) => {
                   const cleaner = person(booking.staff)
                   const done = completion(booking.job_completions)
+                  const progressIndex = TIMELINE.indexOf(booking.status as typeof TIMELINE[number])
+                  const beforePhotos = done?.before_photos || []
+                  const afterPhotos = done?.after_photos || []
+                  const requestPhotos = booking.photos || []
                   return (
                     <article key={booking.id} className="rounded-[8px] border border-[#E3DBD0] bg-white p-5 shadow-sm">
                       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
@@ -489,6 +501,21 @@ export default function AccountPage() {
                           <div className="font-black">{(done?.after_photos || []).length || (booking.photos || []).length || 0} photo{((done?.after_photos || []).length || (booking.photos || []).length || 0) === 1 ? '' : 's'}</div>
                         </div>
                       </div>
+                      <div className="mt-5 rounded-[8px] bg-[#F7F3EE] p-4">
+                        <div className="flex items-center justify-between gap-2">
+                          {TIMELINE.map((step, index) => {
+                            const active = progressIndex >= 0 && index <= progressIndex
+                            return (
+                              <div key={step} className="flex flex-1 flex-col items-center gap-2 text-center">
+                                <div className={`h-3 w-full rounded-full ${active ? 'bg-[#2C4A6E]' : 'bg-[#DDE5EC]'}`} />
+                                <div className={`text-xs font-black ${active ? 'text-[#172434]' : 'text-[#9AA7B1]'}`}>{timelineLabel[step]}</div>
+                              </div>
+                            )
+                          })}
+                        </div>
+                        <p className="mt-3 text-sm text-[#657380]">{statusInfo(booking.status).helper}</p>
+                      </div>
+                      <CustomerPhotoGallery title="Your job photos" requestPhotos={requestPhotos} beforePhotos={beforePhotos} afterPhotos={afterPhotos} />
                       <div className="mt-4 flex flex-wrap gap-2">
                         <Link href={`/account/messages?conversation=${conversations.find((c) => c.booking_id === booking.id)?.id || ''}`} className="rounded-full border border-[#C9D7E2] px-4 py-2 text-sm font-black text-[#2C4A6E]">Message cleanngo</Link>
                         <button
@@ -515,5 +542,43 @@ export default function AccountPage() {
         </section>
       </div>
     </main>
+  )
+}
+
+function CustomerPhotoGallery({
+  title,
+  requestPhotos,
+  beforePhotos,
+  afterPhotos,
+}: {
+  title: string
+  requestPhotos: string[]
+  beforePhotos: string[]
+  afterPhotos: string[]
+}) {
+  const photos = [
+    ...requestPhotos.map((src) => ({ src, label: 'Request photo' })),
+    ...beforePhotos.map((src) => ({ src, label: 'Before photo' })),
+    ...afterPhotos.map((src) => ({ src, label: 'After photo' })),
+  ]
+
+  if (photos.length === 0) return null
+
+  return (
+    <div className="mt-5 rounded-[8px] border border-[#E8E2DA] p-4">
+      <h3 className="flex items-center gap-2 text-sm font-black text-[#172434]">
+        <Camera className="h-4 w-4 text-[#4A7FA5]" />
+        {title}
+      </h3>
+      <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3">
+        {photos.map((photo, index) => (
+          <a key={`${photo.src}-${index}`} href={photo.src} target="_blank" rel="noopener noreferrer" className="block overflow-hidden rounded-[8px] border border-[#E3DBD0] bg-[#F7F3EE]">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={photo.src} alt={`${photo.label} ${index + 1}`} className="aspect-video w-full object-cover" />
+            <div className="px-2 py-1 text-xs font-bold text-[#657380]">{photo.label}</div>
+          </a>
+        ))}
+      </div>
+    </div>
   )
 }

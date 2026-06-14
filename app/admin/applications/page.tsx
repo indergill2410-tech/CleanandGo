@@ -1,6 +1,7 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
+import { ArrowLeft, BadgeCheck, BriefcaseBusiness, FileText, Mail, Phone, Search, ShieldCheck, UserPlus } from 'lucide-react'
 
 type Application = {
   id: string
@@ -24,24 +25,49 @@ type Application = {
 }
 
 const STATUS_STYLES: Record<string, string> = {
-  new:       'bg-amber-500/20 text-amber-300',
-  reviewing: 'bg-blue-500/20 text-blue-300',
-  approved:  'bg-green-500/20 text-green-300',
-  rejected:  'bg-red-500/20 text-red-300',
+  new: 'bg-amber-100 text-amber-800 border-amber-200',
+  reviewing: 'bg-blue-100 text-blue-800 border-blue-200',
+  approved: 'bg-emerald-100 text-emerald-800 border-emerald-200',
+  rejected: 'bg-red-100 text-red-800 border-red-200',
 }
+
+const FILTERS = ['all', 'new', 'reviewing', 'approved', 'rejected']
 
 export default function AdminApplications() {
   const [apps, setApps] = useState<Application[]>([])
   const [loading, setLoading] = useState(true)
   const [busy, setBusy] = useState('')
+  const [filter, setFilter] = useState('all')
+  const [query, setQuery] = useState('')
 
   const load = async () => {
     try {
       const data = await fetch('/api/careers/apply').then(r => r.json())
       setApps(data.applications || [])
-    } catch (e) { console.error(e) } finally { setLoading(false) }
+    } catch (e) {
+      console.error(e)
+    } finally {
+      setLoading(false)
+    }
   }
+
   useEffect(() => { load() }, [])
+
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase()
+    return apps.filter((app) => {
+      const matchesStatus = filter === 'all' || app.status === filter
+      const matchesQuery = !q || [app.name, app.email, app.phone, app.suburbs, app.availability].some((value) => value?.toLowerCase().includes(q))
+      return matchesStatus && matchesQuery
+    })
+  }, [apps, filter, query])
+
+  const counts = useMemo(() => ({
+    total: apps.length,
+    new: apps.filter(app => app.status === 'new').length,
+    reviewing: apps.filter(app => app.status === 'reviewing').length,
+    approved: apps.filter(app => app.status === 'approved').length,
+  }), [apps])
 
   const act = async (id: string, action: 'reviewing' | 'approve' | 'reject') => {
     if (action === 'approve' && !confirm('Approve this applicant and add them as a cleaner?')) return
@@ -56,8 +82,7 @@ export default function AdminApplications() {
       if (!res.ok) {
         alert(data.error || `Action failed: ${res.statusText}`)
       } else if (action === 'approve' && data.emailed === false && data.inviteLink) {
-        // Email couldn't be sent — give the admin the invite link to share.
-        prompt('Approved. Email could not be sent — copy this set-password link for the cleaner:', data.inviteLink)
+        prompt('Approved. Email could not be sent. Copy this set-password link for the cleaner:', data.inviteLink)
       }
     } catch (e) {
       console.error(e)
@@ -69,73 +94,127 @@ export default function AdminApplications() {
   }
 
   return (
-    <div className="min-h-screen py-6 px-6" style={{ background: 'linear-gradient(135deg, #1C2B3A 0%, #2C4A6E 100%)' }}>
-      <div className="max-w-4xl mx-auto">
-        <div className="mb-8">
-          <Link href="/admin" className="text-white/50 text-sm hover:text-white">← Dashboard</Link>
-          <h1 className="text-3xl font-bold text-white mt-2">Cleaner Applications</h1>
-          <p className="text-white/50 mt-1">Review applicants and approve them into your team.</p>
+    <main className="min-h-screen bg-[#F4F7FA] text-[#172434]">
+      <header className="border-b border-[#DCE5ED] bg-white">
+        <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6">
+          <Link href="/admin" className="inline-flex items-center gap-2 text-sm font-black text-[#4A7FA5]">
+            <ArrowLeft className="h-4 w-4" />
+            Operations dashboard
+          </Link>
+          <div className="mt-4 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+            <div>
+              <h1 className="text-3xl font-black sm:text-4xl">Cleaner applications</h1>
+              <p className="mt-1 text-[#657380]">Review, verify, and onboard applicants into staff login.</p>
+            </div>
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+              {[
+                { label: 'Total', value: counts.total },
+                { label: 'New', value: counts.new },
+                { label: 'Reviewing', value: counts.reviewing },
+                { label: 'Approved', value: counts.approved },
+              ].map((item) => (
+                <div key={item.label} className="rounded-[8px] border border-[#DCE5ED] bg-[#F8FAFC] px-4 py-3">
+                  <div className="text-2xl font-black">{item.value}</div>
+                  <div className="text-xs font-bold text-[#657380]">{item.label}</div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
+      </header>
+
+      <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6">
+        <section className="mb-5 flex flex-col gap-3 rounded-[8px] border border-[#DCE5ED] bg-white p-4 shadow-sm lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex flex-wrap gap-2">
+            {FILTERS.map((item) => (
+              <button key={item} onClick={() => setFilter(item)} className={`rounded-full px-4 py-2 text-sm font-black ${filter === item ? 'bg-[#172434] text-white' : 'bg-[#F4F7FA] text-[#657380]'}`}>
+                {item === 'all' ? 'All applicants' : item}
+              </button>
+            ))}
+          </div>
+          <label className="flex min-h-11 items-center gap-2 rounded-full border border-[#DCE5ED] bg-[#F8FAFC] px-4 lg:w-80">
+            <Search className="h-4 w-4 text-[#657380]" />
+            <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search name, area, phone" className="w-full bg-transparent text-sm outline-none" />
+          </label>
+        </section>
 
         {loading ? (
-          <div className="text-white/50">Loading…</div>
-        ) : apps.length === 0 ? (
-          <div className="glass-strong rounded-2xl p-10 text-center text-white/60">No applications yet.</div>
+          <div className="rounded-[8px] border border-[#DCE5ED] bg-white p-10 text-center text-[#657380]">Loading applications...</div>
+        ) : filtered.length === 0 ? (
+          <div className="rounded-[8px] border border-[#DCE5ED] bg-white p-10 text-center text-[#657380]">No applications in this view.</div>
         ) : (
           <div className="space-y-4">
-            {apps.map(a => (
-              <div key={a.id} className="glass-strong rounded-2xl p-5">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-3">
-                    <span className="text-white font-semibold">{a.name}</span>
-                    <span className={`text-xs px-2.5 py-0.5 rounded-full ${STATUS_STYLES[a.status] || 'bg-white/10 text-white/60'}`}>{a.status}</span>
+            {filtered.map((app) => (
+              <article key={app.id} className="rounded-[8px] border border-[#DCE5ED] bg-white p-5 shadow-sm">
+                <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                  <div>
+                    <div className="flex flex-wrap items-center gap-3">
+                      <h2 className="text-xl font-black">{app.name}</h2>
+                      <span className={`rounded-full border px-3 py-1 text-xs font-black ${STATUS_STYLES[app.status] || 'border-slate-200 bg-slate-100 text-slate-700'}`}>{app.status}</span>
+                    </div>
+                    <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-sm text-[#657380]">
+                      <span className="inline-flex items-center gap-2"><Mail className="h-4 w-4" />{app.email}</span>
+                      <span className="inline-flex items-center gap-2"><Phone className="h-4 w-4" />{app.phone}</span>
+                      <span className="inline-flex items-center gap-2"><BriefcaseBusiness className="h-4 w-4" />{app.suburbs || 'Area not supplied'}</span>
+                    </div>
                   </div>
-                  <span className="text-white/40 text-xs" suppressHydrationWarning>{new Date(a.created_at).toLocaleDateString()}</span>
+                  <div className="text-sm font-bold text-[#657380]" suppressHydrationWarning>{new Date(app.created_at).toLocaleDateString()}</div>
                 </div>
-                <div className="text-white/60 text-sm">{a.email} · {a.phone}</div>
-                <div className="text-white/40 text-xs mt-1">
-                  Area: {a.suburbs || '—'} · Availability: {a.availability || '—'} · Right to work: {a.right_to_work ? 'yes' : 'no'}
+
+                <div className="mt-5 grid gap-3 md:grid-cols-4">
+                  <InfoTile label="Availability" value={app.availability || 'Not supplied'} />
+                  <InfoTile label="Right to work" value={app.right_to_work ? 'Verified yes' : 'Needs review'} />
+                  <InfoTile label="TFN" value={app.tfn ? 'Supplied' : 'Missing'} />
+                  <InfoTile label="ABN" value={app.abn || 'Not supplied'} />
                 </div>
-                <div className="grid sm:grid-cols-2 gap-2 mt-3">
-                  <div className="bg-white/5 rounded-xl px-3 py-2">
-                    <div className="text-white/35 text-[11px] uppercase tracking-wider">TFN</div>
-                    <div className="text-white/80 text-sm font-semibold">{a.tfn || '—'}</div>
-                  </div>
-                  <div className="bg-white/5 rounded-xl px-3 py-2">
-                    <div className="text-white/35 text-[11px] uppercase tracking-wider">ABN optional</div>
-                    <div className="text-white/80 text-sm font-semibold">{a.abn || 'Not supplied'}</div>
-                  </div>
+
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {app.has_police_check && <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-3 py-1 text-xs font-black text-emerald-800"><ShieldCheck className="h-3.5 w-3.5" />Police check</span>}
+                  {app.has_wwcc && <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-3 py-1 text-xs font-black text-emerald-800"><BadgeCheck className="h-3.5 w-3.5" />WWCC</span>}
                 </div>
-                <div className="flex flex-wrap gap-1.5 mt-2">
-                  {a.has_police_check && <span className="text-xs px-2 py-0.5 rounded-full bg-green-500/20 text-green-300">✅ Police check</span>}
-                  {a.has_wwcc && <span className="text-xs px-2 py-0.5 rounded-full bg-green-500/20 text-green-300">✅ WWCC</span>}
-                </div>
-                {a.experience && <div className="text-white/50 text-sm mt-2 italic">“{a.experience}”</div>}
-                <div className="flex flex-wrap items-center gap-2 mt-4">
-                  {a.resume_url && (
-                    <a href={`/api/careers/${a.id}/resume?doc=resume`} target="_blank" rel="noopener noreferrer" className="text-sm px-4 py-2 rounded-full border border-white/20 text-white/80 hover:bg-white/10">Resume ↗</a>
-                  )}
-                  {a.police_check_url && (
-                    <a href={`/api/careers/${a.id}/resume?doc=police`} target="_blank" rel="noopener noreferrer" className="text-sm px-4 py-2 rounded-full border border-white/20 text-white/80 hover:bg-white/10">Police check ↗</a>
-                  )}
-                  {a.wwcc_url && (
-                    <a href={`/api/careers/${a.id}/resume?doc=wwcc`} target="_blank" rel="noopener noreferrer" className="text-sm px-4 py-2 rounded-full border border-white/20 text-white/80 hover:bg-white/10">WWCC ↗</a>
-                  )}
-                  {a.status !== 'approved' && (
+
+                {app.experience && <div className="mt-4 rounded-[8px] bg-[#F4F7FA] p-4 text-sm text-[#657380]">{app.experience}</div>}
+
+                <div className="mt-5 flex flex-wrap items-center gap-2">
+                  {app.resume_url && <DocLink href={`/api/careers/${app.id}/resume?doc=resume`} label="Resume" />}
+                  {app.police_check_url && <DocLink href={`/api/careers/${app.id}/resume?doc=police`} label="Police check" />}
+                  {app.wwcc_url && <DocLink href={`/api/careers/${app.id}/resume?doc=wwcc`} label="WWCC" />}
+                  {app.status !== 'approved' && (
                     <>
-                      {a.status === 'new' && (
-                        <button onClick={() => act(a.id, 'reviewing')} disabled={busy === a.id} className="text-sm px-4 py-2 rounded-full border border-white/20 text-white/80 hover:bg-white/10 disabled:opacity-50">Mark reviewing</button>
+                      {app.status === 'new' && (
+                        <button onClick={() => act(app.id, 'reviewing')} disabled={busy === app.id} className="min-h-11 rounded-full border border-[#DCE5ED] px-4 text-sm font-black text-[#2C4A6E] disabled:opacity-50">Mark reviewing</button>
                       )}
-                      <button onClick={() => act(a.id, 'approve')} disabled={busy === a.id} className="text-sm px-4 py-2 rounded-full bg-white text-[#2C4A6E] font-semibold hover:bg-white/90 disabled:opacity-50">Approve &amp; add as cleaner</button>
-                      <button onClick={() => act(a.id, 'reject')} disabled={busy === a.id} className="text-sm px-4 py-2 rounded-full border border-red-400/30 text-red-300 hover:bg-red-500/10 disabled:opacity-50">Reject</button>
+                      <button onClick={() => act(app.id, 'approve')} disabled={busy === app.id} className="inline-flex min-h-11 items-center gap-2 rounded-full bg-[#172434] px-5 text-sm font-black text-white disabled:opacity-50">
+                        <UserPlus className="h-4 w-4" />
+                        Approve cleaner
+                      </button>
+                      <button onClick={() => act(app.id, 'reject')} disabled={busy === app.id} className="min-h-11 rounded-full border border-red-200 px-4 text-sm font-black text-red-600 disabled:opacity-50">Reject</button>
                     </>
                   )}
                 </div>
-              </div>
+              </article>
             ))}
           </div>
         )}
       </div>
+    </main>
+  )
+}
+
+function InfoTile({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-[8px] bg-[#F4F7FA] p-4">
+      <div className="text-xs font-black uppercase tracking-[0.12em] text-[#657380]">{label}</div>
+      <div className="mt-1 font-black">{value}</div>
     </div>
+  )
+}
+
+function DocLink({ href, label }: { href: string; label: string }) {
+  return (
+    <a href={href} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center gap-2 rounded-full border border-[#DCE5ED] px-4 text-sm font-black text-[#2C4A6E] hover:border-[#4A7FA5]">
+      <FileText className="h-4 w-4" />
+      {label}
+    </a>
   )
 }
