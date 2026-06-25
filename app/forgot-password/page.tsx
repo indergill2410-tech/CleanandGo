@@ -25,7 +25,7 @@ export default function ForgotPasswordPage() {
   const inputCls = 'w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 text-sm'
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4" style={{ background: 'linear-gradient(135deg, #1C2B3A 0%, #2C4A6E 100%)' }}>
+    <div className="min-h-screen flex items-center justify-center px-4" style={{ background: 'linear-gradient(135deg, #172434 0%, #172434 100%)' }}>
       <HomeLink className="fixed top-6 left-6 z-20" />
       <div className="glass-strong rounded-3xl p-10 w-full max-w-sm">
         <div className="text-center mb-8">
@@ -41,7 +41,7 @@ export default function ForgotPasswordPage() {
         ) : (
           <form onSubmit={submit} className="space-y-4">
             <input type="email" placeholder="Your email" value={email} onChange={e => setEmail(e.target.value)} required className={inputCls} />
-            <button type="submit" disabled={loading} className="w-full py-3.5 rounded-xl bg-white text-[#2C4A6E] font-bold hover:bg-white/90 transition disabled:opacity-50">
+            <button type="submit" disabled={loading} className="w-full py-3.5 rounded-xl bg-white text-[#172434] font-bold hover:bg-white/90 transition disabled:opacity-50">
               {loading ? 'Sending…' : 'Send reset link'}
             </button>
           </form>

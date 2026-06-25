@@ -82,11 +82,11 @@ function MessagesView() {
   }
 
   if (loading) {
-    return <div className="min-h-screen flex items-center justify-center text-white/60" style={{ background: 'linear-gradient(135deg, #1C2B3A, #2C4A6E)' }}>Opening your messages...</div>
+    return <div className="min-h-screen flex items-center justify-center text-white/60" style={{ background: 'linear-gradient(135deg, #172434, #172434)' }}>Opening your messages...</div>
   }
 
   return (
-    <div className="min-h-screen py-10 px-4" style={{ background: 'linear-gradient(135deg, #1C2B3A 0%, #2C4A6E 100%)' }}>
+    <div className="min-h-screen py-10 px-4" style={{ background: 'linear-gradient(135deg, #172434 0%, #172434 100%)' }}>
       <div className="max-w-5xl mx-auto">
         <div className="mb-6">
           <Link href="/account" className="text-white/50 text-sm hover:text-white">← Account</Link>
@@ -103,10 +103,10 @@ function MessagesView() {
                 <button
                   key={conversation.id}
                   onClick={() => setSelectedId(conversation.id)}
-                  className={`w-full text-left rounded-xl px-4 py-3 transition-colors ${selected?.id === conversation.id ? 'bg-white text-[#2C4A6E]' : 'bg-white/5 text-white hover:bg-white/10'}`}
+                  className={`w-full text-left rounded-xl px-4 py-3 transition-colors ${selected?.id === conversation.id ? 'bg-white text-[#172434]' : 'bg-white/5 text-white hover:bg-white/10'}`}
                 >
                   <div className="font-semibold text-sm">{conversation.subject || 'Service update'}</div>
-                  <div className={`text-xs mt-1 ${selected?.id === conversation.id ? 'text-[#2C4A6E]/60' : 'text-white/45'}`}>
+                  <div className={`text-xs mt-1 ${selected?.id === conversation.id ? 'text-[#172434]/60' : 'text-white/45'}`}>
                     {conversation.last_message_at ? timeLabel(conversation.last_message_at) : 'New conversation'}
                   </div>
                 </button>
@@ -124,9 +124,9 @@ function MessagesView() {
                   const mine = message.sender_type === 'customer'
                   return (
                     <div key={message.id} className={`flex ${mine ? 'justify-end' : 'justify-start'}`}>
-                      <div className={`max-w-[82%] rounded-2xl px-4 py-3 ${mine ? 'bg-white text-[#2C4A6E]' : 'bg-white/10 text-white'}`}>
+                      <div className={`max-w-[82%] rounded-2xl px-4 py-3 ${mine ? 'bg-white text-[#172434]' : 'bg-white/10 text-white'}`}>
                         <div className="text-sm whitespace-pre-wrap">{message.body}</div>
-                        <div className={`text-[11px] mt-2 ${mine ? 'text-[#2C4A6E]/50' : 'text-white/35'}`}>{timeLabel(message.created_at)}</div>
+                        <div className={`text-[11px] mt-2 ${mine ? 'text-[#172434]/50' : 'text-white/35'}`}>{timeLabel(message.created_at)}</div>
                       </div>
                     </div>
                   )
@@ -146,7 +146,7 @@ function MessagesView() {
                   type="button"
                   onClick={sendReply}
                   disabled={sending || !reply.trim()}
-                  className="mt-3 px-5 py-3 rounded-xl bg-white text-[#2C4A6E] font-bold hover:bg-white/90 disabled:opacity-50"
+                  className="mt-3 px-5 py-3 rounded-xl bg-white text-[#172434] font-bold hover:bg-white/90 disabled:opacity-50"
                 >
                   {sending ? 'Sending...' : 'Send to Cleanngo'}
                 </button>
@@ -161,7 +161,7 @@ function MessagesView() {
 
 export default function AccountMessagesPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center text-white/60" style={{ background: 'linear-gradient(135deg, #1C2B3A, #2C4A6E)' }}>Loading...</div>}>
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center text-white/60" style={{ background: 'linear-gradient(135deg, #172434, #172434)' }}>Loading...</div>}>
       <MessagesView />
     </Suspense>
   )

@@ -97,7 +97,7 @@ export default function AdminApplications() {
     <main className="min-h-screen bg-[#F4F7FA] text-[#172434]">
       <header className="border-b border-[#DCE5ED] bg-white">
         <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6">
-          <Link href="/admin" className="inline-flex items-center gap-2 text-sm font-black text-[#4A7FA5]">
+          <Link href="/admin" className="inline-flex items-center gap-2 text-sm font-black text-[#2F7D6B]">
             <ArrowLeft className="h-4 w-4" />
             Operations dashboard
           </Link>
@@ -182,7 +182,7 @@ export default function AdminApplications() {
                   {app.status !== 'approved' && (
                     <>
                       {app.status === 'new' && (
-                        <button onClick={() => act(app.id, 'reviewing')} disabled={busy === app.id} className="min-h-11 rounded-full border border-[#DCE5ED] px-4 text-sm font-black text-[#2C4A6E] disabled:opacity-50">Mark reviewing</button>
+                        <button onClick={() => act(app.id, 'reviewing')} disabled={busy === app.id} className="min-h-11 rounded-full border border-[#DCE5ED] px-4 text-sm font-black text-[#172434] disabled:opacity-50">Mark reviewing</button>
                       )}
                       <button onClick={() => act(app.id, 'approve')} disabled={busy === app.id} className="inline-flex min-h-11 items-center gap-2 rounded-full bg-[#172434] px-5 text-sm font-black text-white disabled:opacity-50">
                         <UserPlus className="h-4 w-4" />
@@ -212,7 +212,7 @@ function InfoTile({ label, value }: { label: string; value: string }) {
 
 function DocLink({ href, label }: { href: string; label: string }) {
   return (
-    <a href={href} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center gap-2 rounded-full border border-[#DCE5ED] px-4 text-sm font-black text-[#2C4A6E] hover:border-[#4A7FA5]">
+    <a href={href} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center gap-2 rounded-full border border-[#DCE5ED] px-4 text-sm font-black text-[#172434] hover:border-[#2F7D6B]">
       <FileText className="h-4 w-4" />
       {label}
     </a>

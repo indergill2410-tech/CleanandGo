@@ -3,13 +3,15 @@
 @tailwind utilities;
 
 :root {
-  --bg: #F5F0EB;
+  --bg: #F7F3EE;
   --surface: #FEFCF9;
-  --primary: #2C4A6E;
-  --accent: #4A7FA5;
-  --highlight: #7BA7C7;
-  --text: #1C2B3A;
-  --muted: #7A8A96;
+  --primary: #172434;
+  --accent: #2F7D6B;
+  --highlight: #8FD8B4;
+  --text: #172434;
+  --muted: #5F6E78;
+  --gold: #F2C14E;
+  --gold-soft: #F6CF72;
   --glass: rgba(255,255,255,0.15);
   --glass-border: rgba(255,255,255,0.3);
   --glass-strong: rgba(255,255,255,0.25);
@@ -62,15 +64,15 @@ canvas {
 }
 
 .gradient-hero {
-  background: linear-gradient(135deg, #1C2B3A 0%, #2C4A6E 40%, #4A7FA5 80%, #7BA7C7 100%);
+  background: linear-gradient(135deg, #172434 0%, #203149 45%, #2F7D6B 100%);
 }
 
 .gradient-card {
-  background: linear-gradient(145deg, rgba(255,255,255,0.9) 0%, rgba(245,240,235,0.95) 100%);
+  background: linear-gradient(145deg, rgba(255,255,255,0.9) 0%, rgba(247,243,238,0.95) 100%);
 }
 
 .gradient-cta {
-  background: linear-gradient(135deg, #2C4A6E 0%, #4A7FA5 100%);
+  background: linear-gradient(135deg, #172434 0%, #2F7D6B 100%);
 }
 
 @keyframes fadeUp {
@@ -108,9 +110,9 @@ canvas {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  background: linear-gradient(135deg, #2C4A6E, #4A7FA5);
-  color: white;
-  font-weight: 600;
+  background: linear-gradient(135deg, #F2C14E, #F6CF72);
+  color: #172434;
+  font-weight: 700;
   padding: 16px 36px;
   border-radius: 50px;
   border: none;
@@ -118,12 +120,12 @@ canvas {
   transition: all 0.3s ease;
   font-size: 1rem;
   letter-spacing: 0.02em;
-  box-shadow: 0 4px 24px rgba(44,74,110,0.35);
+  box-shadow: 0 4px 24px rgba(242,193,78,0.35);
 }
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 32px rgba(44,74,110,0.45);
+  box-shadow: 0 8px 32px rgba(242,193,78,0.45);
 }
 
 .btn-secondary {
@@ -154,7 +156,7 @@ canvas {
 
 .card-hover:hover {
   transform: translateY(-6px);
-  box-shadow: 0 20px 60px rgba(44,74,110,0.15);
+  box-shadow: 0 20px 60px rgba(23,36,52,0.15);
 }
 
 input, select, textarea {
@@ -165,7 +167,7 @@ input, select, textarea {
 
 input:focus, select:focus, textarea:focus {
   border-color: var(--accent) !important;
-  box-shadow: 0 0 0 3px rgba(74,127,165,0.15);
+  box-shadow: 0 0 0 3px rgba(47,125,107,0.15);
 }
 
 ::-webkit-scrollbar { width: 6px; }

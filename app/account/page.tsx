@@ -79,11 +79,11 @@ const SERVICE_LABELS: Record<string, string> = {
 const STATUS_COPY: Record<string, { label: string; className: string; helper: string }> = {
   requested: { label: 'Quote requested', className: 'bg-amber-100 text-amber-800', helper: 'We are preparing your tailored price.' },
   active: { label: 'Plan active', className: 'bg-emerald-100 text-emerald-800', helper: 'Your recurring clean is ready to run.' },
-  paused: { label: 'Paused', className: 'bg-purple-100 text-purple-800', helper: 'Your plan is paused until you resume it.' },
+  paused: { label: 'Paused', className: 'bg-amber-100 text-amber-800', helper: 'Your plan is paused until you resume it.' },
   cancelled: { label: 'Cancelled', className: 'bg-red-100 text-red-800', helper: 'This plan is no longer active.' },
   pending: { label: 'Quote requested', className: 'bg-amber-100 text-amber-800', helper: 'We are reviewing your request.' },
   confirmed: { label: 'Booked', className: 'bg-blue-100 text-blue-800', helper: 'Your clean is confirmed.' },
-  in_progress: { label: 'In progress', className: 'bg-purple-100 text-purple-800', helper: 'Your cleaner is working through the checklist.' },
+  in_progress: { label: 'In progress', className: 'bg-amber-100 text-amber-800', helper: 'Your cleaner is working through the checklist.' },
   completed: { label: 'Completed', className: 'bg-emerald-100 text-emerald-800', helper: 'Your clean has been completed.' },
   missed: { label: 'Credited', className: 'bg-red-100 text-red-800', helper: 'A service credit has been added to your account.' },
 }
@@ -207,7 +207,7 @@ export default function AccountPage() {
   }
 
   if (loading) {
-    return <div className="min-h-screen flex items-center justify-center bg-[#F6F1EA] text-[#2C4A6E]">Preparing your dashboard...</div>
+    return <div className="min-h-screen flex items-center justify-center bg-[#F6F1EA] text-[#172434]">Preparing your dashboard...</div>
   }
 
   return (
@@ -215,16 +215,16 @@ export default function AccountPage() {
       <header className="border-b border-[#E3DBD0] bg-white/80 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-5 sm:px-6 lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <Link href="/" className="text-sm font-bold text-[#4A7FA5] hover:text-[#2C4A6E]">cleanngo home</Link>
+            <Link href="/" className="text-sm font-bold text-[#2F7D6B] hover:text-[#172434]">cleanngo home</Link>
             <h1 className="mt-2 text-3xl font-black tracking-normal sm:text-4xl">Welcome back, {firstName}</h1>
             <p className="mt-1 text-sm text-[#657380]">Your clean schedule, quotes, messages, and service upgrades in one calm place.</p>
           </div>
           <div className="flex flex-wrap gap-2">
-            <Link href="/account/messages" className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-[#C9D7E2] bg-white px-5 text-sm font-black text-[#2C4A6E] hover:border-[#2C4A6E]">
+            <Link href="/account/messages" className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-[#C9D7E2] bg-white px-5 text-sm font-black text-[#172434] hover:border-[#172434]">
               <MessageCircle className="h-4 w-4" />
               Messages
             </Link>
-            <Link href="/customer/book" className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-[#2C4A6E] px-5 text-sm font-black text-white hover:bg-[#1C2B3A]">
+            <Link href="/customer/book" className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-[#172434] px-5 text-sm font-black text-white hover:bg-[#172434]">
               Book a clean
               <ArrowRight className="h-4 w-4" />
             </Link>
@@ -242,7 +242,7 @@ export default function AccountPage() {
             { label: 'Open invoices', value: money(openInvoiceTotal), icon: CreditCard },
           ].map((item) => (
             <div key={item.label} className="rounded-[8px] border border-[#E3DBD0] bg-white p-5 shadow-sm">
-              <item.icon className="h-5 w-5 text-[#4A7FA5]" />
+              <item.icon className="h-5 w-5 text-[#2F7D6B]" />
               <div className="mt-4 text-2xl font-black">{item.value}</div>
               <div className="mt-1 text-sm font-semibold text-[#657380]">{item.label}</div>
             </div>
@@ -296,7 +296,7 @@ export default function AccountPage() {
           </div>
 
           <div className="rounded-[8px] border border-[#E3DBD0] bg-white p-6 shadow-sm">
-            <p className="text-sm font-black uppercase tracking-[0.16em] text-[#4A7FA5]">Recommended for you</p>
+            <p className="text-sm font-black uppercase tracking-[0.16em] text-[#2F7D6B]">Recommended for you</p>
             <h2 className="mt-2 text-2xl font-black">Make the next clean feel even lighter</h2>
             <div className="mt-5 space-y-3">
               {[
@@ -308,7 +308,7 @@ export default function AccountPage() {
                   key={item.title}
                   type="button"
                   onClick={() => openRequest(item.type, item.title, item.message, nextBooking?.id)}
-                  className="block w-full rounded-[8px] border border-[#E8E2DA] p-4 text-left transition hover:border-[#4A7FA5] hover:bg-[#F7F3EE]"
+                  className="block w-full rounded-[8px] border border-[#E8E2DA] p-4 text-left transition hover:border-[#2F7D6B] hover:bg-[#F7F3EE]"
                 >
                   <div className="font-black">{item.title}</div>
                   <div className="mt-1 text-sm text-[#657380]">{item.text}</div>
@@ -322,7 +322,7 @@ export default function AccountPage() {
           <section className="mt-6 rounded-[8px] border border-[#C9D7E2] bg-white p-5 shadow-sm">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
               <div className="lg:max-w-md">
-                <p className="text-sm font-black uppercase tracking-[0.16em] text-[#4A7FA5]">Service request</p>
+                <p className="text-sm font-black uppercase tracking-[0.16em] text-[#2F7D6B]">Service request</p>
                 <h2 className="mt-1 text-2xl font-black">{request.title}</h2>
                 <p className="mt-2 text-sm text-[#657380]">Send this to the Cleanngo team. They will reply inside your message centre.</p>
               </div>
@@ -331,7 +331,7 @@ export default function AccountPage() {
                   value={request.message}
                   onChange={(event) => setRequest({ ...request, message: event.target.value })}
                   rows={4}
-                  className="w-full rounded-[8px] border border-[#D8E1E8] bg-[#F8FAFB] p-4 text-sm outline-none focus:border-[#4A7FA5]"
+                  className="w-full rounded-[8px] border border-[#D8E1E8] bg-[#F8FAFB] p-4 text-sm outline-none focus:border-[#2F7D6B]"
                 />
                 {requestStatus && <p className={`mt-2 text-sm font-bold ${requestStatus.startsWith('Request sent') ? 'text-emerald-700' : 'text-red-600'}`}>{requestStatus}</p>}
                 <div className="mt-3 flex flex-col gap-2 sm:flex-row">
@@ -339,14 +339,14 @@ export default function AccountPage() {
                     type="button"
                     onClick={submitRequest}
                     disabled={sendingRequest || !request.message.trim()}
-                    className="min-h-11 rounded-full bg-[#2C4A6E] px-5 text-sm font-black text-white disabled:opacity-50"
+                    className="min-h-11 rounded-full bg-[#172434] px-5 text-sm font-black text-white disabled:opacity-50"
                   >
                     {sendingRequest ? 'Sending...' : 'Send request'}
                   </button>
                   <button
                     type="button"
                     onClick={() => setRequest(null)}
-                    className="min-h-11 rounded-full border border-[#C9D7E2] px-5 text-sm font-black text-[#2C4A6E]"
+                    className="min-h-11 rounded-full border border-[#C9D7E2] px-5 text-sm font-black text-[#172434]"
                   >
                     Close
                   </button>
@@ -376,16 +376,16 @@ export default function AccountPage() {
           <div>
             <div className="mb-3 flex items-end justify-between gap-3">
               <div>
-                <p className="text-sm font-black uppercase tracking-[0.16em] text-[#4A7FA5]">Plans</p>
+                <p className="text-sm font-black uppercase tracking-[0.16em] text-[#2F7D6B]">Plans</p>
                 <h2 className="text-2xl font-black">Recurring service</h2>
               </div>
-              <Link href="/customer/plan" className="text-sm font-black text-[#2C4A6E]">Add plan</Link>
+              <Link href="/customer/plan" className="text-sm font-black text-[#172434]">Add plan</Link>
             </div>
 
             {subs.length === 0 ? (
               <div className="rounded-[8px] border border-[#E3DBD0] bg-white p-6 text-center">
                 <p className="text-[#657380]">No recurring plan yet.</p>
-                <Link href="/customer/plan" className="mt-4 inline-flex rounded-full bg-[#2C4A6E] px-5 py-3 text-sm font-black text-white">Start a recurring plan</Link>
+                <Link href="/customer/plan" className="mt-4 inline-flex rounded-full bg-[#172434] px-5 py-3 text-sm font-black text-white">Start a recurring plan</Link>
               </div>
             ) : (
               <div className="space-y-4">
@@ -418,19 +418,19 @@ export default function AccountPage() {
                       </div>
                       <div className="mt-4 flex flex-wrap gap-2">
                         {plan.stripe_subscription_id && plan.status === 'requested' && (
-                          <button onClick={() => startPay(plan.id)} disabled={busy === plan.id} className="inline-flex items-center gap-2 rounded-full bg-[#2C4A6E] px-4 py-2 text-sm font-black text-white disabled:opacity-50">
+                          <button onClick={() => startPay(plan.id)} disabled={busy === plan.id} className="inline-flex items-center gap-2 rounded-full bg-[#172434] px-4 py-2 text-sm font-black text-white disabled:opacity-50">
                             <CreditCard className="h-4 w-4" />
                             Complete payment
                           </button>
                         )}
                         {plan.status === 'active' && (
-                          <button onClick={() => act(plan.id, 'pause')} disabled={busy === plan.id} className="inline-flex items-center gap-2 rounded-full border border-[#C9D7E2] px-4 py-2 text-sm font-black text-[#2C4A6E] disabled:opacity-50">
+                          <button onClick={() => act(plan.id, 'pause')} disabled={busy === plan.id} className="inline-flex items-center gap-2 rounded-full border border-[#C9D7E2] px-4 py-2 text-sm font-black text-[#172434] disabled:opacity-50">
                             <Pause className="h-4 w-4" />
                             Pause plan
                           </button>
                         )}
                         {plan.status === 'paused' && (
-                          <button onClick={() => act(plan.id, 'resume')} disabled={busy === plan.id} className="inline-flex items-center gap-2 rounded-full bg-[#2C4A6E] px-4 py-2 text-sm font-black text-white disabled:opacity-50">
+                          <button onClick={() => act(plan.id, 'resume')} disabled={busy === plan.id} className="inline-flex items-center gap-2 rounded-full bg-[#172434] px-4 py-2 text-sm font-black text-white disabled:opacity-50">
                             <Play className="h-4 w-4" />
                             Resume plan
                           </button>
@@ -454,16 +454,16 @@ export default function AccountPage() {
           <div>
             <div className="mb-3 flex items-end justify-between gap-3">
               <div>
-                <p className="text-sm font-black uppercase tracking-[0.16em] text-[#4A7FA5]">Jobs</p>
+                <p className="text-sm font-black uppercase tracking-[0.16em] text-[#2F7D6B]">Jobs</p>
                 <h2 className="text-2xl font-black">Quote requests and cleans</h2>
               </div>
-              <Link href="/account/messages" className="text-sm font-black text-[#2C4A6E]">{conversations.length} message thread{conversations.length === 1 ? '' : 's'}</Link>
+              <Link href="/account/messages" className="text-sm font-black text-[#172434]">{conversations.length} message thread{conversations.length === 1 ? '' : 's'}</Link>
             </div>
 
             {bookings.length === 0 ? (
               <div className="rounded-[8px] border border-[#E3DBD0] bg-white p-6 text-center">
                 <p className="text-[#657380]">No one-off jobs yet.</p>
-                <Link href="/customer/book" className="mt-4 inline-flex rounded-full bg-[#2C4A6E] px-5 py-3 text-sm font-black text-white">Request a quote</Link>
+                <Link href="/customer/book" className="mt-4 inline-flex rounded-full bg-[#172434] px-5 py-3 text-sm font-black text-white">Request a quote</Link>
               </div>
             ) : (
               <div className="space-y-4">
@@ -507,7 +507,7 @@ export default function AccountPage() {
                             const active = progressIndex >= 0 && index <= progressIndex
                             return (
                               <div key={step} className="flex flex-1 flex-col items-center gap-2 text-center">
-                                <div className={`h-3 w-full rounded-full ${active ? 'bg-[#2C4A6E]' : 'bg-[#DDE5EC]'}`} />
+                                <div className={`h-3 w-full rounded-full ${active ? 'bg-[#172434]' : 'bg-[#DDE5EC]'}`} />
                                 <div className={`text-xs font-black ${active ? 'text-[#172434]' : 'text-[#9AA7B1]'}`}>{timelineLabel[step]}</div>
                               </div>
                             )
@@ -517,18 +517,18 @@ export default function AccountPage() {
                       </div>
                       <CustomerPhotoGallery title="Your job photos" requestPhotos={requestPhotos} beforePhotos={beforePhotos} afterPhotos={afterPhotos} />
                       <div className="mt-4 flex flex-wrap gap-2">
-                        <Link href={`/account/messages?conversation=${conversations.find((c) => c.booking_id === booking.id)?.id || ''}`} className="rounded-full border border-[#C9D7E2] px-4 py-2 text-sm font-black text-[#2C4A6E]">Message cleanngo</Link>
+                        <Link href={`/account/messages?conversation=${conversations.find((c) => c.booking_id === booking.id)?.id || ''}`} className="rounded-full border border-[#C9D7E2] px-4 py-2 text-sm font-black text-[#172434]">Message cleanngo</Link>
                         <button
                           type="button"
                           onClick={() => openRequest('reschedule', 'Update this booking', `I would like to update my ${SERVICE_LABELS[booking.service_type] || booking.service_type} on ${dateLabel(booking.scheduled_date)}.`, booking.id)}
-                          className="rounded-full bg-[#F7F3EE] px-4 py-2 text-sm font-black text-[#2C4A6E]"
+                          className="rounded-full bg-[#F7F3EE] px-4 py-2 text-sm font-black text-[#172434]"
                         >
                           Change booking
                         </button>
                         <button
                           type="button"
                           onClick={() => openRequest('oven_fridge', 'Add service to this booking', `Please add an extra service to my ${SERVICE_LABELS[booking.service_type] || booking.service_type}. I am interested in: `, booking.id)}
-                          className="rounded-full bg-[#F7F3EE] px-4 py-2 text-sm font-black text-[#2C4A6E]"
+                          className="rounded-full bg-[#F7F3EE] px-4 py-2 text-sm font-black text-[#172434]"
                         >
                           Add extra service
                         </button>
@@ -567,7 +567,7 @@ function CustomerPhotoGallery({
   return (
     <div className="mt-5 rounded-[8px] border border-[#E8E2DA] p-4">
       <h3 className="flex items-center gap-2 text-sm font-black text-[#172434]">
-        <Camera className="h-4 w-4 text-[#4A7FA5]" />
+        <Camera className="h-4 w-4 text-[#2F7D6B]" />
         {title}
       </h3>
       <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3">

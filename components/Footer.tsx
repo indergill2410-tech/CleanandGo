@@ -41,7 +41,7 @@ const COLUMNS = [
 
 export default function Footer() {
   return (
-    <footer className="px-6 pt-16 pb-10" style={{ background: '#1C2B3A' }}>
+    <footer className="px-6 pt-16 pb-10" style={{ background: '#172434' }}>
       <div className="max-w-6xl mx-auto">
         <div className="grid gap-10 md:grid-cols-4 mb-12">
           <div>

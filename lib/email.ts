@@ -26,11 +26,11 @@ const base = (content: string) => `
 <!DOCTYPE html>
 <html>
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width"></head>
-<body style="margin:0;padding:0;background:#F5F0EB;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="background:#F5F0EB;padding:40px 20px;">
+<body style="margin:0;padding:0;background:#F7F3EE;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#F7F3EE;padding:40px 20px;">
     <tr><td align="center">
-      <table width="560" cellpadding="0" cellspacing="0" style="background:#1C2B3A;border-radius:24px;overflow:hidden;max-width:560px;width:100%;">
-        <tr><td style="background:linear-gradient(135deg,#1C2B3A,#2C4A6E);padding:32px 40px;text-align:center;">
+      <table width="560" cellpadding="0" cellspacing="0" style="background:#172434;border-radius:24px;overflow:hidden;max-width:560px;width:100%;">
+        <tr><td style="background:linear-gradient(135deg,#172434,#172434);padding:32px 40px;text-align:center;">
           <div style="font-size:28px;font-weight:800;color:#ffffff;letter-spacing:-0.5px;">cleanngo</div>
           <div style="font-size:13px;color:rgba(255,255,255,0.5);margin-top:4px;">cleanngo.com.au</div>
         </td></tr>
@@ -52,7 +52,7 @@ const row = (label: string, value: string) => `
     <td style="padding:8px 0;font-size:13px;color:#ffffff;font-weight:500;">${value}</td>
   </tr>`
 const btn = (href: string, text: string) => `
-  <a href="${href}" style="display:inline-block;margin-top:24px;padding:14px 32px;background:#ffffff;color:#2C4A6E;font-weight:700;font-size:15px;border-radius:12px;text-decoration:none;">${text}</a>`
+  <a href="${href}" style="display:inline-block;margin-top:24px;padding:14px 32px;background:#ffffff;color:#172434;font-weight:700;font-size:15px;border-radius:12px;text-decoration:none;">${text}</a>`
 const table = (rows: string) => `
   <table width="100%" cellpadding="0" cellspacing="0" style="background:rgba(255,255,255,0.07);border-radius:12px;padding:16px 20px;margin:20px 0;">
     <tbody>${rows}</tbody>

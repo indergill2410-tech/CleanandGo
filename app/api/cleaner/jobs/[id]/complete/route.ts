@@ -51,15 +51,24 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
 
   await supabase.from('bookings').update({ status: 'completed', updated_at: now }).eq('id', id)
 
-  // Log a timesheet entry (hours derived from start→now).
-  const hours = startTime ? Math.max(0, (Date.parse(now) - Date.parse(startTime)) / 3_600_000) : 0
-  await supabase.from('timesheets').insert({
-    staff_id: auth.staff.id,
-    booking_id: id,
-    date: booking.scheduled_date,
-    hours_worked: Math.round(hours * 100) / 100,
-    xero_synced: false,
-  })
+  // Log a timesheet entry (hours derived from start→now). Only once per booking
+  // — re-submitting a completion (photo edit, retry, double-tap) must not create
+  // a second timesheet row and double-pay the cleaner.
+  const { data: existingTimesheet } = await supabase
+    .from('timesheets')
+    .select('id')
+    .eq('booking_id', id)
+    .maybeSingle()
+  if (!existingTimesheet) {
+    const hours = startTime ? Math.max(0, (Date.parse(now) - Date.parse(startTime)) / 3_600_000) : 0
+    await supabase.from('timesheets').insert({
+      staff_id: auth.staff.id,
+      booking_id: id,
+      date: booking.scheduled_date,
+      hours_worked: Math.round(hours * 100) / 100,
+      xero_synced: false,
+    })
+  }
 
   // Let the customer know their clean is done (best-effort).
   const cust = booking.customers as unknown as { name: string; email: string } | null

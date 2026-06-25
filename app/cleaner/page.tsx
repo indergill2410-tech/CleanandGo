@@ -112,7 +112,7 @@ export default function CleanerPortal() {
   }
 
   if (loading) {
-    return <div className="min-h-screen flex items-center justify-center bg-[#F4F7FA] text-[#2C4A6E]">Loading your workboard...</div>
+    return <div className="min-h-screen flex items-center justify-center bg-[#F4F7FA] text-[#172434]">Loading your workboard...</div>
   }
 
   return (
@@ -120,7 +120,7 @@ export default function CleanerPortal() {
       <header className="border-b border-[#DCE5ED] bg-white">
         <div className="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-5 sm:px-6 md:flex-row md:items-center md:justify-between">
           <div>
-            <Link href="/" className="text-sm font-bold text-[#4A7FA5]">cleanngo home</Link>
+            <Link href="/" className="text-sm font-bold text-[#2F7D6B]">cleanngo home</Link>
             <h1 className="mt-2 text-3xl font-black">Cleaner workboard</h1>
             <p className="mt-1 text-[#657380]">Your assigned jobs, proof uploads, and profile details.</p>
           </div>
@@ -132,7 +132,7 @@ export default function CleanerPortal() {
         <aside className="space-y-4">
           <section className="rounded-[8px] border border-[#DCE5ED] bg-white p-5 shadow-sm">
             <div className="flex items-center gap-4">
-              <div className="flex h-14 w-14 items-center justify-center rounded-[8px] bg-[#2C4A6E] text-white">
+              <div className="flex h-14 w-14 items-center justify-center rounded-[8px] bg-[#172434] text-white">
                 <UserRound className="h-7 w-7" />
               </div>
               <div>
@@ -155,7 +155,7 @@ export default function CleanerPortal() {
               { label: 'Proof sets', value: stats.proof, icon: Camera },
             ].map((item) => (
               <div key={item.label} className="rounded-[8px] border border-[#DCE5ED] bg-white p-4 shadow-sm">
-                <item.icon className="h-5 w-5 text-[#4A7FA5]" />
+                <item.icon className="h-5 w-5 text-[#2F7D6B]" />
                 <div className="mt-3 text-2xl font-black">{item.value}</div>
                 <div className="text-xs font-bold text-[#657380]">{item.label}</div>
               </div>
@@ -175,7 +175,7 @@ export default function CleanerPortal() {
         <section>
           <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <p className="text-sm font-black uppercase tracking-[0.16em] text-[#4A7FA5]">Today and upcoming</p>
+              <p className="text-sm font-black uppercase tracking-[0.16em] text-[#2F7D6B]">Today and upcoming</p>
               <h2 className="text-2xl font-black">Assigned jobs</h2>
             </div>
             <span className="text-sm font-bold text-[#657380]">{jobs.length} active job{jobs.length === 1 ? '' : 's'}</span>
@@ -197,7 +197,7 @@ export default function CleanerPortal() {
                           <span className="inline-flex items-center gap-1"><MapPin className="h-4 w-4" />{job.suburb || job.address}</span>
                         </div>
                       </div>
-                      <span className={`w-fit rounded-full px-3 py-1 text-xs font-black ${job.status === 'in_progress' ? 'bg-purple-100 text-purple-800' : 'bg-blue-100 text-blue-800'}`}>
+                      <span className={`w-fit rounded-full px-3 py-1 text-xs font-black ${job.status === 'in_progress' ? 'bg-amber-100 text-amber-800' : 'bg-blue-100 text-blue-800'}`}>
                         {job.status === 'in_progress' ? 'In progress' : 'Ready to start'}
                       </span>
                     </div>
@@ -207,18 +207,18 @@ export default function CleanerPortal() {
                     <div className="border-t border-[#DCE5ED] p-5">
                       <div className="grid gap-4 md:grid-cols-3">
                         <div className="rounded-[8px] bg-[#F4F7FA] p-4">
-                          <BriefcaseBusiness className="h-5 w-5 text-[#4A7FA5]" />
+                          <BriefcaseBusiness className="h-5 w-5 text-[#2F7D6B]" />
                           <div className="mt-3 text-sm text-[#657380]">Customer</div>
                           <div className="font-black">{job.customers?.name || 'Customer'}</div>
                           <div className="text-sm text-[#657380]">{job.customers?.phone || 'No phone'}</div>
                         </div>
                         <div className="rounded-[8px] bg-[#F4F7FA] p-4">
-                          <MapPin className="h-5 w-5 text-[#4A7FA5]" />
+                          <MapPin className="h-5 w-5 text-[#2F7D6B]" />
                           <div className="mt-3 text-sm text-[#657380]">Address</div>
                           <div className="font-black">{job.address}</div>
                         </div>
                         <div className="rounded-[8px] bg-[#F4F7FA] p-4">
-                          <ShieldCheck className="h-5 w-5 text-[#4A7FA5]" />
+                          <ShieldCheck className="h-5 w-5 text-[#2F7D6B]" />
                           <div className="mt-3 text-sm text-[#657380]">Scope</div>
                           <div className="font-black">{job.bedrooms ?? '?'} bed · {job.bathrooms ?? '?'} bath</div>
                           {job.covered_by_backup && <div className="text-sm font-bold text-amber-700">Backup coverage</div>}
@@ -243,7 +243,7 @@ export default function CleanerPortal() {
                           <textarea rows={3} placeholder="Completion notes for admin..." value={notes[job.id] || ''}
                             onChange={event => setNotes(current => ({ ...current, [job.id]: event.target.value }))}
                             className="w-full rounded-xl border border-[#DCE5ED] px-4 py-3 text-sm" />
-                          <button onClick={() => complete(job.id)} disabled={busy === job.id} className="w-full rounded-xl bg-[#2C4A6E] px-5 py-4 font-black text-white disabled:opacity-50">
+                          <button onClick={() => complete(job.id)} disabled={busy === job.id} className="w-full rounded-xl bg-[#172434] px-5 py-4 font-black text-white disabled:opacity-50">
                             Mark job complete
                           </button>
                         </div>

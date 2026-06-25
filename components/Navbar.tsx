@@ -35,7 +35,7 @@ export default function Navbar() {
 
   // Solid surface when scrolled OR when the mobile menu is open.
   const solid = scrolled || menuOpen
-  const linkColor = solid ? 'text-[#7A8A96] hover:text-[#2C4A6E]' : 'text-white/80 hover:text-white'
+  const linkColor = solid ? 'text-[#5F6E78] hover:text-[#172434]' : 'text-white/80 hover:text-white'
 
   return (
     <nav
@@ -48,7 +48,7 @@ export default function Navbar() {
           <div className="w-8 h-8 rounded-lg gradient-cta flex items-center justify-center text-white">
             <BrandMark className="w-5 h-5" />
           </div>
-          <span className={`font-bold text-lg tracking-tight ${solid ? 'text-[#1C2B3A]' : 'text-white'}`}>cleanngo</span>
+          <span className={`font-bold text-lg tracking-tight ${solid ? 'text-[#172434]' : 'text-white'}`}>cleanngo</span>
         </Link>
 
         {/* Desktop links */}
@@ -65,8 +65,8 @@ export default function Navbar() {
             href="/account"
             className={`hidden sm:inline-flex items-center rounded-full text-sm font-bold px-5 py-2.5 sm:px-6 sm:py-3 border-2 transition-all ${
               solid
-                ? 'border-[#2C4A6E] text-[#2C4A6E] hover:bg-[#2C4A6E] hover:text-white'
-                : 'border-white/60 text-white hover:bg-white hover:text-[#2C4A6E]'
+                ? 'border-[#172434] text-[#172434] hover:bg-[#172434] hover:text-white'
+                : 'border-white/60 text-white hover:bg-white hover:text-[#172434]'
               }`}
           >Log in</Link>
           <Link href="/customer/book" className="btn-primary hidden min-[380px]:inline-flex text-sm px-4 py-2.5 sm:px-6 sm:py-3">Book Now</Link>
@@ -79,9 +79,9 @@ export default function Navbar() {
             onClick={() => setMenuOpen(o => !o)}
             className="md:hidden flex h-11 w-11 flex-col items-center justify-center gap-1.5 rounded-full transition-colors hover:bg-white/10"
           >
-            <span className={`block w-5 h-0.5 rounded-full transition-all ${solid ? 'bg-[#1C2B3A]' : 'bg-white'} ${menuOpen ? 'translate-y-2 rotate-45' : ''}`} />
-            <span className={`block w-5 h-0.5 rounded-full transition-all ${solid ? 'bg-[#1C2B3A]' : 'bg-white'} ${menuOpen ? 'opacity-0' : ''}`} />
-            <span className={`block w-5 h-0.5 rounded-full transition-all ${solid ? 'bg-[#1C2B3A]' : 'bg-white'} ${menuOpen ? '-translate-y-2 -rotate-45' : ''}`} />
+            <span className={`block w-5 h-0.5 rounded-full transition-all ${solid ? 'bg-[#172434]' : 'bg-white'} ${menuOpen ? 'translate-y-2 rotate-45' : ''}`} />
+            <span className={`block w-5 h-0.5 rounded-full transition-all ${solid ? 'bg-[#172434]' : 'bg-white'} ${menuOpen ? 'opacity-0' : ''}`} />
+            <span className={`block w-5 h-0.5 rounded-full transition-all ${solid ? 'bg-[#172434]' : 'bg-white'} ${menuOpen ? '-translate-y-2 -rotate-45' : ''}`} />
           </button>
         </div>
       </div>
@@ -92,12 +92,12 @@ export default function Navbar() {
           <div className="max-w-6xl mx-auto px-4 py-4 sm:px-6 flex flex-col gap-1">
             {LINKS.map(item => (
               <Link key={item.label} href={item.href} onClick={() => setMenuOpen(false)}
-                className="py-3 text-[#1C2B3A] font-medium border-b border-black/5 last:border-0">
+                className="py-3 text-[#172434] font-medium border-b border-black/5 last:border-0">
                 {item.label}
               </Link>
             ))}
             <Link href="/account" onClick={() => setMenuOpen(false)}
-              className="mt-3 text-center rounded-full font-bold px-6 py-3 border-2 border-[#2C4A6E] text-[#2C4A6E] hover:bg-[#2C4A6E] hover:text-white transition-all">
+              className="mt-3 text-center rounded-full font-bold px-6 py-3 border-2 border-[#172434] text-[#172434] hover:bg-[#172434] hover:text-white transition-all">
               Log in / Sign up
             </Link>
             <Link href="/customer/book" onClick={() => setMenuOpen(false)} className="btn-primary text-sm px-6 py-3 mt-2 text-center">
