@@ -12,6 +12,8 @@ export const metadata: Metadata = {
 const EMAIL = 'admin@cleanngo.com.au'
 const PHONE_DISPLAY = '0411 922 559'
 const PHONE_TEL = '+61411922559'
+const PHONE2_DISPLAY = '0426 434 135'
+const PHONE2_TEL = '+61426434135'
 
 export default function ContactPage() {
   return (
@@ -38,12 +40,13 @@ export default function ContactPage() {
             <p className="text-[#7A8A96] text-sm mt-3">Best for quotes, booking changes and general enquiries.</p>
           </a>
 
-          <a href={`tel:${PHONE_TEL}`} className="bg-white/80 backdrop-blur-sm border border-white/60 rounded-3xl p-8 shadow-lg card-hover block">
+          <div className="bg-white/80 backdrop-blur-sm border border-white/60 rounded-3xl p-8 shadow-lg block">
             <div className="text-4xl mb-4">📞</div>
             <div className="font-semibold text-[#1C2B3A] mb-1">Call us</div>
-            <div className="text-[#4A7FA5] font-medium">{PHONE_DISPLAY}</div>
+            <a href={`tel:${PHONE_TEL}`} className="text-[#4A7FA5] font-medium block">{PHONE_DISPLAY}</a>
+            <a href={`tel:${PHONE2_TEL}`} className="text-[#4A7FA5] font-medium block mt-1">{PHONE2_DISPLAY}</a>
             <p className="text-[#7A8A96] text-sm mt-3">Prefer to talk it through? Give us a call during business hours.</p>
-          </a>
+          </div>
         </div>
 
         <div className="max-w-3xl mx-auto text-center mt-10">
