@@ -95,10 +95,10 @@ export default function BookingPage() {
   }
 
   return (
-    <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #1C2B3A 0%, #2C4A6E 50%, #4A7FA5 100%)' }}>
+    <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #172434 0%, #172434 50%, #2F7D6B 100%)' }}>
       <div className="fixed top-0 left-0 w-full h-full pointer-events-none overflow-hidden">
-        <div className="absolute top-20 right-20 w-80 h-80 rounded-full blur-3xl opacity-20" style={{ background: '#7BA7C7' }} />
-        <div className="absolute bottom-20 left-20 w-96 h-96 rounded-full blur-3xl opacity-10" style={{ background: '#4A7FA5' }} />
+        <div className="absolute top-20 right-20 w-80 h-80 rounded-full blur-3xl opacity-20" style={{ background: '#8FD8B4' }} />
+        <div className="absolute bottom-20 left-20 w-96 h-96 rounded-full blur-3xl opacity-10" style={{ background: '#2F7D6B' }} />
       </div>
       <div className="relative z-10 flex min-h-screen flex-col items-center justify-center px-4 py-8 sm:py-12">
         <div className="text-center mb-6 sm:mb-8">
@@ -113,14 +113,14 @@ export default function BookingPage() {
             {STEPS.map((s, i) => (
               <div key={i} className="flex min-w-0 flex-col items-center gap-1">
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all ${
-                  i < step ? 'bg-white text-[#2C4A6E]' : i === step ? 'bg-white text-[#2C4A6E] ring-4 ring-white/30' : 'bg-white/20 text-white/50'
+                  i < step ? 'bg-white text-[#172434]' : i === step ? 'bg-white text-[#172434] ring-4 ring-white/30' : 'bg-white/20 text-white/50'
                 }`}>{i < step ? '✓' : i + 1}</div>
                 <span className={`text-xs hidden md:block ${i === step ? 'text-white font-medium' : 'text-white/40'}`}>{s}</span>
               </div>
             ))}
           </div>
           <div className="h-1 bg-white/20 rounded-full">
-            <div className="h-1 rounded-full transition-all duration-500" style={{ width: `${(step / (STEPS.length - 1)) * 100}%`, background: 'linear-gradient(90deg, #7BA7C7, white)' }} />
+            <div className="h-1 rounded-full transition-all duration-500" style={{ width: `${(step / (STEPS.length - 1)) * 100}%`, background: 'linear-gradient(90deg, #8FD8B4, white)' }} />
           </div>
         </div>
 
@@ -209,7 +209,7 @@ export default function BookingPage() {
                   {TIMES.map(t => (
                     <button key={t} onClick={() => setForm(f => ({ ...f, time: t }))}
                       className={`py-2.5 rounded-xl text-sm font-medium transition-all ${
-                        form.time === t ? 'bg-white text-[#2C4A6E] font-bold' : 'bg-white/10 text-white/70 border border-white/20 hover:bg-white/20'
+                        form.time === t ? 'bg-white text-[#172434] font-bold' : 'bg-white/10 text-white/70 border border-white/20 hover:bg-white/20'
                       }`}>{t}</button>
                   ))}
                 </div>
@@ -326,7 +326,7 @@ export default function BookingPage() {
               </div>
 
               <button onClick={handleSubmit} disabled={submitting}
-                className="w-full py-4 rounded-2xl font-bold text-lg transition-all bg-white text-[#2C4A6E] hover:bg-white/90 hover:shadow-xl disabled:opacity-60">
+                className="w-full py-4 rounded-2xl font-bold text-lg transition-all bg-white text-[#172434] hover:bg-white/90 hover:shadow-xl disabled:opacity-60">
                 {submitting ? 'Submitting...' : 'Submit Quote Request →'}
               </button>
             </div>
@@ -338,7 +338,7 @@ export default function BookingPage() {
               <button onClick={() => setStep(s => s - 1)} className="flex-1 py-3 rounded-xl border border-white/30 text-white/70 hover:bg-white/10 transition font-medium">← Back</button>
             )}
             {step < STEPS.length - 1 && (
-              <button disabled={!canNext} onClick={() => setStep(s => s + 1)} className="flex-1 py-3 rounded-xl font-semibold transition-all disabled:opacity-30 bg-white text-[#2C4A6E] hover:bg-white/90">Continue →</button>
+              <button disabled={!canNext} onClick={() => setStep(s => s + 1)} className="flex-1 py-3 rounded-xl font-semibold transition-all disabled:opacity-30 bg-white text-[#172434] hover:bg-white/90">Continue →</button>
             )}
           </div>
         </div>

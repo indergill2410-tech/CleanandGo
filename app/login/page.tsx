@@ -72,7 +72,7 @@ function LoginForm() {
         {(['client', 'staff'] as const).map(t => (
           <button key={t} type="button" onClick={() => switchTab(t)}
             className={`flex-1 py-2.5 rounded-xl text-sm font-semibold transition-colors ${
-              tab === t ? 'bg-white text-[#2C4A6E]' : 'text-white/60 hover:text-white'
+              tab === t ? 'bg-white text-[#172434]' : 'text-white/60 hover:text-white'
             }`}>
             {t === 'client' ? 'Client' : 'Staff'}
           </button>
@@ -92,12 +92,12 @@ function LoginForm() {
         <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} required minLength={6} className={inputCls} />
         {tab === 'client' && mode === 'signup' && (
           <label className="flex items-start gap-2.5 text-white/70 text-sm cursor-pointer">
-            <input type="checkbox" checked={optIn} onChange={e => setOptIn(e.target.checked)} className="w-4 h-4 mt-0.5 accent-[#4A7FA5]" />
+            <input type="checkbox" checked={optIn} onChange={e => setOptIn(e.target.checked)} className="w-4 h-4 mt-0.5 accent-[#2F7D6B]" />
             Email me cleaning tips &amp; the occasional offer (optional)
           </label>
         )}
         {error && <div className="bg-red-500/20 border border-red-500/30 rounded-xl px-4 py-3 text-red-200 text-sm">{error}</div>}
-        <button type="submit" disabled={loading} className="w-full py-3.5 rounded-xl bg-white text-[#2C4A6E] font-bold hover:bg-white/90 transition disabled:opacity-50">
+        <button type="submit" disabled={loading} className="w-full py-3.5 rounded-xl bg-white text-[#172434] font-bold hover:bg-white/90 transition disabled:opacity-50">
           {loading ? 'Please wait…' : tab === 'client' && mode === 'signup' ? 'Create account' : 'Sign in'}
         </button>
 
@@ -120,11 +120,11 @@ function LoginForm() {
 
 export default function LoginPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center px-4" style={{ background: 'linear-gradient(135deg, #1C2B3A 0%, #2C4A6E 100%)' }}>
+    <div className="min-h-screen flex items-center justify-center px-4" style={{ background: 'linear-gradient(135deg, #172434 0%, #172434 100%)' }}>
       <HomeLink className="fixed top-6 left-6 z-20" />
       <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute top-20 right-20 w-80 h-80 rounded-full blur-3xl opacity-20" style={{ background: '#7BA7C7' }} />
-        <div className="absolute bottom-20 left-20 w-96 h-96 rounded-full blur-3xl opacity-10" style={{ background: '#4A7FA5' }} />
+        <div className="absolute top-20 right-20 w-80 h-80 rounded-full blur-3xl opacity-20" style={{ background: '#8FD8B4' }} />
+        <div className="absolute bottom-20 left-20 w-96 h-96 rounded-full blur-3xl opacity-10" style={{ background: '#2F7D6B' }} />
       </div>
       <div className="glass-strong rounded-3xl p-10 w-full max-w-sm relative z-10 shadow-2xl">
         <div className="text-center mb-6">

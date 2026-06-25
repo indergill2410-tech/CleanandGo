@@ -63,7 +63,7 @@ export default function AdminInvoices() {
   const inputCls = 'w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 text-sm'
 
   return (
-    <div className="min-h-screen py-6 px-6" style={{ background: 'linear-gradient(135deg, #1C2B3A 0%, #2C4A6E 100%)' }}>
+    <div className="min-h-screen py-6 px-6" style={{ background: 'linear-gradient(135deg, #172434 0%, #172434 100%)' }}>
       <div className="max-w-3xl mx-auto">
         <div className="mb-8">
           <Link href="/admin" className="text-white/50 text-sm hover:text-white">← Dashboard</Link>
@@ -88,7 +88,7 @@ export default function AdminInvoices() {
               {result.url && <a href={result.url} target="_blank" rel="noopener noreferrer" className="underline font-semibold">Open payment link →</a>}
             </div>
           )}
-          <button type="submit" disabled={sending} className="py-3.5 rounded-xl bg-white text-[#2C4A6E] font-bold hover:bg-white/90 transition disabled:opacity-50">
+          <button type="submit" disabled={sending} className="py-3.5 rounded-xl bg-white text-[#172434] font-bold hover:bg-white/90 transition disabled:opacity-50">
             {sending ? 'Sending…' : 'Create & send invoice'}
           </button>
         </form>
@@ -110,7 +110,7 @@ export default function AdminInvoices() {
                 <div className="flex items-center gap-3">
                   <span className={`text-xs px-2.5 py-0.5 rounded-full ${STATUS_STYLES[inv.status] || 'bg-white/10 text-white/60'}`}>{inv.status}</span>
                   {inv.hosted_invoice_url && (
-                    <a href={inv.hosted_invoice_url} target="_blank" rel="noopener noreferrer" className="text-[#7BA7C7] text-sm hover:text-white">link →</a>
+                    <a href={inv.hosted_invoice_url} target="_blank" rel="noopener noreferrer" className="text-[#8FD8B4] text-sm hover:text-white">link →</a>
                   )}
                 </div>
               </div>

@@ -28,7 +28,7 @@ type Staff = { id: string; name: string; role: string }
 const STATUS_STYLES: Record<string, string> = {
   requested: 'bg-amber-500/20 text-amber-300 border-amber-400/30',
   active:    'bg-green-500/20 text-green-300 border-green-400/30',
-  paused:    'bg-purple-500/20 text-purple-300 border-purple-400/30',
+  paused:    'bg-amber-500/20 text-amber-300 border-amber-400/30',
   cancelled: 'bg-red-500/20 text-red-300 border-red-400/30',
 }
 
@@ -119,7 +119,7 @@ export default function AdminSubscriptions() {
     s.property_type === 'office' ? `${s.office_sqm ?? '?'} m²` : `${s.bedrooms ?? '?'} bed · ${s.bathrooms ?? '?'} bath`
 
   return (
-    <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #1C2B3A 0%, #2C4A6E 100%)' }}>
+    <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #172434 0%, #172434 100%)' }}>
       <div className="relative z-10 p-6 max-w-7xl mx-auto">
         <div className="mb-8">
           <Link href="/admin" className="text-white/50 text-sm hover:text-white">← Dashboard</Link>
@@ -131,7 +131,7 @@ export default function AdminSubscriptions() {
         <div className="glass-strong rounded-2xl p-5 mb-6 grid md:grid-cols-2 gap-5">
           <div>
             <div className="text-white/80 text-sm font-semibold mb-2">Upcoming visits</div>
-            <button onClick={generateVisits} className="text-sm px-4 py-2.5 rounded-full bg-white text-[#2C4A6E] font-semibold hover:bg-white/90">
+            <button onClick={generateVisits} className="text-sm px-4 py-2.5 rounded-full bg-white text-[#172434] font-semibold hover:bg-white/90">
               Generate upcoming visits
             </button>
           </div>
@@ -146,7 +146,7 @@ export default function AdminSubscriptions() {
               <button onClick={reportOff} className="text-sm px-4 py-2.5 rounded-full border border-white/20 text-white/80 hover:bg-white/10 whitespace-nowrap">Arrange cover</button>
             </div>
           </div>
-          {toolMsg && <div className="md:col-span-2 text-[#7BA7C7] text-sm">{toolMsg}</div>}
+          {toolMsg && <div className="md:col-span-2 text-[#8FD8B4] text-sm">{toolMsg}</div>}
         </div>
 
         {loading ? (
@@ -217,7 +217,7 @@ export default function AdminSubscriptions() {
 
             <div className="flex gap-3">
               <button onClick={() => setSelected(null)} className="flex-1 py-3 rounded-xl border border-white/20 text-white/70 hover:bg-white/10 transition text-sm">Cancel</button>
-              <button onClick={activate} disabled={saving || !price} className="flex-1 py-3 rounded-xl bg-white text-[#2C4A6E] font-bold hover:bg-white/90 transition disabled:opacity-50 text-sm">
+              <button onClick={activate} disabled={saving || !price} className="flex-1 py-3 rounded-xl bg-white text-[#172434] font-bold hover:bg-white/90 transition disabled:opacity-50 text-sm">
                 {saving ? 'Saving…' : 'Confirm & create subscription'}
               </button>
             </div>

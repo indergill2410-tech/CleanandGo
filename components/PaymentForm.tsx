@@ -44,7 +44,7 @@ function CheckoutForm({ amountCents, returnPath, ctaLabel }: { amountCents: numb
       <button
         type="submit"
         disabled={!stripe || submitting}
-        className="w-full py-3.5 rounded-xl bg-white text-[#2C4A6E] font-bold hover:bg-white/90 transition disabled:opacity-50"
+        className="w-full py-3.5 rounded-xl bg-white text-[#172434] font-bold hover:bg-white/90 transition disabled:opacity-50"
       >
         {submitting ? 'Processing…' : ctaLabel || `Pay $${(amountCents / 100).toFixed(2)}`}
       </button>

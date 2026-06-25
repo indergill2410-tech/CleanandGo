@@ -22,7 +22,7 @@ export const SERVICES: Service[] = [
     tagline: 'Set and forget',
     description: 'Your home stays spotless every week or fortnight — no reminders needed.',
     tag: 'Most Popular',
-    tagColor: 'bg-[#4A7FA5]',
+    tagColor: 'bg-[#2F7D6B]',
     features: ['Weekly or fortnightly', 'Same cleaner every time', '10% loyalty discount', 'Easy reschedule'],
     includes: [
       'All living areas dusted and vacuumed',

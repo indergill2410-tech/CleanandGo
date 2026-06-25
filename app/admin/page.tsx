@@ -86,7 +86,7 @@ const SERVICE_LABELS: Record<string, string> = {
 const STATUS_STYLES: Record<string, string> = {
   pending: 'bg-amber-100 text-amber-800 border-amber-200',
   confirmed: 'bg-blue-100 text-blue-800 border-blue-200',
-  in_progress: 'bg-purple-100 text-purple-800 border-purple-200',
+  in_progress: 'bg-amber-100 text-amber-800 border-amber-200',
   completed: 'bg-emerald-100 text-emerald-800 border-emerald-200',
   missed: 'bg-red-100 text-red-800 border-red-200',
   cancelled: 'bg-slate-100 text-slate-700 border-slate-200',
@@ -236,7 +236,7 @@ export default function AdminDashboard() {
         <div className="mx-auto max-w-7xl px-4 py-5 sm:px-6">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div>
-              <Link href="/" className="text-sm font-bold text-[#4A7FA5]">cleanngo home</Link>
+              <Link href="/" className="text-sm font-bold text-[#2F7D6B]">cleanngo home</Link>
               <h1 className="mt-2 text-3xl font-black sm:text-4xl">Operations control centre</h1>
               <p className="mt-1 text-[#657380]">Quote, assign, message, schedule, and recover every job from one screen.</p>
             </div>
@@ -249,7 +249,7 @@ export default function AdminDashboard() {
           </div>
           <nav className="-mx-4 mt-6 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:px-0">
             {NAV.map(item => (
-              <Link key={item.href} href={item.href} className="shrink-0 rounded-full border border-[#DCE5ED] bg-white px-4 py-2 text-sm font-black text-[#2C4A6E] hover:border-[#4A7FA5]">
+              <Link key={item.href} href={item.href} className="shrink-0 rounded-full border border-[#DCE5ED] bg-white px-4 py-2 text-sm font-black text-[#172434] hover:border-[#2F7D6B]">
                 {item.label}
               </Link>
             ))}
@@ -262,7 +262,7 @@ export default function AdminDashboard() {
           {[
             { label: 'Awaiting quote', value: counts.pending, icon: CreditCard, color: 'text-amber-600' },
             { label: 'Confirmed', value: counts.confirmed, icon: CalendarDays, color: 'text-blue-600' },
-            { label: 'In progress', value: counts.in_progress, icon: Clock, color: 'text-purple-600' },
+            { label: 'In progress', value: counts.in_progress, icon: Clock, color: 'text-amber-600' },
             { label: 'Completed', value: counts.completed, icon: CheckCircle2, color: 'text-emerald-600' },
             { label: 'Needs recovery', value: counts.missed, icon: ShieldCheck, color: 'text-red-600' },
           ].map((item) => (
@@ -276,17 +276,17 @@ export default function AdminDashboard() {
 
         <section className="mt-4 grid gap-4 lg:grid-cols-3">
           <div className="rounded-[8px] border border-[#DCE5ED] bg-white p-4 shadow-sm">
-            <Bell className="h-5 w-5 text-[#4A7FA5]" />
+            <Bell className="h-5 w-5 text-[#2F7D6B]" />
             <div className="mt-3 text-2xl font-black">{metrics.unreadNotifications}</div>
             <div className="text-sm font-semibold text-[#657380]">Unread admin alerts</div>
           </div>
           <div className="rounded-[8px] border border-[#DCE5ED] bg-white p-4 shadow-sm">
-            <MessageCircle className="h-5 w-5 text-[#4A7FA5]" />
+            <MessageCircle className="h-5 w-5 text-[#2F7D6B]" />
             <div className="mt-3 text-2xl font-black">{metrics.unreadMessages}</div>
             <div className="text-sm font-semibold text-[#657380]">Unread customer messages</div>
           </div>
           <div className="rounded-[8px] border border-[#DCE5ED] bg-white p-4 shadow-sm">
-            <CreditCard className="h-5 w-5 text-[#4A7FA5]" />
+            <CreditCard className="h-5 w-5 text-[#2F7D6B]" />
             <div className="mt-3 text-2xl font-black">{money(metrics.openInvoiceCents)}</div>
             <div className="text-sm font-semibold text-[#657380]">Open invoices</div>
           </div>
@@ -312,7 +312,7 @@ export default function AdminDashboard() {
                 const customer = one(booking.customers)
                 const staff = one(booking.staff)
                 return (
-                  <button key={booking.id} onClick={() => setSelectedId(booking.id)} className={`mb-3 w-full rounded-[8px] border p-4 text-left transition ${selected?.id === booking.id ? 'border-[#2C4A6E] bg-[#EEF5FA]' : 'border-[#E4EAF0] bg-white hover:border-[#9DB6CA]'}`}>
+                  <button key={booking.id} onClick={() => setSelectedId(booking.id)} className={`mb-3 w-full rounded-[8px] border p-4 text-left transition ${selected?.id === booking.id ? 'border-[#172434] bg-[#EEF5FA]' : 'border-[#E4EAF0] bg-white hover:border-[#9DB6CA]'}`}>
                     <div className="flex items-start justify-between gap-3">
                       <div>
                         <div className="font-black">{customer?.name || 'Customer'} · {SERVICE_LABELS[booking.service_type] || booking.service_type}</div>
@@ -414,7 +414,7 @@ function JobInspector({
       <div className="border-b border-[#DCE5ED] p-5">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div>
-            <p className="text-xs font-black uppercase tracking-[0.16em] text-[#4A7FA5]">Job control</p>
+            <p className="text-xs font-black uppercase tracking-[0.16em] text-[#2F7D6B]">Job control</p>
             <h2 className="mt-1 text-2xl font-black">{SERVICE_LABELS[booking.service_type] || booking.service_type}</h2>
             <p className="mt-1 text-sm text-[#657380]">Ref {booking.id.slice(0, 8)} · created {new Date(booking.created_at).toLocaleDateString()}</p>
           </div>
@@ -424,7 +424,7 @@ function JobInspector({
 
       <div className="grid gap-5 p-5 xl:grid-cols-2">
         <section className="rounded-[8px] bg-[#F4F7FA] p-4">
-          <h3 className="flex items-center gap-2 font-black"><UserRound className="h-5 w-5 text-[#4A7FA5]" />Customer</h3>
+          <h3 className="flex items-center gap-2 font-black"><UserRound className="h-5 w-5 text-[#2F7D6B]" />Customer</h3>
           <div className="mt-4 space-y-2 text-sm">
             <div className="font-black">{customer?.name || 'Customer'}</div>
             <div className="flex items-center gap-2 text-[#657380]"><Mail className="h-4 w-4" />{customer?.email || 'No email'}</div>
@@ -433,7 +433,7 @@ function JobInspector({
         </section>
 
         <section className="rounded-[8px] bg-[#F4F7FA] p-4">
-          <h3 className="flex items-center gap-2 font-black"><Home className="h-5 w-5 text-[#4A7FA5]" />Job detail</h3>
+          <h3 className="flex items-center gap-2 font-black"><Home className="h-5 w-5 text-[#2F7D6B]" />Job detail</h3>
           <div className="mt-4 grid gap-2 text-sm">
             <div className="flex items-center gap-2 text-[#657380]"><MapPin className="h-4 w-4" />{booking.address}</div>
             <div className="flex items-center gap-2 text-[#657380]"><CalendarDays className="h-4 w-4" />{dateLabel(booking.scheduled_date)} at {timeLabel(booking.scheduled_time)}</div>
@@ -450,7 +450,7 @@ function JobInspector({
             <input type="number" placeholder="Price" value={quotePrice} onChange={(e) => setQuotePrice(e.target.value)} className="rounded-xl border border-[#DCE5ED] px-4 py-3 text-sm" />
             <input placeholder="Customer note, optional" value={quoteNote} onChange={(e) => setQuoteNote(e.target.value)} className="rounded-xl border border-[#DCE5ED] px-4 py-3 text-sm" />
           </div>
-          <button onClick={onQuote} disabled={saving || !quotePrice} className="mt-3 inline-flex min-h-11 items-center gap-2 rounded-full bg-[#2C4A6E] px-5 text-sm font-black text-white disabled:opacity-50">
+          <button onClick={onQuote} disabled={saving || !quotePrice} className="mt-3 inline-flex min-h-11 items-center gap-2 rounded-full bg-[#172434] px-5 text-sm font-black text-white disabled:opacity-50">
             <CreditCard className="h-4 w-4" />
             Send quote
           </button>
@@ -475,14 +475,14 @@ function JobInspector({
             <input value={opsDraft.suburb} onChange={(e) => setOpsDraft({ ...opsDraft, suburb: e.target.value })} className="rounded-xl border border-[#DCE5ED] px-4 py-3 text-sm" placeholder="Suburb" />
           </div>
           <textarea rows={3} value={opsDraft.notes} onChange={(e) => setOpsDraft({ ...opsDraft, notes: e.target.value })} className="mt-3 w-full rounded-xl border border-[#DCE5ED] px-4 py-3 text-sm" placeholder="Internal job notes and customer preferences" />
-          <button disabled={saving} onClick={() => onPatch(opsDraft)} className="mt-3 rounded-full border border-[#2C4A6E] px-5 py-3 text-sm font-black text-[#2C4A6E] disabled:opacity-50">Save schedule and notes</button>
+          <button disabled={saving} onClick={() => onPatch(opsDraft)} className="mt-3 rounded-full border border-[#172434] px-5 py-3 text-sm font-black text-[#172434] disabled:opacity-50">Save schedule and notes</button>
         </section>
 
         <section className="rounded-[8px] border border-[#DCE5ED] p-4">
           <h3 className="font-black">Status controls</h3>
           <div className="mt-4 flex flex-wrap gap-2">
             {STATUS_ACTIONS.map((status) => (
-              <button key={status} disabled={saving || booking.status === status} onClick={() => onPatch({ status })} className={`rounded-full border px-4 py-2 text-sm font-black disabled:opacity-40 ${booking.status === status ? 'bg-[#172434] text-white' : 'border-[#DCE5ED] text-[#2C4A6E]'}`}>
+              <button key={status} disabled={saving || booking.status === status} onClick={() => onPatch({ status })} className={`rounded-full border px-4 py-2 text-sm font-black disabled:opacity-40 ${booking.status === status ? 'bg-[#172434] text-white' : 'border-[#DCE5ED] text-[#172434]'}`}>
                 {status.replace('_', ' ')}
               </button>
             ))}
@@ -500,7 +500,7 @@ function JobInspector({
         </section>
 
         <section className="rounded-[8px] border border-[#DCE5ED] p-4 xl:col-span-2">
-          <h3 className="flex items-center gap-2 font-black"><Camera className="h-5 w-5 text-[#4A7FA5]" />Job photos</h3>
+          <h3 className="flex items-center gap-2 font-black"><Camera className="h-5 w-5 text-[#2F7D6B]" />Job photos</h3>
           <p className="mt-1 text-sm text-[#657380]">Customer-uploaded photos and cleaner proof photos stay visible here for admin review.</p>
           <PhotoStrip title="Customer request photos" photos={customerPhotos} />
           <PhotoStrip title="Cleaner before photos" photos={beforePhotos} />
@@ -508,10 +508,10 @@ function JobInspector({
         </section>
 
         <section className="rounded-[8px] border border-[#DCE5ED] p-4 xl:col-span-2">
-          <h3 className="flex items-center gap-2 font-black"><MessageCircle className="h-5 w-5 text-[#4A7FA5]" />Message customer in-app</h3>
+          <h3 className="flex items-center gap-2 font-black"><MessageCircle className="h-5 w-5 text-[#2F7D6B]" />Message customer in-app</h3>
           <p className="mt-1 text-sm text-[#657380]">Use clear, reassuring customer language. This appears in their Cleanngo account and sends an email notification.</p>
           <textarea rows={4} value={messageText} onChange={(e) => setMessageText(e.target.value)} className="mt-4 w-full rounded-xl border border-[#DCE5ED] px-4 py-3 text-sm" placeholder="Example: Hi Jane, your quote is ready. We included the oven reset you requested and can confirm Tuesday at 9:00." />
-          {messageStatus && <p className="mt-2 text-sm font-bold text-[#2C4A6E]">{messageStatus}</p>}
+          {messageStatus && <p className="mt-2 text-sm font-bold text-[#172434]">{messageStatus}</p>}
           <button onClick={onMessage} disabled={saving || !messageText.trim()} className="mt-3 inline-flex min-h-11 items-center gap-2 rounded-full bg-[#172434] px-5 text-sm font-black text-white disabled:opacity-50">
             <Send className="h-4 w-4" />
             Send message

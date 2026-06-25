@@ -17,8 +17,8 @@ export default function StatCard({ icon, value, label, trend, trendUp }: StatCar
           }`}>{trend}</span>
         )}
       </div>
-      <div className="text-3xl font-bold text-[#1C2B3A] mb-1">{value}</div>
-      <div className="text-[#7A8A96] text-sm">{label}</div>
+      <div className="text-3xl font-bold text-[#172434] mb-1">{value}</div>
+      <div className="text-[#5F6E78] text-sm">{label}</div>
     </div>
   )
 }

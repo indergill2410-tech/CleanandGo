@@ -28,11 +28,11 @@ const HOW = [
 
 export default function CareersPage() {
   return (
-    <main className="min-h-screen" style={{ background: '#F5F0EB' }}>
+    <main className="min-h-screen" style={{ background: '#F7F3EE' }}>
       <Navbar />
 
       <section className="gradient-hero pt-36 pb-24 px-6 relative overflow-hidden">
-        <div className="absolute top-20 right-10 w-96 h-96 rounded-full opacity-20 blur-3xl" style={{ background: '#7BA7C7' }} />
+        <div className="absolute top-20 right-10 w-96 h-96 rounded-full opacity-20 blur-3xl" style={{ background: '#8FD8B4' }} />
         <div className="relative z-10 max-w-3xl mx-auto text-center">
           <p className="text-white/60 font-semibold text-sm uppercase tracking-widest mb-3">We&apos;re hiring</p>
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-5 leading-tight">Join the cleanngo team</h1>
@@ -47,15 +47,15 @@ export default function CareersPage() {
       <section id="why-join" className="py-20 px-6 scroll-mt-24">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-14">
-            <p className="text-[#4A7FA5] font-semibold text-sm uppercase tracking-widest mb-3">Why join</p>
-            <h2 className="text-3xl font-bold text-[#1C2B3A]">A better way to clean for a living</h2>
+            <p className="text-[#2F7D6B] font-semibold text-sm uppercase tracking-widest mb-3">Why join</p>
+            <h2 className="text-3xl font-bold text-[#172434]">A better way to clean for a living</h2>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {BENEFITS.map(b => (
               <div key={b.title} className="bg-white/80 backdrop-blur-sm border border-white/60 rounded-2xl p-6 shadow-sm">
                 <div className="text-3xl mb-3">{b.icon}</div>
-                <h3 className="font-semibold text-[#1C2B3A] mb-2">{b.title}</h3>
-                <p className="text-[#7A8A96] text-sm leading-relaxed">{b.desc}</p>
+                <h3 className="font-semibold text-[#172434] mb-2">{b.title}</h3>
+                <p className="text-[#5F6E78] text-sm leading-relaxed">{b.desc}</p>
               </div>
             ))}
           </div>
@@ -63,17 +63,17 @@ export default function CareersPage() {
       </section>
 
       {/* How it works */}
-      <section className="py-20 px-6" style={{ background: 'linear-gradient(180deg, #F5F0EB 0%, #EBF0F5 100%)' }}>
+      <section className="py-20 px-6" style={{ background: 'linear-gradient(180deg, #F7F3EE 0%, #EFE7DC 100%)' }}>
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-14">
-            <h2 className="text-3xl font-bold text-[#1C2B3A]">How to get started</h2>
+            <h2 className="text-3xl font-bold text-[#172434]">How to get started</h2>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {HOW.map(s => (
               <div key={s.n} className="text-center">
-                <div className="text-[#7BA7C7] font-bold text-sm tracking-widest mb-3">{s.n}</div>
-                <h3 className="font-bold text-[#1C2B3A] mb-2">{s.t}</h3>
-                <p className="text-[#7A8A96] text-sm leading-relaxed">{s.d}</p>
+                <div className="text-[#8FD8B4] font-bold text-sm tracking-widest mb-3">{s.n}</div>
+                <h3 className="font-bold text-[#172434] mb-2">{s.t}</h3>
+                <p className="text-[#5F6E78] text-sm leading-relaxed">{s.d}</p>
               </div>
             ))}
           </div>
@@ -85,7 +85,7 @@ export default function CareersPage() {
         <div className="max-w-2xl mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Ready to join us?</h2>
           <p className="text-white/70 text-lg mb-8">The application takes a couple of minutes — no obligation.</p>
-          <Link href="/careers/apply" className="inline-flex items-center gap-2 bg-white text-[#2C4A6E] font-bold px-10 py-4 rounded-full text-lg hover:bg-white/90 transition-all hover:-translate-y-1">
+          <Link href="/careers/apply" className="inline-flex items-center gap-2 bg-white text-[#172434] font-bold px-10 py-4 rounded-full text-lg hover:bg-white/90 transition-all hover:-translate-y-1">
             Apply now →
           </Link>
         </div>
