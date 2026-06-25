@@ -40,7 +40,7 @@ export default function ContactPage() {
             <p className="text-[#7A8A96] text-sm mt-3">Best for quotes, booking changes and general enquiries.</p>
           </a>
 
-          <div className="bg-white/80 backdrop-blur-sm border border-white/60 rounded-3xl p-8 shadow-lg card-hover block">
+          <div className="bg-white/80 backdrop-blur-sm border border-white/60 rounded-3xl p-8 shadow-lg block">
             <div className="text-4xl mb-4">📞</div>
             <div className="font-semibold text-[#1C2B3A] mb-1">Call us</div>
             <a href={`tel:${PHONE_TEL}`} className="text-[#4A7FA5] font-medium block">{PHONE_DISPLAY}</a>
