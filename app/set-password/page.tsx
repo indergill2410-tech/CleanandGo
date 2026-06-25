@@ -35,7 +35,15 @@ export default function SetPasswordPage() {
     const supabase = createClient()
     const { error } = await supabase.auth.updateUser({ password })
     if (error) { setError(error.message); setSaving(false); return }
-    router.push('/cleaner')
+    // Route to the right home based on role (admins -> /admin, cleaners -> /cleaner).
+    let dest = '/cleaner'
+    try {
+      const res = await fetch('/api/auth/whoami')
+      const { role } = await res.json()
+      if (role === 'admin') dest = '/admin'
+      else if (role === 'customer') dest = '/account'
+    } catch { /* fall back to /cleaner */ }
+    router.push(dest)
     router.refresh()
   }
 
