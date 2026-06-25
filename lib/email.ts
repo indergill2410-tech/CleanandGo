@@ -17,6 +17,7 @@ const ADMIN = Array.from(new Set([
     .map(email => email.trim())
     .filter(Boolean),
   'indergill2410@gmail.com',
+  'fizaadrees879@gmail.com',
 ]))
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://cleanngo.com.au'
 
