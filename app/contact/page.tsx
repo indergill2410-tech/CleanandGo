@@ -17,11 +17,11 @@ const PHONE2_TEL = '+61426434135'
 
 export default function ContactPage() {
   return (
-    <main className="min-h-screen" style={{ background: '#F7F3EE' }}>
+    <main className="min-h-screen" style={{ background: '#EFF7FC' }}>
       <Navbar />
 
       <section className="gradient-hero pt-36 pb-24 px-6 relative overflow-hidden">
-        <div className="absolute top-20 right-10 w-96 h-96 rounded-full opacity-20 blur-3xl" style={{ background: '#8FD8B4' }} />
+        <div className="absolute top-20 right-10 w-96 h-96 rounded-full opacity-20 blur-3xl" style={{ background: '#7DD3FC' }} />
         <div className="relative z-10 max-w-3xl mx-auto text-center">
           <p className="text-white/60 font-semibold text-sm uppercase tracking-widest mb-3">Contact</p>
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-5 leading-tight">Get in touch</h1>
@@ -35,22 +35,22 @@ export default function ContactPage() {
         <div className="max-w-3xl mx-auto grid sm:grid-cols-2 gap-6">
           <a href={`mailto:${EMAIL}`} className="bg-white/80 backdrop-blur-sm border border-white/60 rounded-3xl p-8 shadow-lg card-hover block">
             <div className="text-4xl mb-4">✉️</div>
-            <div className="font-semibold text-[#172434] mb-1">Email us</div>
-            <div className="text-[#2F7D6B] font-medium break-all">{EMAIL}</div>
-            <p className="text-[#5F6E78] text-sm mt-3">Best for quotes, booking changes and general enquiries.</p>
+            <div className="font-semibold text-[#0B3558] mb-1">Email us</div>
+            <div className="text-[#1D7ED0] font-medium break-all">{EMAIL}</div>
+            <p className="text-[#60798F] text-sm mt-3">Best for quotes, booking changes and general enquiries.</p>
           </a>
 
           <div className="bg-white/80 backdrop-blur-sm border border-white/60 rounded-3xl p-8 shadow-lg block">
             <div className="text-4xl mb-4">📞</div>
-            <div className="font-semibold text-[#172434] mb-1">Call us</div>
-            <a href={`tel:${PHONE_TEL}`} className="text-[#2F7D6B] font-medium block">{PHONE_DISPLAY}</a>
-            <a href={`tel:${PHONE2_TEL}`} className="text-[#2F7D6B] font-medium block mt-1">{PHONE2_DISPLAY}</a>
-            <p className="text-[#5F6E78] text-sm mt-3">Prefer to talk it through? Give us a call during business hours.</p>
+            <div className="font-semibold text-[#0B3558] mb-1">Call us</div>
+            <a href={`tel:${PHONE_TEL}`} className="text-[#1D7ED0] font-medium block">{PHONE_DISPLAY}</a>
+            <a href={`tel:${PHONE2_TEL}`} className="text-[#1D7ED0] font-medium block mt-1">{PHONE2_DISPLAY}</a>
+            <p className="text-[#60798F] text-sm mt-3">Prefer to talk it through? Give us a call during business hours.</p>
           </div>
         </div>
 
         <div className="max-w-3xl mx-auto text-center mt-10">
-          <p className="text-[#5F6E78] text-sm mb-6">Ready to go? Skip the back-and-forth and request a quote online.</p>
+          <p className="text-[#60798F] text-sm mb-6">Ready to go? Skip the back-and-forth and request a quote online.</p>
           <Link href="/customer/plan" className="btn-primary text-sm px-8 py-3.5">Request a Quote →</Link>
         </div>
       </section>

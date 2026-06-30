@@ -14,13 +14,13 @@ export const metadata: Metadata = {
 
 export default function ServicesPage() {
   return (
-    <main className="min-h-screen" style={{ background: '#F7F3EE' }}>
+    <main className="min-h-screen" style={{ background: '#EFF7FC' }}>
       <Navbar />
 
       {/* HERO */}
       <section className="gradient-hero pt-36 pb-24 px-6 relative overflow-hidden">
-        <div className="absolute top-20 left-10 w-96 h-96 rounded-full opacity-20 blur-3xl" style={{ background: '#8FD8B4' }} />
-        <div className="absolute bottom-0 right-10 w-80 h-80 rounded-full opacity-15 blur-3xl" style={{ background: '#2F7D6B' }} />
+        <div className="absolute top-20 left-10 w-96 h-96 rounded-full opacity-20 blur-3xl" style={{ background: '#7DD3FC' }} />
+        <div className="absolute bottom-0 right-10 w-80 h-80 rounded-full opacity-15 blur-3xl" style={{ background: '#1D7ED0' }} />
         <div className="relative z-10 max-w-3xl mx-auto text-center">
           <p className="text-white/60 font-semibold text-sm uppercase tracking-widest mb-3">Our Services</p>
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-5 leading-tight">
@@ -49,13 +49,13 @@ export default function ServicesPage() {
                     {s.tag}
                   </span>
                 )}
-                <h2 className="text-3xl font-bold text-[#172434] mb-1">{s.title}</h2>
-                <p className="text-[#2F7D6B] font-medium mb-4">{s.tagline}</p>
-                <p className="text-[#5F6E78] leading-relaxed mb-6">{s.description}</p>
+                <h2 className="text-3xl font-bold text-[#0B3558] mb-1">{s.title}</h2>
+                <p className="text-[#1D7ED0] font-medium mb-4">{s.tagline}</p>
+                <p className="text-[#60798F] leading-relaxed mb-6">{s.description}</p>
                 <div className="flex items-center gap-6 mb-6">
                   <div>
-                    <div className="text-xs text-[#5F6E78] mb-1">Pricing</div>
-                    <div className="text-xl font-bold text-[#172434]">Custom quote</div>
+                    <div className="text-xs text-[#60798F] mb-1">Pricing</div>
+                    <div className="text-xl font-bold text-[#0B3558]">Custom quote</div>
                   </div>
                   <Link href="/customer/book" className="btn-primary text-sm px-7 py-3.5">
                     Get a quote →
@@ -66,11 +66,11 @@ export default function ServicesPage() {
               {/* What's included */}
               <div className={i % 2 === 1 ? 'md:order-1' : ''}>
                 <div className="bg-white/80 backdrop-blur-sm border border-white/60 rounded-3xl p-8 shadow-lg">
-                  <div className="font-semibold text-[#172434] mb-4">What&apos;s included</div>
+                  <div className="font-semibold text-[#0B3558] mb-4">What&apos;s included</div>
                   <ul className="space-y-3">
                     {s.includes.map((item) => (
-                      <li key={item} className="flex items-start gap-3 text-sm text-[#172434]">
-                        <span className="text-[#2F7D6B] mt-0.5">✓</span>
+                      <li key={item} className="flex items-start gap-3 text-sm text-[#0B3558]">
+                        <span className="text-[#1D7ED0] mt-0.5">✓</span>
                         {item}
                       </li>
                     ))}
@@ -83,11 +83,11 @@ export default function ServicesPage() {
       </section>
 
       {/* TRUST */}
-      <section className="py-20 px-6" style={{ background: 'linear-gradient(180deg, #F7F3EE 0%, #EFE7DC 100%)' }}>
+      <section className="py-20 px-6" style={{ background: 'linear-gradient(180deg, #EFF7FC 0%, #DCECF8 100%)' }}>
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-[#172434] mb-3">Backed by real guarantees</h2>
-            <p className="text-[#5F6E78]">Every service includes the same promises — not just for some jobs, for all of them.</p>
+            <h2 className="text-3xl font-bold text-[#0B3558] mb-3">Backed by real guarantees</h2>
+            <p className="text-[#60798F]">Every service includes the same promises — not just for some jobs, for all of them.</p>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {TRUST_BADGES.map((b) => (
@@ -102,7 +102,7 @@ export default function ServicesPage() {
         <div className="max-w-2xl mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Not sure which service you need?</h2>
           <p className="text-white/70 text-lg mb-8">Request a free quote and we&apos;ll recommend the right clean for your home.</p>
-          <Link href="/customer/book" className="inline-flex items-center gap-2 bg-white text-[#172434] font-bold px-10 py-4 rounded-full text-lg hover:bg-white/90 transition-all hover:-translate-y-1">
+          <Link href="/customer/book" className="inline-flex items-center gap-2 bg-white text-[#0B3558] font-bold px-10 py-4 rounded-full text-lg hover:bg-white/90 transition-all hover:-translate-y-1">
             Get My Free Quote →
           </Link>
         </div>

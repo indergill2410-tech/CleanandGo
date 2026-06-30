@@ -59,7 +59,7 @@ export default function PlanRequestPage() {
 
   if (done) {
     return (
-      <div className="min-h-screen flex items-center justify-center px-4" style={{ background: 'linear-gradient(135deg, #172434 0%, #172434 100%)' }}>
+      <div className="min-h-screen flex items-center justify-center px-4" style={{ background: 'linear-gradient(135deg, #0B3558 0%, #0B3558 100%)' }}>
         <div className="glass-strong rounded-3xl p-10 max-w-md text-center">
           <div className="text-5xl mb-4">📋</div>
           <h1 className="text-2xl font-bold text-white mb-3">Plan request received</h1>
@@ -76,7 +76,7 @@ export default function PlanRequestPage() {
   const inputCls = 'w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 text-sm'
 
   return (
-    <div className="min-h-screen py-12 px-4" style={{ background: 'linear-gradient(135deg, #172434 0%, #172434 50%, #2F7D6B 100%)' }}>
+    <div className="min-h-screen py-12 px-4" style={{ background: 'linear-gradient(135deg, #0B3558 0%, #0B3558 50%, #1D7ED0 100%)' }}>
       <div className="max-w-lg mx-auto">
         <div className="text-center mb-8">
           <Link href="/" className="text-white/60 text-sm hover:text-white mb-4 inline-block">← Back to home</Link>
@@ -91,7 +91,7 @@ export default function PlanRequestPage() {
             <div className="grid grid-cols-2 gap-3">
               {(['home', 'office'] as PropertyType[]).map(t => (
                 <button key={t} type="button" onClick={() => setPropertyType(t)}
-                  className={`py-3 rounded-xl text-sm font-semibold capitalize transition ${propertyType === t ? 'bg-white text-[#172434]' : 'bg-white/10 text-white/70'}`}>
+                  className={`py-3 rounded-xl text-sm font-semibold capitalize transition ${propertyType === t ? 'bg-white text-[#0B3558]' : 'bg-white/10 text-white/70'}`}>
                   {t === 'home' ? '🏠 Home' : '🏢 Office'}
                 </button>
               ))}
@@ -104,7 +104,7 @@ export default function PlanRequestPage() {
             <div className="grid grid-cols-3 gap-3">
               {(['weekly', 'fortnightly', 'monthly'] as Frequency[]).map(f => (
                 <button key={f} type="button" onClick={() => setFrequency(f)}
-                  className={`py-3 rounded-xl text-xs font-semibold capitalize transition ${frequency === f ? 'bg-white text-[#172434]' : 'bg-white/10 text-white/70'}`}>
+                  className={`py-3 rounded-xl text-xs font-semibold capitalize transition ${frequency === f ? 'bg-white text-[#0B3558]' : 'bg-white/10 text-white/70'}`}>
                   {f}
                 </button>
               ))}
@@ -176,7 +176,7 @@ export default function PlanRequestPage() {
 
           {error && <div className="bg-red-500/20 border border-red-500/30 rounded-xl px-4 py-3 text-red-200 text-sm">{error}</div>}
 
-          <button type="submit" disabled={submitting} className="w-full py-3.5 rounded-xl bg-white text-[#172434] font-bold hover:bg-white/90 transition disabled:opacity-50">
+          <button type="submit" disabled={submitting} className="w-full py-3.5 rounded-xl bg-white text-[#0B3558] font-bold hover:bg-white/90 transition disabled:opacity-50">
             {submitting ? 'Sending…' : 'Request my plan & price →'}
           </button>
           <p className="text-white/40 text-xs text-center">Free quote · no card required · cancel anytime</p>

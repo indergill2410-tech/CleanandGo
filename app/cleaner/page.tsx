@@ -112,19 +112,19 @@ export default function CleanerPortal() {
   }
 
   if (loading) {
-    return <div className="min-h-screen flex items-center justify-center bg-[#F4F7FA] text-[#172434]">Loading your workboard...</div>
+    return <div className="min-h-screen flex items-center justify-center bg-[#F4F7FA] text-[#0B3558]">Loading your workboard...</div>
   }
 
   return (
-    <main className="min-h-screen bg-[#F4F7FA] text-[#172434]">
+    <main className="min-h-screen bg-[#F4F7FA] text-[#0B3558]">
       <header className="border-b border-[#DCE5ED] bg-white">
         <div className="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-5 sm:px-6 md:flex-row md:items-center md:justify-between">
           <div>
-            <Link href="/" className="text-sm font-bold text-[#2F7D6B]">cleanngo home</Link>
+            <Link href="/" className="text-sm font-bold text-[#1D7ED0]">cleanngo home</Link>
             <h1 className="mt-2 text-3xl font-black">Cleaner workboard</h1>
-            <p className="mt-1 text-[#657380]">Your assigned jobs, proof uploads, and profile details.</p>
+            <p className="mt-1 text-[#60798F]">Your assigned jobs, proof uploads, and profile details.</p>
           </div>
-          <button onClick={signOut} className="w-fit rounded-full border border-[#DCE5ED] px-5 py-3 text-sm font-black text-[#657380]">Sign out</button>
+          <button onClick={signOut} className="w-fit rounded-full border border-[#DCE5ED] px-5 py-3 text-sm font-black text-[#60798F]">Sign out</button>
         </div>
       </header>
 
@@ -132,15 +132,15 @@ export default function CleanerPortal() {
         <aside className="space-y-4">
           <section className="rounded-[8px] border border-[#DCE5ED] bg-white p-5 shadow-sm">
             <div className="flex items-center gap-4">
-              <div className="flex h-14 w-14 items-center justify-center rounded-[8px] bg-[#172434] text-white">
+              <div className="flex h-14 w-14 items-center justify-center rounded-[8px] bg-[#0B3558] text-white">
                 <UserRound className="h-7 w-7" />
               </div>
               <div>
                 <div className="text-xl font-black">{profile?.staff.name}</div>
-                <div className="text-sm font-bold text-[#657380] capitalize">{profile?.staff.role} · {profile?.staff.status}</div>
+                <div className="text-sm font-bold text-[#60798F] capitalize">{profile?.staff.role} · {profile?.staff.status}</div>
               </div>
             </div>
-            <div className="mt-5 space-y-2 text-sm text-[#657380]">
+            <div className="mt-5 space-y-2 text-sm text-[#60798F]">
               <div>{profile?.staff.email}</div>
               <div>{profile?.staff.phone || 'Phone not set'}</div>
               <div>{profile?.staff.suburb || 'Primary area not set'}</div>
@@ -155,16 +155,16 @@ export default function CleanerPortal() {
               { label: 'Proof sets', value: stats.proof, icon: Camera },
             ].map((item) => (
               <div key={item.label} className="rounded-[8px] border border-[#DCE5ED] bg-white p-4 shadow-sm">
-                <item.icon className="h-5 w-5 text-[#2F7D6B]" />
+                <item.icon className="h-5 w-5 text-[#1D7ED0]" />
                 <div className="mt-3 text-2xl font-black">{item.value}</div>
-                <div className="text-xs font-bold text-[#657380]">{item.label}</div>
+                <div className="text-xs font-bold text-[#60798F]">{item.label}</div>
               </div>
             ))}
           </section>
 
           <section className="rounded-[8px] border border-[#DCE5ED] bg-white p-5 shadow-sm">
             <h2 className="font-black">Professional standard</h2>
-            <ul className="mt-4 space-y-3 text-sm text-[#657380]">
+            <ul className="mt-4 space-y-3 text-sm text-[#60798F]">
               <li className="flex gap-2"><CheckCircle2 className="h-4 w-4 text-emerald-600" />Arrive on time and start the job in-app.</li>
               <li className="flex gap-2"><CheckCircle2 className="h-4 w-4 text-emerald-600" />Upload before and after photos for proof.</li>
               <li className="flex gap-2"><CheckCircle2 className="h-4 w-4 text-emerald-600" />Leave clear notes for admin when anything changes.</li>
@@ -175,14 +175,14 @@ export default function CleanerPortal() {
         <section>
           <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <p className="text-sm font-black uppercase tracking-[0.16em] text-[#2F7D6B]">Today and upcoming</p>
+              <p className="text-sm font-black uppercase tracking-[0.16em] text-[#1D7ED0]">Today and upcoming</p>
               <h2 className="text-2xl font-black">Assigned jobs</h2>
             </div>
-            <span className="text-sm font-bold text-[#657380]">{jobs.length} active job{jobs.length === 1 ? '' : 's'}</span>
+            <span className="text-sm font-bold text-[#60798F]">{jobs.length} active job{jobs.length === 1 ? '' : 's'}</span>
           </div>
 
           {jobs.length === 0 ? (
-            <div className="rounded-[8px] border border-[#DCE5ED] bg-white p-10 text-center text-[#657380]">No jobs assigned right now.</div>
+            <div className="rounded-[8px] border border-[#DCE5ED] bg-white p-10 text-center text-[#60798F]">No jobs assigned right now.</div>
           ) : (
             <div className="space-y-4">
               {jobs.map((job) => (
@@ -191,7 +191,7 @@ export default function CleanerPortal() {
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                       <div>
                         <div className="text-lg font-black">{SERVICE_LABELS[job.service_type] || job.service_type}</div>
-                        <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm text-[#657380]">
+                        <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm text-[#60798F]">
                           <span className="inline-flex items-center gap-1"><CalendarDays className="h-4 w-4" />{dateLabel(job.scheduled_date)}</span>
                           <span className="inline-flex items-center gap-1"><Clock className="h-4 w-4" />{timeLabel(job.scheduled_time)}</span>
                           <span className="inline-flex items-center gap-1"><MapPin className="h-4 w-4" />{job.suburb || job.address}</span>
@@ -207,28 +207,28 @@ export default function CleanerPortal() {
                     <div className="border-t border-[#DCE5ED] p-5">
                       <div className="grid gap-4 md:grid-cols-3">
                         <div className="rounded-[8px] bg-[#F4F7FA] p-4">
-                          <BriefcaseBusiness className="h-5 w-5 text-[#2F7D6B]" />
-                          <div className="mt-3 text-sm text-[#657380]">Customer</div>
+                          <BriefcaseBusiness className="h-5 w-5 text-[#1D7ED0]" />
+                          <div className="mt-3 text-sm text-[#60798F]">Customer</div>
                           <div className="font-black">{job.customers?.name || 'Customer'}</div>
-                          <div className="text-sm text-[#657380]">{job.customers?.phone || 'No phone'}</div>
+                          <div className="text-sm text-[#60798F]">{job.customers?.phone || 'No phone'}</div>
                         </div>
                         <div className="rounded-[8px] bg-[#F4F7FA] p-4">
-                          <MapPin className="h-5 w-5 text-[#2F7D6B]" />
-                          <div className="mt-3 text-sm text-[#657380]">Address</div>
+                          <MapPin className="h-5 w-5 text-[#1D7ED0]" />
+                          <div className="mt-3 text-sm text-[#60798F]">Address</div>
                           <div className="font-black">{job.address}</div>
                         </div>
                         <div className="rounded-[8px] bg-[#F4F7FA] p-4">
-                          <ShieldCheck className="h-5 w-5 text-[#2F7D6B]" />
-                          <div className="mt-3 text-sm text-[#657380]">Scope</div>
+                          <ShieldCheck className="h-5 w-5 text-[#1D7ED0]" />
+                          <div className="mt-3 text-sm text-[#60798F]">Scope</div>
                           <div className="font-black">{job.bedrooms ?? '?'} bed · {job.bathrooms ?? '?'} bath</div>
                           {job.covered_by_backup && <div className="text-sm font-bold text-amber-700">Backup coverage</div>}
                         </div>
                       </div>
 
                       {(job.extras?.length || job.notes) && (
-                        <div className="mt-4 rounded-[8px] bg-[#F4F7FA] p-4 text-sm text-[#657380]">
-                          {job.extras && job.extras.length > 0 && <div><span className="font-black text-[#172434]">Extras:</span> {job.extras.join(', ')}</div>}
-                          {job.notes && <div className="mt-2"><span className="font-black text-[#172434]">Notes:</span> {job.notes}</div>}
+                        <div className="mt-4 rounded-[8px] bg-[#F4F7FA] p-4 text-sm text-[#60798F]">
+                          {job.extras && job.extras.length > 0 && <div><span className="font-black text-[#0B3558]">Extras:</span> {job.extras.join(', ')}</div>}
+                          {job.notes && <div className="mt-2"><span className="font-black text-[#0B3558]">Notes:</span> {job.notes}</div>}
                         </div>
                       )}
 
@@ -243,7 +243,7 @@ export default function CleanerPortal() {
                           <textarea rows={3} placeholder="Completion notes for admin..." value={notes[job.id] || ''}
                             onChange={event => setNotes(current => ({ ...current, [job.id]: event.target.value }))}
                             className="w-full rounded-xl border border-[#DCE5ED] px-4 py-3 text-sm" />
-                          <button onClick={() => complete(job.id)} disabled={busy === job.id} className="w-full rounded-xl bg-[#172434] px-5 py-4 font-black text-white disabled:opacity-50">
+                          <button onClick={() => complete(job.id)} disabled={busy === job.id} className="w-full rounded-xl bg-[#0B3558] px-5 py-4 font-black text-white disabled:opacity-50">
                             Mark job complete
                           </button>
                         </div>

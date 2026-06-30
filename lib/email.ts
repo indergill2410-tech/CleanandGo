@@ -26,11 +26,11 @@ const base = (content: string) => `
 <!DOCTYPE html>
 <html>
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width"></head>
-<body style="margin:0;padding:0;background:#F7F3EE;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="background:#F7F3EE;padding:40px 20px;">
+<body style="margin:0;padding:0;background:#EFF7FC;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#EFF7FC;padding:40px 20px;">
     <tr><td align="center">
-      <table width="560" cellpadding="0" cellspacing="0" style="background:#172434;border-radius:24px;overflow:hidden;max-width:560px;width:100%;">
-        <tr><td style="background:linear-gradient(135deg,#172434,#172434);padding:32px 40px;text-align:center;">
+      <table width="560" cellpadding="0" cellspacing="0" style="background:#0B3558;border-radius:24px;overflow:hidden;max-width:560px;width:100%;">
+        <tr><td style="background:linear-gradient(135deg,#0B3558,#0B3558);padding:32px 40px;text-align:center;">
           <div style="font-size:28px;font-weight:800;color:#ffffff;letter-spacing:-0.5px;">cleanngo</div>
           <div style="font-size:13px;color:rgba(255,255,255,0.5);margin-top:4px;">cleanngo.com.au</div>
         </td></tr>
@@ -52,7 +52,7 @@ const row = (label: string, value: string) => `
     <td style="padding:8px 0;font-size:13px;color:#ffffff;font-weight:500;">${value}</td>
   </tr>`
 const btn = (href: string, text: string) => `
-  <a href="${href}" style="display:inline-block;margin-top:24px;padding:14px 32px;background:#ffffff;color:#172434;font-weight:700;font-size:15px;border-radius:12px;text-decoration:none;">${text}</a>`
+  <a href="${href}" style="display:inline-block;margin-top:24px;padding:14px 32px;background:#ffffff;color:#0B3558;font-weight:700;font-size:15px;border-radius:12px;text-decoration:none;">${text}</a>`
 const table = (rows: string) => `
   <table width="100%" cellpadding="0" cellspacing="0" style="background:rgba(255,255,255,0.07);border-radius:12px;padding:16px 20px;margin:20px 0;">
     <tbody>${rows}</tbody>
@@ -142,8 +142,8 @@ export async function sendQuoteReadyEmail({
   const serviceLabel = service === 'endoflease' ? 'End of Lease' : service === 'recurring' ? 'Recurring Clean' : 'One-Off Clean'
 
   const html = base(`
-    <div style="display:inline-block;padding:6px 14px;background:rgba(74,183,165,0.2);border:1px solid rgba(74,183,165,0.4);border-radius:20px;margin-bottom:20px;">
-      <span style="color:#4ab7a5;font-size:13px;font-weight:600;">💰 Your quote is ready</span>
+    <div style="display:inline-block;padding:6px 14px;background:rgba(29,126,208,0.2);border:1px solid rgba(29,126,208,0.4);border-radius:20px;margin-bottom:20px;">
+      <span style="color:#60A5FA;font-size:13px;font-weight:600;">💰 Your quote is ready</span>
     </div>
     ${h1(`Your quote: $${price}`)}
     ${p(`Hi ${customerName}, your quote for a ${serviceLabel} is ready.`)}
@@ -213,8 +213,8 @@ export async function sendAdminNewApplicationEmail({
 }) {
   const yn = (v?: boolean) => (v ? 'Yes' : 'No')
   const html = base(`
-    <div style="display:inline-block;padding:6px 14px;background:rgba(74,183,165,0.2);border:1px solid rgba(74,183,165,0.4);border-radius:20px;margin-bottom:20px;">
-      <span style="color:#4ab7a5;font-size:13px;font-weight:600;">🧹 New cleaner application</span>
+    <div style="display:inline-block;padding:6px 14px;background:rgba(29,126,208,0.2);border:1px solid rgba(29,126,208,0.4);border-radius:20px;margin-bottom:20px;">
+      <span style="color:#60A5FA;font-size:13px;font-weight:600;">🧹 New cleaner application</span>
     </div>
     ${h1(`${name} applied to join`)}
     ${p('Review the application and approve to onboard them as a cleaner.')}
@@ -248,8 +248,8 @@ export async function sendStaffInviteEmail({
 }) {
   const roleLabel = role === 'admin' ? 'admin' : 'cleaner'
   const html = base(`
-    <div style="display:inline-block;padding:6px 14px;background:rgba(74,183,165,0.2);border:1px solid rgba(74,183,165,0.4);border-radius:20px;margin-bottom:20px;">
-      <span style="color:#4ab7a5;font-size:13px;font-weight:600;">🎉 Welcome to the team</span>
+    <div style="display:inline-block;padding:6px 14px;background:rgba(29,126,208,0.2);border:1px solid rgba(29,126,208,0.4);border-radius:20px;margin-bottom:20px;">
+      <span style="color:#60A5FA;font-size:13px;font-weight:600;">🎉 Welcome to the team</span>
     </div>
     ${h1(`Welcome aboard, ${name}!`)}
     ${p(`Your cleanngo ${roleLabel} account is ready. Set your password to log in${role === 'admin' ? '' : ' and start receiving jobs'}.`)}
@@ -292,8 +292,8 @@ export async function sendPaymentReceiptEmail({
   customerName: string; customerEmail: string; amount: number; description?: string; date?: string
 }) {
   const html = base(`
-    <div style="display:inline-block;padding:6px 14px;background:rgba(74,183,165,0.2);border:1px solid rgba(74,183,165,0.4);border-radius:20px;margin-bottom:20px;">
-      <span style="color:#4ab7a5;font-size:13px;font-weight:600;">✅ Payment received</span>
+    <div style="display:inline-block;padding:6px 14px;background:rgba(29,126,208,0.2);border:1px solid rgba(29,126,208,0.4);border-radius:20px;margin-bottom:20px;">
+      <span style="color:#60A5FA;font-size:13px;font-weight:600;">✅ Payment received</span>
     </div>
     ${h1(`Payment received — $${amount}`)}
     ${p(`Hi ${customerName}, thanks! We've received your payment.`)}
@@ -315,8 +315,8 @@ export async function sendAdminPaymentEmail({
   customerName: string; amount: number; description?: string
 }) {
   const html = base(`
-    <div style="display:inline-block;padding:6px 14px;background:rgba(74,183,165,0.2);border:1px solid rgba(74,183,165,0.4);border-radius:20px;margin-bottom:20px;">
-      <span style="color:#4ab7a5;font-size:13px;font-weight:600;">💳 Payment received</span>
+    <div style="display:inline-block;padding:6px 14px;background:rgba(29,126,208,0.2);border:1px solid rgba(29,126,208,0.4);border-radius:20px;margin-bottom:20px;">
+      <span style="color:#60A5FA;font-size:13px;font-weight:600;">💳 Payment received</span>
     </div>
     ${h1(`$${amount} from ${customerName}`)}
     ${table(row('Customer', customerName) + row('Amount', `$${amount}`) + (description ? row('For', description) : ''))}
@@ -360,8 +360,8 @@ export async function sendCleanerAssignedEmail({
 }) {
   const serviceLabel = service === 'endoflease' ? 'End of Lease' : service === 'recurring' ? 'Recurring Clean' : 'One-Off Clean'
   const html = base(`
-    <div style="display:inline-block;padding:6px 14px;background:rgba(74,183,165,0.2);border:1px solid rgba(74,183,165,0.4);border-radius:20px;margin-bottom:20px;">
-      <span style="color:#4ab7a5;font-size:13px;font-weight:600;">🧽 New job assigned</span>
+    <div style="display:inline-block;padding:6px 14px;background:rgba(29,126,208,0.2);border:1px solid rgba(29,126,208,0.4);border-radius:20px;margin-bottom:20px;">
+      <span style="color:#60A5FA;font-size:13px;font-weight:600;">🧽 New job assigned</span>
     </div>
     ${h1('You\'ve got a new job')}
     ${p(`Hi ${cleanerName}, you've been assigned a ${serviceLabel}. Open your portal for full details and to clock on.`)}

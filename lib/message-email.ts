@@ -13,11 +13,11 @@ const base = (content: string) => `
 <!DOCTYPE html>
 <html>
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width"></head>
-<body style="margin:0;padding:0;background:#F7F3EE;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="background:#F7F3EE;padding:40px 20px;">
+<body style="margin:0;padding:0;background:#EFF7FC;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#EFF7FC;padding:40px 20px;">
     <tr><td align="center">
-      <table width="560" cellpadding="0" cellspacing="0" style="background:#172434;border-radius:24px;overflow:hidden;max-width:560px;width:100%;">
-        <tr><td style="background:linear-gradient(135deg,#172434,#172434);padding:32px 40px;text-align:center;">
+      <table width="560" cellpadding="0" cellspacing="0" style="background:#0B3558;border-radius:24px;overflow:hidden;max-width:560px;width:100%;">
+        <tr><td style="background:linear-gradient(135deg,#0B3558,#0B3558);padding:32px 40px;text-align:center;">
           <div style="font-size:28px;font-weight:800;color:#ffffff;letter-spacing:-0.5px;">cleanngo</div>
           <div style="font-size:13px;color:rgba(255,255,255,0.5);margin-top:4px;">cleanngo.com.au</div>
         </td></tr>
@@ -30,7 +30,7 @@ const base = (content: string) => `
 
 const h1 = (t: string) => `<h1 style="margin:0 0 8px;font-size:24px;font-weight:700;color:#ffffff;">${t}</h1>`
 const p = (t: string) => `<p style="margin:0 0 16px;font-size:15px;color:rgba(255,255,255,0.65);line-height:1.6;">${t}</p>`
-const btn = (href: string, text: string) => `<a href="${href}" style="display:inline-block;margin-top:24px;padding:14px 32px;background:#ffffff;color:#172434;font-weight:700;font-size:15px;border-radius:12px;text-decoration:none;">${text}</a>`
+const btn = (href: string, text: string) => `<a href="${href}" style="display:inline-block;margin-top:24px;padding:14px 32px;background:#ffffff;color:#0B3558;font-weight:700;font-size:15px;border-radius:12px;text-decoration:none;">${text}</a>`
 
 export async function sendCustomerMessageNotificationEmail({
   customerName, customerEmail, conversationId,

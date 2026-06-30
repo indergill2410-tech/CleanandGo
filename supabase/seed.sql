@@ -20,8 +20,12 @@ on conflict do nothing;
 -- Creating the first admin
 -- ============================================
 -- Admin/cleaner access is granted via the `staff` table, keyed to a Supabase
--- auth user. After the person signs up (Auth > Users, or the /login flow),
--- promote them to admin by linking their auth user id:
+-- auth user. Prefer `npm run create-admin -- --default-admins` with
+-- ADMIN_PASSWORD in your shell env; it checks the Supabase project ref and
+-- core app tables before writing anything.
+--
+-- To do it by hand after the person signs up (Auth > Users, or the /login
+-- flow), promote them to admin by linking their auth user id:
 --
 --   insert into public.staff (user_id, name, email, role, status)
 --   values ('<auth-user-uuid>', 'Owner', 'admin@cleanngo.com.au', 'admin', 'active')

@@ -73,14 +73,14 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
   const related = BLOG_POSTS.filter((p) => p.slug !== post.slug).slice(0, 2)
 
   return (
-    <main className="min-h-screen" style={{ background: '#F7F3EE' }}>
+    <main className="min-h-screen" style={{ background: '#EFF7FC' }}>
       <Navbar />
 
       <JsonLd data={jsonLd} />
 
       {/* HERO */}
       <section className="gradient-hero pt-36 pb-20 px-6 relative overflow-hidden">
-        <div className="absolute top-20 right-10 w-96 h-96 rounded-full opacity-20 blur-3xl" style={{ background: '#8FD8B4' }} />
+        <div className="absolute top-20 right-10 w-96 h-96 rounded-full opacity-20 blur-3xl" style={{ background: '#7DD3FC' }} />
         <div className="relative z-10 max-w-3xl mx-auto text-center">
           <Link href="/blog" className="text-white/60 text-sm hover:text-white transition-colors mb-6 inline-block">
             ← All articles
@@ -101,7 +101,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
           {post.sections.map((section, i) => (
             <div key={i} className="mb-8">
               {section.heading && (
-                <h2 className="text-2xl font-bold text-[#172434] mb-4 mt-4">{section.heading}</h2>
+                <h2 className="text-2xl font-bold text-[#0B3558] mb-4 mt-4">{section.heading}</h2>
               )}
               {section.paragraphs?.map((para, j) => (
                 <p key={j} className="text-[#3A4A56] leading-relaxed mb-4">{para}</p>
@@ -110,7 +110,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                 <ul className="space-y-2.5 mb-4">
                   {section.bullets.map((b) => (
                     <li key={b} className="flex items-start gap-3 text-[#3A4A56] leading-relaxed">
-                      <span className="text-[#2F7D6B] mt-1">✓</span>
+                      <span className="text-[#1D7ED0] mt-1">✓</span>
                       {b}
                     </li>
                   ))}
@@ -121,8 +121,8 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
 
           {/* Inline CTA */}
           <div className="bg-white/80 backdrop-blur-sm border border-white/60 rounded-3xl p-8 shadow-lg text-center mt-12">
-            <h3 className="text-xl font-bold text-[#172434] mb-2">Want it done for you?</h3>
-            <p className="text-[#5F6E78] text-sm mb-6">Get a free, no-obligation quote from a trusted local cleaner.</p>
+            <h3 className="text-xl font-bold text-[#0B3558] mb-2">Want it done for you?</h3>
+            <p className="text-[#60798F] text-sm mb-6">Get a free, no-obligation quote from a trusted local cleaner.</p>
             <Link href="/customer/book" className="btn-primary text-sm px-8 py-3.5">
               Request a Quote →
             </Link>
@@ -132,9 +132,9 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
 
       {/* RELATED */}
       {related.length > 0 && (
-        <section className="py-16 px-6" style={{ background: 'linear-gradient(180deg, #F7F3EE 0%, #EFE7DC 100%)' }}>
+        <section className="py-16 px-6" style={{ background: 'linear-gradient(180deg, #EFF7FC 0%, #DCECF8 100%)' }}>
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-2xl font-bold text-[#172434] mb-8 text-center">Keep reading</h2>
+            <h2 className="text-2xl font-bold text-[#0B3558] mb-8 text-center">Keep reading</h2>
             <div className="grid md:grid-cols-2 gap-6">
               {related.map((p) => (
                 <Link
@@ -142,10 +142,10 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                   href={`/blog/${p.slug}`}
                   className="bg-white/80 backdrop-blur-sm border border-white/60 rounded-2xl p-6 shadow-sm card-hover"
                 >
-                  <span className="inline-block text-xs font-medium bg-[#EBF3F9] text-[#172434] px-3 py-1 rounded-full mb-3">
+                  <span className="inline-block text-xs font-medium bg-[#EBF3F9] text-[#0B3558] px-3 py-1 rounded-full mb-3">
                     {p.category}
                   </span>
-                  <h3 className="font-bold text-[#172434] leading-snug">{p.title}</h3>
+                  <h3 className="font-bold text-[#0B3558] leading-snug">{p.title}</h3>
                 </Link>
               ))}
             </div>

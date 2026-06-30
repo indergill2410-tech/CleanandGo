@@ -207,28 +207,28 @@ export default function AccountPage() {
   }
 
   if (loading) {
-    return <div className="min-h-screen flex items-center justify-center bg-[#F6F1EA] text-[#172434]">Preparing your dashboard...</div>
+    return <div className="min-h-screen flex items-center justify-center bg-[#EFF7FC] text-[#0B3558]">Preparing your dashboard...</div>
   }
 
   return (
-    <main className="min-h-screen bg-[#F6F1EA] text-[#172434]">
-      <header className="border-b border-[#E3DBD0] bg-white/80 backdrop-blur-xl">
+    <main className="min-h-screen bg-[#EFF7FC] text-[#0B3558]">
+      <header className="border-b border-[#CFE0ED] bg-white/80 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-5 sm:px-6 lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <Link href="/" className="text-sm font-bold text-[#2F7D6B] hover:text-[#172434]">cleanngo home</Link>
+            <Link href="/" className="text-sm font-bold text-[#1D7ED0] hover:text-[#0B3558]">cleanngo home</Link>
             <h1 className="mt-2 text-3xl font-black tracking-normal sm:text-4xl">Welcome back, {firstName}</h1>
-            <p className="mt-1 text-sm text-[#657380]">Your clean schedule, quotes, messages, and service upgrades in one calm place.</p>
+            <p className="mt-1 text-sm text-[#60798F]">Your clean schedule, quotes, messages, and service upgrades in one calm place.</p>
           </div>
           <div className="flex flex-wrap gap-2">
-            <Link href="/account/messages" className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-[#C9D7E2] bg-white px-5 text-sm font-black text-[#172434] hover:border-[#172434]">
+            <Link href="/account/messages" className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-[#C9D7E2] bg-white px-5 text-sm font-black text-[#0B3558] hover:border-[#0B3558]">
               <MessageCircle className="h-4 w-4" />
               Messages
             </Link>
-            <Link href="/customer/book" className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-[#172434] px-5 text-sm font-black text-white hover:bg-[#172434]">
+            <Link href="/customer/book" className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-[#0B3558] px-5 text-sm font-black text-white hover:bg-[#0B3558]">
               Book a clean
               <ArrowRight className="h-4 w-4" />
             </Link>
-            <button onClick={signOut} className="min-h-11 rounded-full px-4 text-sm font-bold text-[#657380] hover:bg-white">Sign out</button>
+            <button onClick={signOut} className="min-h-11 rounded-full px-4 text-sm font-bold text-[#60798F] hover:bg-white">Sign out</button>
           </div>
         </div>
       </header>
@@ -241,19 +241,19 @@ export default function AccountPage() {
             { label: 'Account credit', value: money(creditTotal), icon: CheckCircle2 },
             { label: 'Open invoices', value: money(openInvoiceTotal), icon: CreditCard },
           ].map((item) => (
-            <div key={item.label} className="rounded-[8px] border border-[#E3DBD0] bg-white p-5 shadow-sm">
-              <item.icon className="h-5 w-5 text-[#2F7D6B]" />
+            <div key={item.label} className="rounded-[8px] border border-[#CFE0ED] bg-white p-5 shadow-sm">
+              <item.icon className="h-5 w-5 text-[#1D7ED0]" />
               <div className="mt-4 text-2xl font-black">{item.value}</div>
-              <div className="mt-1 text-sm font-semibold text-[#657380]">{item.label}</div>
+              <div className="mt-1 text-sm font-semibold text-[#60798F]">{item.label}</div>
             </div>
           ))}
         </section>
 
         <section className="mt-6 grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
-          <div className="rounded-[8px] bg-[#172434] p-6 text-white shadow-xl">
+          <div className="rounded-[8px] bg-[#0B3558] p-6 text-white shadow-xl">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
               <div>
-                <p className="text-sm font-black uppercase tracking-[0.16em] text-[#8FD8B4]">Your next clean</p>
+                <p className="text-sm font-black uppercase tracking-[0.16em] text-[#7DD3FC]">Your next clean</p>
                 <h2 className="mt-2 text-3xl font-black">{nextBooking ? SERVICE_LABELS[nextBooking.service_type] || nextBooking.service_type : 'No clean scheduled yet'}</h2>
                 <p className="mt-2 text-white/64">
                   {nextBooking ? `${dateLabel(nextBooking.scheduled_date)} at ${timeLabel(nextBooking.scheduled_time)} · ${nextBooking.address}` : 'Start with a one-off clean or create a recurring plan.'}
@@ -269,19 +269,19 @@ export default function AccountPage() {
             {nextBooking ? (
               <div className="mt-6 grid gap-4 md:grid-cols-3">
                 <div className="rounded-[8px] bg-white/8 p-4">
-                  <UserRound className="h-5 w-5 text-[#8FD8B4]" />
+                  <UserRound className="h-5 w-5 text-[#7DD3FC]" />
                   <div className="mt-3 text-sm text-white/50">Cleaner</div>
                   <div className="font-black">{person(nextBooking.staff)?.name || 'Being assigned'}</div>
                   <div className="mt-1 text-xs text-white/45">{nextBooking.covered_by_backup ? 'Backup coverage active' : 'Primary assignment'}</div>
                 </div>
                 <div className="rounded-[8px] bg-white/8 p-4">
-                  <Home className="h-5 w-5 text-[#F2C14E]" />
+                  <Home className="h-5 w-5 text-[#F5C84C]" />
                   <div className="mt-3 text-sm text-white/50">Home details</div>
                   <div className="font-black">{nextBooking.bedrooms || '?'} bed · {nextBooking.bathrooms || '?'} bath</div>
                   <div className="mt-1 text-xs text-white/45">{nextBooking.suburb || 'Address confirmed'}</div>
                 </div>
                 <div className="rounded-[8px] bg-white/8 p-4">
-                  <Sparkles className="h-5 w-5 text-[#8FD8B4]" />
+                  <Sparkles className="h-5 w-5 text-[#7DD3FC]" />
                   <div className="mt-3 text-sm text-white/50">Price</div>
                   <div className="font-black">{money(nextBooking.price_cents)}</div>
                   <div className="mt-1 text-xs text-white/45">{statusInfo(nextBooking.status).helper}</div>
@@ -289,14 +289,14 @@ export default function AccountPage() {
               </div>
             ) : (
               <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-                <Link href="/customer/plan" className="inline-flex justify-center rounded-full bg-[#F2C14E] px-6 py-3 font-black text-[#172434]">Start a weekly reset</Link>
+                <Link href="/customer/plan" className="inline-flex justify-center rounded-full bg-[#F5C84C] px-6 py-3 font-black text-[#0B3558]">Start a weekly reset</Link>
                 <Link href="/customer/book" className="inline-flex justify-center rounded-full border border-white/20 px-6 py-3 font-black text-white">Book a one-off clean</Link>
               </div>
             )}
           </div>
 
-          <div className="rounded-[8px] border border-[#E3DBD0] bg-white p-6 shadow-sm">
-            <p className="text-sm font-black uppercase tracking-[0.16em] text-[#2F7D6B]">Recommended for you</p>
+          <div className="rounded-[8px] border border-[#CFE0ED] bg-white p-6 shadow-sm">
+            <p className="text-sm font-black uppercase tracking-[0.16em] text-[#1D7ED0]">Recommended for you</p>
             <h2 className="mt-2 text-2xl font-black">Make the next clean feel even lighter</h2>
             <div className="mt-5 space-y-3">
               {[
@@ -308,10 +308,10 @@ export default function AccountPage() {
                   key={item.title}
                   type="button"
                   onClick={() => openRequest(item.type, item.title, item.message, nextBooking?.id)}
-                  className="block w-full rounded-[8px] border border-[#E8E2DA] p-4 text-left transition hover:border-[#2F7D6B] hover:bg-[#F7F3EE]"
+                  className="block w-full rounded-[8px] border border-[#D8E8F2] p-4 text-left transition hover:border-[#1D7ED0] hover:bg-[#EFF7FC]"
                 >
                   <div className="font-black">{item.title}</div>
-                  <div className="mt-1 text-sm text-[#657380]">{item.text}</div>
+                  <div className="mt-1 text-sm text-[#60798F]">{item.text}</div>
                 </button>
               ))}
             </div>
@@ -322,16 +322,16 @@ export default function AccountPage() {
           <section className="mt-6 rounded-[8px] border border-[#C9D7E2] bg-white p-5 shadow-sm">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
               <div className="lg:max-w-md">
-                <p className="text-sm font-black uppercase tracking-[0.16em] text-[#2F7D6B]">Service request</p>
+                <p className="text-sm font-black uppercase tracking-[0.16em] text-[#1D7ED0]">Service request</p>
                 <h2 className="mt-1 text-2xl font-black">{request.title}</h2>
-                <p className="mt-2 text-sm text-[#657380]">Send this to the Cleanngo team. They will reply inside your message centre.</p>
+                <p className="mt-2 text-sm text-[#60798F]">Send this to the Cleanngo team. They will reply inside your message centre.</p>
               </div>
               <div className="flex-1">
                 <textarea
                   value={request.message}
                   onChange={(event) => setRequest({ ...request, message: event.target.value })}
                   rows={4}
-                  className="w-full rounded-[8px] border border-[#D8E1E8] bg-[#F8FAFB] p-4 text-sm outline-none focus:border-[#2F7D6B]"
+                  className="w-full rounded-[8px] border border-[#D8E1E8] bg-[#F8FAFB] p-4 text-sm outline-none focus:border-[#1D7ED0]"
                 />
                 {requestStatus && <p className={`mt-2 text-sm font-bold ${requestStatus.startsWith('Request sent') ? 'text-emerald-700' : 'text-red-600'}`}>{requestStatus}</p>}
                 <div className="mt-3 flex flex-col gap-2 sm:flex-row">
@@ -339,14 +339,14 @@ export default function AccountPage() {
                     type="button"
                     onClick={submitRequest}
                     disabled={sendingRequest || !request.message.trim()}
-                    className="min-h-11 rounded-full bg-[#172434] px-5 text-sm font-black text-white disabled:opacity-50"
+                    className="min-h-11 rounded-full bg-[#0B3558] px-5 text-sm font-black text-white disabled:opacity-50"
                   >
                     {sendingRequest ? 'Sending...' : 'Send request'}
                   </button>
                   <button
                     type="button"
                     onClick={() => setRequest(null)}
-                    className="min-h-11 rounded-full border border-[#C9D7E2] px-5 text-sm font-black text-[#172434]"
+                    className="min-h-11 rounded-full border border-[#C9D7E2] px-5 text-sm font-black text-[#0B3558]"
                   >
                     Close
                   </button>
@@ -376,16 +376,16 @@ export default function AccountPage() {
           <div>
             <div className="mb-3 flex items-end justify-between gap-3">
               <div>
-                <p className="text-sm font-black uppercase tracking-[0.16em] text-[#2F7D6B]">Plans</p>
+                <p className="text-sm font-black uppercase tracking-[0.16em] text-[#1D7ED0]">Plans</p>
                 <h2 className="text-2xl font-black">Recurring service</h2>
               </div>
-              <Link href="/customer/plan" className="text-sm font-black text-[#172434]">Add plan</Link>
+              <Link href="/customer/plan" className="text-sm font-black text-[#0B3558]">Add plan</Link>
             </div>
 
             {subs.length === 0 ? (
-              <div className="rounded-[8px] border border-[#E3DBD0] bg-white p-6 text-center">
-                <p className="text-[#657380]">No recurring plan yet.</p>
-                <Link href="/customer/plan" className="mt-4 inline-flex rounded-full bg-[#172434] px-5 py-3 text-sm font-black text-white">Start a recurring plan</Link>
+              <div className="rounded-[8px] border border-[#CFE0ED] bg-white p-6 text-center">
+                <p className="text-[#60798F]">No recurring plan yet.</p>
+                <Link href="/customer/plan" className="mt-4 inline-flex rounded-full bg-[#0B3558] px-5 py-3 text-sm font-black text-white">Start a recurring plan</Link>
               </div>
             ) : (
               <div className="space-y-4">
@@ -393,44 +393,44 @@ export default function AccountPage() {
                   const primary = person(plan.primary_staff)
                   const backup = person(plan.backup_staff)
                   return (
-                    <div key={plan.id} className="rounded-[8px] border border-[#E3DBD0] bg-white p-5 shadow-sm">
+                    <div key={plan.id} className="rounded-[8px] border border-[#CFE0ED] bg-white p-5 shadow-sm">
                       <div className="flex items-start justify-between gap-3">
                         <div>
                           <div className="text-lg font-black capitalize">{plan.property_type} · {plan.frequency}</div>
-                          <div className="mt-1 text-sm text-[#657380]">{plan.address}, {plan.suburb}</div>
+                          <div className="mt-1 text-sm text-[#60798F]">{plan.address}, {plan.suburb}</div>
                           <div className="mt-1 text-xs font-bold uppercase tracking-[0.12em] text-[#9AA7B1]">{plan.preferred_day || 'Day pending'} {plan.preferred_time ? `· ${timeLabel(plan.preferred_time)}` : ''}</div>
                         </div>
                         <span className={`rounded-full px-3 py-1 text-xs font-black ${statusInfo(plan.status).className}`}>{statusInfo(plan.status).label}</span>
                       </div>
                       <div className="mt-4 grid gap-3 sm:grid-cols-3">
-                        <div className="rounded-[8px] bg-[#F7F3EE] p-3">
-                          <div className="text-xs font-bold text-[#657380]">Per visit</div>
+                        <div className="rounded-[8px] bg-[#EFF7FC] p-3">
+                          <div className="text-xs font-bold text-[#60798F]">Per visit</div>
                           <div className="font-black">{money(plan.price_cents)}</div>
                         </div>
-                        <div className="rounded-[8px] bg-[#F7F3EE] p-3">
-                          <div className="text-xs font-bold text-[#657380]">Primary cleaner</div>
+                        <div className="rounded-[8px] bg-[#EFF7FC] p-3">
+                          <div className="text-xs font-bold text-[#60798F]">Primary cleaner</div>
                           <div className="font-black">{primary?.name || 'Assigning soon'}</div>
                         </div>
-                        <div className="rounded-[8px] bg-[#F7F3EE] p-3">
-                          <div className="text-xs font-bold text-[#657380]">Backup cover</div>
+                        <div className="rounded-[8px] bg-[#EFF7FC] p-3">
+                          <div className="text-xs font-bold text-[#60798F]">Backup cover</div>
                           <div className="font-black">{backup?.name || 'On standby'}</div>
                         </div>
                       </div>
                       <div className="mt-4 flex flex-wrap gap-2">
                         {plan.stripe_subscription_id && plan.status === 'requested' && (
-                          <button onClick={() => startPay(plan.id)} disabled={busy === plan.id} className="inline-flex items-center gap-2 rounded-full bg-[#172434] px-4 py-2 text-sm font-black text-white disabled:opacity-50">
+                          <button onClick={() => startPay(plan.id)} disabled={busy === plan.id} className="inline-flex items-center gap-2 rounded-full bg-[#0B3558] px-4 py-2 text-sm font-black text-white disabled:opacity-50">
                             <CreditCard className="h-4 w-4" />
                             Complete payment
                           </button>
                         )}
                         {plan.status === 'active' && (
-                          <button onClick={() => act(plan.id, 'pause')} disabled={busy === plan.id} className="inline-flex items-center gap-2 rounded-full border border-[#C9D7E2] px-4 py-2 text-sm font-black text-[#172434] disabled:opacity-50">
+                          <button onClick={() => act(plan.id, 'pause')} disabled={busy === plan.id} className="inline-flex items-center gap-2 rounded-full border border-[#C9D7E2] px-4 py-2 text-sm font-black text-[#0B3558] disabled:opacity-50">
                             <Pause className="h-4 w-4" />
                             Pause plan
                           </button>
                         )}
                         {plan.status === 'paused' && (
-                          <button onClick={() => act(plan.id, 'resume')} disabled={busy === plan.id} className="inline-flex items-center gap-2 rounded-full bg-[#172434] px-4 py-2 text-sm font-black text-white disabled:opacity-50">
+                          <button onClick={() => act(plan.id, 'resume')} disabled={busy === plan.id} className="inline-flex items-center gap-2 rounded-full bg-[#0B3558] px-4 py-2 text-sm font-black text-white disabled:opacity-50">
                             <Play className="h-4 w-4" />
                             Resume plan
                           </button>
@@ -440,7 +440,7 @@ export default function AccountPage() {
                         )}
                       </div>
                       {pay?.id === plan.id && (
-                        <div className="mt-5 border-t border-[#E3DBD0] pt-5">
+                        <div className="mt-5 border-t border-[#CFE0ED] pt-5">
                           <PaymentForm clientSecret={pay.clientSecret} amountCents={pay.amountCents} returnPath="/account" ctaLabel="Confirm and start plan" />
                         </div>
                       )}
@@ -454,16 +454,16 @@ export default function AccountPage() {
           <div>
             <div className="mb-3 flex items-end justify-between gap-3">
               <div>
-                <p className="text-sm font-black uppercase tracking-[0.16em] text-[#2F7D6B]">Jobs</p>
+                <p className="text-sm font-black uppercase tracking-[0.16em] text-[#1D7ED0]">Jobs</p>
                 <h2 className="text-2xl font-black">Quote requests and cleans</h2>
               </div>
-              <Link href="/account/messages" className="text-sm font-black text-[#172434]">{conversations.length} message thread{conversations.length === 1 ? '' : 's'}</Link>
+              <Link href="/account/messages" className="text-sm font-black text-[#0B3558]">{conversations.length} message thread{conversations.length === 1 ? '' : 's'}</Link>
             </div>
 
             {bookings.length === 0 ? (
-              <div className="rounded-[8px] border border-[#E3DBD0] bg-white p-6 text-center">
-                <p className="text-[#657380]">No one-off jobs yet.</p>
-                <Link href="/customer/book" className="mt-4 inline-flex rounded-full bg-[#172434] px-5 py-3 text-sm font-black text-white">Request a quote</Link>
+              <div className="rounded-[8px] border border-[#CFE0ED] bg-white p-6 text-center">
+                <p className="text-[#60798F]">No one-off jobs yet.</p>
+                <Link href="/customer/book" className="mt-4 inline-flex rounded-full bg-[#0B3558] px-5 py-3 text-sm font-black text-white">Request a quote</Link>
               </div>
             ) : (
               <div className="space-y-4">
@@ -475,12 +475,12 @@ export default function AccountPage() {
                   const afterPhotos = done?.after_photos || []
                   const requestPhotos = booking.photos || []
                   return (
-                    <article key={booking.id} className="rounded-[8px] border border-[#E3DBD0] bg-white p-5 shadow-sm">
+                    <article key={booking.id} className="rounded-[8px] border border-[#CFE0ED] bg-white p-5 shadow-sm">
                       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                         <div>
                           <div className="text-lg font-black">{SERVICE_LABELS[booking.service_type] || booking.service_type}</div>
-                          <div className="mt-1 text-sm text-[#657380]">{dateLabel(booking.scheduled_date)} at {timeLabel(booking.scheduled_time)} · {booking.address}</div>
-                          {booking.notes && <div className="mt-2 rounded-[8px] bg-[#F7F3EE] p-3 text-sm text-[#657380]">{booking.notes}</div>}
+                          <div className="mt-1 text-sm text-[#60798F]">{dateLabel(booking.scheduled_date)} at {timeLabel(booking.scheduled_time)} · {booking.address}</div>
+                          {booking.notes && <div className="mt-2 rounded-[8px] bg-[#EFF7FC] p-3 text-sm text-[#60798F]">{booking.notes}</div>}
                         </div>
                         <div className="sm:text-right">
                           <div className="font-black">{money(booking.price_cents)}</div>
@@ -488,47 +488,47 @@ export default function AccountPage() {
                         </div>
                       </div>
                       <div className="mt-4 grid gap-3 sm:grid-cols-3">
-                        <div className="rounded-[8px] bg-[#F7F3EE] p-3">
-                          <div className="text-xs font-bold text-[#657380]">Cleaner</div>
+                        <div className="rounded-[8px] bg-[#EFF7FC] p-3">
+                          <div className="text-xs font-bold text-[#60798F]">Cleaner</div>
                           <div className="font-black">{cleaner?.name || 'Being assigned'}</div>
                         </div>
-                        <div className="rounded-[8px] bg-[#F7F3EE] p-3">
-                          <div className="text-xs font-bold text-[#657380]">Coverage</div>
+                        <div className="rounded-[8px] bg-[#EFF7FC] p-3">
+                          <div className="text-xs font-bold text-[#60798F]">Coverage</div>
                           <div className="font-black">{booking.covered_by_backup ? 'Backup cleaner' : 'Standard cover'}</div>
                         </div>
-                        <div className="rounded-[8px] bg-[#F7F3EE] p-3">
-                          <div className="text-xs font-bold text-[#657380]">Proof</div>
+                        <div className="rounded-[8px] bg-[#EFF7FC] p-3">
+                          <div className="text-xs font-bold text-[#60798F]">Proof</div>
                           <div className="font-black">{(done?.after_photos || []).length || (booking.photos || []).length || 0} photo{((done?.after_photos || []).length || (booking.photos || []).length || 0) === 1 ? '' : 's'}</div>
                         </div>
                       </div>
-                      <div className="mt-5 rounded-[8px] bg-[#F7F3EE] p-4">
+                      <div className="mt-5 rounded-[8px] bg-[#EFF7FC] p-4">
                         <div className="flex items-center justify-between gap-2">
                           {TIMELINE.map((step, index) => {
                             const active = progressIndex >= 0 && index <= progressIndex
                             return (
                               <div key={step} className="flex flex-1 flex-col items-center gap-2 text-center">
-                                <div className={`h-3 w-full rounded-full ${active ? 'bg-[#172434]' : 'bg-[#DDE5EC]'}`} />
-                                <div className={`text-xs font-black ${active ? 'text-[#172434]' : 'text-[#9AA7B1]'}`}>{timelineLabel[step]}</div>
+                                <div className={`h-3 w-full rounded-full ${active ? 'bg-[#0B3558]' : 'bg-[#DDE5EC]'}`} />
+                                <div className={`text-xs font-black ${active ? 'text-[#0B3558]' : 'text-[#9AA7B1]'}`}>{timelineLabel[step]}</div>
                               </div>
                             )
                           })}
                         </div>
-                        <p className="mt-3 text-sm text-[#657380]">{statusInfo(booking.status).helper}</p>
+                        <p className="mt-3 text-sm text-[#60798F]">{statusInfo(booking.status).helper}</p>
                       </div>
                       <CustomerPhotoGallery title="Your job photos" requestPhotos={requestPhotos} beforePhotos={beforePhotos} afterPhotos={afterPhotos} />
                       <div className="mt-4 flex flex-wrap gap-2">
-                        <Link href={`/account/messages?conversation=${conversations.find((c) => c.booking_id === booking.id)?.id || ''}`} className="rounded-full border border-[#C9D7E2] px-4 py-2 text-sm font-black text-[#172434]">Message cleanngo</Link>
+                        <Link href={`/account/messages?conversation=${conversations.find((c) => c.booking_id === booking.id)?.id || ''}`} className="rounded-full border border-[#C9D7E2] px-4 py-2 text-sm font-black text-[#0B3558]">Message cleanngo</Link>
                         <button
                           type="button"
                           onClick={() => openRequest('reschedule', 'Update this booking', `I would like to update my ${SERVICE_LABELS[booking.service_type] || booking.service_type} on ${dateLabel(booking.scheduled_date)}.`, booking.id)}
-                          className="rounded-full bg-[#F7F3EE] px-4 py-2 text-sm font-black text-[#172434]"
+                          className="rounded-full bg-[#EFF7FC] px-4 py-2 text-sm font-black text-[#0B3558]"
                         >
                           Change booking
                         </button>
                         <button
                           type="button"
                           onClick={() => openRequest('oven_fridge', 'Add service to this booking', `Please add an extra service to my ${SERVICE_LABELS[booking.service_type] || booking.service_type}. I am interested in: `, booking.id)}
-                          className="rounded-full bg-[#F7F3EE] px-4 py-2 text-sm font-black text-[#172434]"
+                          className="rounded-full bg-[#EFF7FC] px-4 py-2 text-sm font-black text-[#0B3558]"
                         >
                           Add extra service
                         </button>
@@ -565,17 +565,17 @@ function CustomerPhotoGallery({
   if (photos.length === 0) return null
 
   return (
-    <div className="mt-5 rounded-[8px] border border-[#E8E2DA] p-4">
-      <h3 className="flex items-center gap-2 text-sm font-black text-[#172434]">
-        <Camera className="h-4 w-4 text-[#2F7D6B]" />
+    <div className="mt-5 rounded-[8px] border border-[#D8E8F2] p-4">
+      <h3 className="flex items-center gap-2 text-sm font-black text-[#0B3558]">
+        <Camera className="h-4 w-4 text-[#1D7ED0]" />
         {title}
       </h3>
       <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3">
         {photos.map((photo, index) => (
-          <a key={`${photo.src}-${index}`} href={photo.src} target="_blank" rel="noopener noreferrer" className="block overflow-hidden rounded-[8px] border border-[#E3DBD0] bg-[#F7F3EE]">
+          <a key={`${photo.src}-${index}`} href={photo.src} target="_blank" rel="noopener noreferrer" className="block overflow-hidden rounded-[8px] border border-[#CFE0ED] bg-[#EFF7FC]">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={photo.src} alt={`${photo.label} ${index + 1}`} className="aspect-video w-full object-cover" />
-            <div className="px-2 py-1 text-xs font-bold text-[#657380]">{photo.label}</div>
+            <div className="px-2 py-1 text-xs font-bold text-[#60798F]">{photo.label}</div>
           </a>
         ))}
       </div>

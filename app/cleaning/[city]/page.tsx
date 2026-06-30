@@ -62,13 +62,13 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
   ]
 
   return (
-    <main className="min-h-screen" style={{ background: '#F7F3EE' }}>
+    <main className="min-h-screen" style={{ background: '#EFF7FC' }}>
       <Navbar />
       <JsonLd data={jsonLd} />
 
       {/* HERO */}
       <section className="gradient-hero pt-36 pb-20 px-6 relative overflow-hidden">
-        <div className="absolute top-20 right-10 w-96 h-96 rounded-full opacity-20 blur-3xl" style={{ background: '#8FD8B4' }} />
+        <div className="absolute top-20 right-10 w-96 h-96 rounded-full opacity-20 blur-3xl" style={{ background: '#7DD3FC' }} />
         <div className="relative z-10 max-w-3xl mx-auto text-center">
           <p className="text-white/60 font-semibold text-sm uppercase tracking-widest mb-3">{c.name}, {c.state}</p>
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-5 leading-tight">Professional Cleaning in {c.name}</h1>
@@ -86,15 +86,15 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
       <section className="py-20 px-6">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-[#172434]">Cleaning services in {c.name}</h2>
-            <p className="text-[#5F6E78] mt-3">Whatever your home or office needs, we’ve got a {c.name} cleaner for it.</p>
+            <h2 className="text-3xl font-bold text-[#0B3558]">Cleaning services in {c.name}</h2>
+            <p className="text-[#60798F] mt-3">Whatever your home or office needs, we’ve got a {c.name} cleaner for it.</p>
           </div>
           <div className="grid md:grid-cols-3 gap-6">
             {SERVICES.map((s) => (
               <div key={s.slug} className="bg-white/80 backdrop-blur-sm border border-white/60 rounded-2xl p-6 shadow-sm">
                 <div className="text-3xl mb-3">{s.icon}</div>
-                <h3 className="font-bold text-[#172434] mb-2">{s.title}</h3>
-                <p className="text-[#5F6E78] text-sm leading-relaxed">{s.tagline}</p>
+                <h3 className="font-bold text-[#0B3558] mb-2">{s.title}</h3>
+                <p className="text-[#60798F] text-sm leading-relaxed">{s.tagline}</p>
               </div>
             ))}
           </div>
@@ -102,9 +102,9 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
       </section>
 
       {/* Local intro copy */}
-      <section className="py-16 px-6" style={{ background: 'linear-gradient(180deg, #F7F3EE 0%, #EFE7DC 100%)' }}>
+      <section className="py-16 px-6" style={{ background: 'linear-gradient(180deg, #EFF7FC 0%, #DCECF8 100%)' }}>
         <div className="max-w-2xl mx-auto text-[#3A4A56] leading-relaxed space-y-4">
-          <h2 className="text-2xl font-bold text-[#172434]">Why {c.name} homes choose cleanngo</h2>
+          <h2 className="text-2xl font-bold text-[#0B3558]">Why {c.name} homes choose cleanngo</h2>
           <p>Finding a reliable cleaner in {c.name} shouldn’t be a gamble. Every cleanngo professional is police-checked, ID-verified and fully insured, and every booking is backed by our reliability guarantee — if we ever miss a visit, you’re automatically credited.</p>
           <p>Moving out? Our end-of-lease cleans in {c.name} follow the standard {c.state} real-estate inspection checklist and come with a free re-clean if your property manager isn’t satisfied, so you get your full bond back the first time.</p>
         </div>
@@ -113,12 +113,12 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
       {/* FAQs — visible content backing the FAQPage schema */}
       <section className="py-16 px-6 bg-white">
         <div className="max-w-2xl mx-auto">
-          <h2 className="text-2xl font-bold text-[#172434] mb-8 text-center">Cleaning in {c.name} — common questions</h2>
+          <h2 className="text-2xl font-bold text-[#0B3558] mb-8 text-center">Cleaning in {c.name} — common questions</h2>
           <div className="space-y-6">
             {GENERAL_FAQS.slice(0, 5).map((f, i) => (
               <div key={i} className="border-b border-gray-100 pb-6 last:border-0">
-                <h3 className="font-bold text-[#172434] mb-2">{f.q}</h3>
-                <p className="text-[#5F6E78] text-sm leading-relaxed">{f.a}</p>
+                <h3 className="font-bold text-[#0B3558] mb-2">{f.q}</h3>
+                <p className="text-[#60798F] text-sm leading-relaxed">{f.a}</p>
               </div>
             ))}
           </div>
@@ -130,7 +130,7 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
         <div className="max-w-2xl mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Book a cleaner in {c.name}</h2>
           <p className="text-white/70 text-lg mb-8">Free, no-obligation quote in about 60 seconds.</p>
-          <Link href="/customer/book" className="inline-flex items-center gap-2 bg-white text-[#172434] font-bold px-10 py-4 rounded-full text-lg hover:bg-white/90 transition-all hover:-translate-y-1">
+          <Link href="/customer/book" className="inline-flex items-center gap-2 bg-white text-[#0B3558] font-bold px-10 py-4 rounded-full text-lg hover:bg-white/90 transition-all hover:-translate-y-1">
             Get my quote →
           </Link>
           <div className="mt-10 flex flex-wrap justify-center gap-2">

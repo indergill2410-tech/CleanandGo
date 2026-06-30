@@ -94,17 +94,17 @@ export default function AdminApplications() {
   }
 
   return (
-    <main className="min-h-screen bg-[#F4F7FA] text-[#172434]">
+    <main className="min-h-screen bg-[#F4F7FA] text-[#0B3558]">
       <header className="border-b border-[#DCE5ED] bg-white">
         <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6">
-          <Link href="/admin" className="inline-flex items-center gap-2 text-sm font-black text-[#2F7D6B]">
+          <Link href="/admin" className="inline-flex items-center gap-2 text-sm font-black text-[#1D7ED0]">
             <ArrowLeft className="h-4 w-4" />
             Operations dashboard
           </Link>
           <div className="mt-4 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
             <div>
               <h1 className="text-3xl font-black sm:text-4xl">Cleaner applications</h1>
-              <p className="mt-1 text-[#657380]">Review, verify, and onboard applicants into staff login.</p>
+              <p className="mt-1 text-[#60798F]">Review, verify, and onboard applicants into staff login.</p>
             </div>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
               {[
@@ -115,7 +115,7 @@ export default function AdminApplications() {
               ].map((item) => (
                 <div key={item.label} className="rounded-[8px] border border-[#DCE5ED] bg-[#F8FAFC] px-4 py-3">
                   <div className="text-2xl font-black">{item.value}</div>
-                  <div className="text-xs font-bold text-[#657380]">{item.label}</div>
+                  <div className="text-xs font-bold text-[#60798F]">{item.label}</div>
                 </div>
               ))}
             </div>
@@ -127,21 +127,21 @@ export default function AdminApplications() {
         <section className="mb-5 flex flex-col gap-3 rounded-[8px] border border-[#DCE5ED] bg-white p-4 shadow-sm lg:flex-row lg:items-center lg:justify-between">
           <div className="flex flex-wrap gap-2">
             {FILTERS.map((item) => (
-              <button key={item} onClick={() => setFilter(item)} className={`rounded-full px-4 py-2 text-sm font-black ${filter === item ? 'bg-[#172434] text-white' : 'bg-[#F4F7FA] text-[#657380]'}`}>
+              <button key={item} onClick={() => setFilter(item)} className={`rounded-full px-4 py-2 text-sm font-black ${filter === item ? 'bg-[#0B3558] text-white' : 'bg-[#F4F7FA] text-[#60798F]'}`}>
                 {item === 'all' ? 'All applicants' : item}
               </button>
             ))}
           </div>
           <label className="flex min-h-11 items-center gap-2 rounded-full border border-[#DCE5ED] bg-[#F8FAFC] px-4 lg:w-80">
-            <Search className="h-4 w-4 text-[#657380]" />
+            <Search className="h-4 w-4 text-[#60798F]" />
             <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search name, area, phone" className="w-full bg-transparent text-sm outline-none" />
           </label>
         </section>
 
         {loading ? (
-          <div className="rounded-[8px] border border-[#DCE5ED] bg-white p-10 text-center text-[#657380]">Loading applications...</div>
+          <div className="rounded-[8px] border border-[#DCE5ED] bg-white p-10 text-center text-[#60798F]">Loading applications...</div>
         ) : filtered.length === 0 ? (
-          <div className="rounded-[8px] border border-[#DCE5ED] bg-white p-10 text-center text-[#657380]">No applications in this view.</div>
+          <div className="rounded-[8px] border border-[#DCE5ED] bg-white p-10 text-center text-[#60798F]">No applications in this view.</div>
         ) : (
           <div className="space-y-4">
             {filtered.map((app) => (
@@ -152,13 +152,13 @@ export default function AdminApplications() {
                       <h2 className="text-xl font-black">{app.name}</h2>
                       <span className={`rounded-full border px-3 py-1 text-xs font-black ${STATUS_STYLES[app.status] || 'border-slate-200 bg-slate-100 text-slate-700'}`}>{app.status}</span>
                     </div>
-                    <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-sm text-[#657380]">
+                    <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-sm text-[#60798F]">
                       <span className="inline-flex items-center gap-2"><Mail className="h-4 w-4" />{app.email}</span>
                       <span className="inline-flex items-center gap-2"><Phone className="h-4 w-4" />{app.phone}</span>
                       <span className="inline-flex items-center gap-2"><BriefcaseBusiness className="h-4 w-4" />{app.suburbs || 'Area not supplied'}</span>
                     </div>
                   </div>
-                  <div className="text-sm font-bold text-[#657380]" suppressHydrationWarning>{new Date(app.created_at).toLocaleDateString()}</div>
+                  <div className="text-sm font-bold text-[#60798F]" suppressHydrationWarning>{new Date(app.created_at).toLocaleDateString()}</div>
                 </div>
 
                 <div className="mt-5 grid gap-3 md:grid-cols-4">
@@ -173,7 +173,7 @@ export default function AdminApplications() {
                   {app.has_wwcc && <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-3 py-1 text-xs font-black text-emerald-800"><BadgeCheck className="h-3.5 w-3.5" />WWCC</span>}
                 </div>
 
-                {app.experience && <div className="mt-4 rounded-[8px] bg-[#F4F7FA] p-4 text-sm text-[#657380]">{app.experience}</div>}
+                {app.experience && <div className="mt-4 rounded-[8px] bg-[#F4F7FA] p-4 text-sm text-[#60798F]">{app.experience}</div>}
 
                 <div className="mt-5 flex flex-wrap items-center gap-2">
                   {app.resume_url && <DocLink href={`/api/careers/${app.id}/resume?doc=resume`} label="Resume" />}
@@ -182,9 +182,9 @@ export default function AdminApplications() {
                   {app.status !== 'approved' && (
                     <>
                       {app.status === 'new' && (
-                        <button onClick={() => act(app.id, 'reviewing')} disabled={busy === app.id} className="min-h-11 rounded-full border border-[#DCE5ED] px-4 text-sm font-black text-[#172434] disabled:opacity-50">Mark reviewing</button>
+                        <button onClick={() => act(app.id, 'reviewing')} disabled={busy === app.id} className="min-h-11 rounded-full border border-[#DCE5ED] px-4 text-sm font-black text-[#0B3558] disabled:opacity-50">Mark reviewing</button>
                       )}
-                      <button onClick={() => act(app.id, 'approve')} disabled={busy === app.id} className="inline-flex min-h-11 items-center gap-2 rounded-full bg-[#172434] px-5 text-sm font-black text-white disabled:opacity-50">
+                      <button onClick={() => act(app.id, 'approve')} disabled={busy === app.id} className="inline-flex min-h-11 items-center gap-2 rounded-full bg-[#0B3558] px-5 text-sm font-black text-white disabled:opacity-50">
                         <UserPlus className="h-4 w-4" />
                         Approve cleaner
                       </button>
@@ -204,7 +204,7 @@ export default function AdminApplications() {
 function InfoTile({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-[8px] bg-[#F4F7FA] p-4">
-      <div className="text-xs font-black uppercase tracking-[0.12em] text-[#657380]">{label}</div>
+      <div className="text-xs font-black uppercase tracking-[0.12em] text-[#60798F]">{label}</div>
       <div className="mt-1 font-black">{value}</div>
     </div>
   )
@@ -212,7 +212,7 @@ function InfoTile({ label, value }: { label: string; value: string }) {
 
 function DocLink({ href, label }: { href: string; label: string }) {
   return (
-    <a href={href} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center gap-2 rounded-full border border-[#DCE5ED] px-4 text-sm font-black text-[#172434] hover:border-[#2F7D6B]">
+    <a href={href} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center gap-2 rounded-full border border-[#DCE5ED] px-4 text-sm font-black text-[#0B3558] hover:border-[#1D7ED0]">
       <FileText className="h-4 w-4" />
       {label}
     </a>

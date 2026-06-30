@@ -1,4 +1,5 @@
 import { createClient as createSupabaseClient } from '@supabase/supabase-js'
+import { assertSupabaseProjectUrl } from './project'
 
 /**
  * Server-only Supabase client using the service-role key.
@@ -17,6 +18,7 @@ export function createAdminClient() {
       'Missing Supabase admin credentials: set NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY'
     )
   }
+  assertSupabaseProjectUrl(url, 'Supabase admin client')
 
   return createSupabaseClient(url, serviceRoleKey, {
     auth: { autoRefreshToken: false, persistSession: false },

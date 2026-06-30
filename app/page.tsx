@@ -112,7 +112,7 @@ const EMOTIONAL_WINS = [
 
 export default function HomePage() {
   return (
-    <main className="min-h-screen bg-[#F7F3EE] text-[#172434]">
+    <main className="min-h-screen bg-[#EFF7FC] text-[#0B3558]">
       <Navbar />
 
       <section className="relative overflow-hidden pt-28 lg:pt-32">
@@ -120,7 +120,7 @@ export default function HomePage() {
           className="absolute inset-0"
           style={{
             backgroundImage:
-              "linear-gradient(90deg, rgba(23,36,52,0.94) 0%, rgba(23,36,52,0.82) 42%, rgba(23,36,52,0.35) 100%), url('https://images.unsplash.com/photo-1556911220-bff31c812dba?auto=format&fit=crop&w=1800&q=85')",
+              "linear-gradient(90deg, rgba(11,53,88,0.94) 0%, rgba(11,53,88,0.82) 42%, rgba(11,53,88,0.35) 100%), url('https://images.unsplash.com/photo-1556911220-bff31c812dba?auto=format&fit=crop&w=1800&q=85')",
             backgroundPosition: 'center',
             backgroundSize: 'cover',
           }}
@@ -128,7 +128,7 @@ export default function HomePage() {
         <div className="relative mx-auto grid min-h-[calc(100svh-4rem)] max-w-6xl items-center gap-10 px-4 pb-12 pt-8 sm:px-6 sm:pb-16 lg:min-h-[760px] lg:grid-cols-[1.05fr_0.95fr]">
           <div className="max-w-2xl pt-8 sm:pt-10">
             <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold text-white backdrop-blur-md">
-              <Sparkles className="h-4 w-4 text-[#F2C14E]" />
+              <Sparkles className="h-4 w-4 text-[#F5C84C]" />
               Weekly home resets from $49/week
             </div>
 
@@ -136,22 +136,22 @@ export default function HomePage() {
               Come home to calm.
             </h1>
 
-            <p className="mt-6 max-w-xl rounded-[8px] border border-white/20 bg-[#172434]/72 p-4 text-base font-semibold leading-7 text-white shadow-2xl backdrop-blur-md sm:p-5 sm:text-xl sm:leading-8">
+            <p className="mt-6 max-w-xl rounded-[8px] border border-white/20 bg-[#0B3558]/72 p-4 text-base font-semibold leading-7 text-white shadow-2xl backdrop-blur-md sm:p-5 sm:text-xl sm:leading-8">
               Meet Cleanngo: your weekly home reset. We sanitize, tidy, polish, and leave
               everything ready for the part of life you actually want to enjoy.
             </p>
 
             <div className="mt-4 flex max-w-xl flex-col gap-2 rounded-[8px] border border-white/16 bg-white/12 p-3 text-sm font-bold text-white backdrop-blur-md sm:flex-row sm:items-center sm:justify-between">
               <span className="inline-flex items-center gap-2">
-                <Hotel className="h-4 w-4 text-[#8FD8B4]" />
+                <Hotel className="h-4 w-4 text-[#7DD3FC]" />
                 Airbnb turnovers
               </span>
               <span className="hidden h-4 w-px bg-white/20 sm:block" />
               <span className="inline-flex items-center gap-2">
-                <BriefcaseBusiness className="h-4 w-4 text-[#F2C14E]" />
+                <BriefcaseBusiness className="h-4 w-4 text-[#F5C84C]" />
                 Office cleaning plans
               </span>
-              <Link href="/commercial" className="inline-flex items-center gap-1 text-[#8FD8B4] transition hover:text-white">
+              <Link href="/commercial" className="inline-flex items-center gap-1 text-[#7DD3FC] transition hover:text-white">
                 office quotes <ArrowRight className="h-3.5 w-3.5" />
               </Link>
             </div>
@@ -172,7 +172,7 @@ export default function HomePage() {
             <div className="mt-9 flex flex-col gap-3 sm:flex-row">
               <Link
                 href="/customer/plan"
-                className="inline-flex items-center justify-center gap-2 rounded-full bg-[#F2C14E] px-8 py-4 text-base font-black text-[#172434] shadow-[0_18px_60px_rgba(242,193,78,0.35)] transition hover:-translate-y-0.5 hover:bg-[#F6CF72]"
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-[#F5C84C] px-8 py-4 text-base font-black text-[#0B3558] shadow-[0_18px_60px_rgba(245,200,76,0.35)] transition hover:-translate-y-0.5 hover:bg-[#F8D978]"
               >
                 Start my weekly reset
                 <ArrowRight className="h-5 w-5" />
@@ -188,7 +188,7 @@ export default function HomePage() {
             <div className="mt-8 flex flex-wrap gap-3">
               {TRUST_ITEMS.map((item) => (
                 <span key={item.label} className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-2 text-sm font-semibold text-white/80 backdrop-blur-md">
-                  <item.icon className="h-4 w-4 text-[#8FD8B4]" />
+                  <item.icon className="h-4 w-4 text-[#7DD3FC]" />
                   {item.label}
                 </span>
               ))}
@@ -196,20 +196,20 @@ export default function HomePage() {
           </div>
 
           <div className="rounded-[8px] border border-white/18 bg-white/92 p-4 shadow-2xl backdrop-blur-md sm:p-5 lg:ml-auto lg:max-w-md">
-            <div className="rounded-[8px] bg-[#172434] p-5 text-white">
+            <div className="rounded-[8px] bg-[#0B3558] p-5 text-white">
               <div className="flex items-center justify-between gap-4">
                 <div>
-                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#8FD8B4]">This week</p>
+                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#7DD3FC]">This week</p>
                   <h2 className="mt-2 text-2xl font-black">Your reset checklist</h2>
                 </div>
                 <div className="flex h-12 w-12 items-center justify-center rounded-[8px] bg-white/10">
-                  <Sparkles className="h-6 w-6 text-[#F2C14E]" />
+                  <Sparkles className="h-6 w-6 text-[#F5C84C]" />
                 </div>
               </div>
               <div className="mt-5 space-y-3">
                 {['Bathrooms sanitized', 'Kitchen surfaces shining', 'Floors vacuumed and mopped', 'Beds and living areas tidied'].map((item) => (
                   <div key={item} className="flex items-center gap-3 rounded-[8px] bg-white/8 px-3 py-3 text-sm font-semibold text-white/84">
-                    <Check className="h-4 w-4 text-[#8FD8B4]" />
+                    <Check className="h-4 w-4 text-[#7DD3FC]" />
                     {item}
                   </div>
                 ))}
@@ -221,9 +221,9 @@ export default function HomePage() {
                 ['60 sec', 'quote start'],
                 ['100%', 'guaranteed'],
               ].map(([value, label]) => (
-                <div key={label} className="rounded-[8px] bg-[#F7F3EE] p-3 text-center">
-                  <div className="text-xl font-black text-[#172434]">{value}</div>
-                  <div className="mt-1 text-[11px] font-bold uppercase tracking-[0.12em] text-[#687A86]">{label}</div>
+                <div key={label} className="rounded-[8px] bg-[#EFF7FC] p-3 text-center">
+                  <div className="text-xl font-black text-[#0B3558]">{value}</div>
+                  <div className="mt-1 text-[11px] font-bold uppercase tracking-[0.12em] text-[#60798F]">{label}</div>
                 </div>
               ))}
             </div>
@@ -235,12 +235,12 @@ export default function HomePage() {
         <div className="mx-auto max-w-6xl">
           <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
             <div>
-              <p className="text-sm font-black uppercase tracking-[0.18em] text-[#2F7D6B]">Why it feels different</p>
-              <h2 className="mt-3 text-3xl font-black leading-tight text-[#172434] sm:text-4xl md:text-5xl">
+              <p className="text-sm font-black uppercase tracking-[0.18em] text-[#1D7ED0]">Why it feels different</p>
+              <h2 className="mt-3 text-3xl font-black leading-tight text-[#0B3558] sm:text-4xl md:text-5xl">
                 Clean is not the product. Relief is.
               </h2>
             </div>
-            <p className="max-w-2xl text-lg leading-8 text-[#5F6E78]">
+            <p className="max-w-2xl text-lg leading-8 text-[#60798F]">
               Cleanngo should feel like the weekly reset button for people with full calendars, kids, guests,
               tenants, teams, and lives that already have enough friction.
             </p>
@@ -248,19 +248,19 @@ export default function HomePage() {
 
           <div className="mt-10 grid gap-4 md:grid-cols-3">
             {EMOTIONAL_WINS.map((item) => (
-              <div key={item} className="rounded-[8px] border border-[#E5DDD3] bg-white p-6 shadow-sm">
+              <div key={item} className="rounded-[8px] border border-[#CFE0ED] bg-white p-6 shadow-sm">
                 <Sparkles className="mb-5 h-6 w-6 text-[#C58A24]" />
-                <p className="text-lg font-bold leading-7 text-[#172434]">{item}</p>
+                <p className="text-lg font-bold leading-7 text-[#0B3558]">{item}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="bg-[#172434] px-4 py-16 text-white sm:px-6 sm:py-20">
+      <section className="bg-[#0B3558] px-4 py-16 text-white sm:px-6 sm:py-20">
         <div className="mx-auto max-w-6xl">
           <div className="max-w-3xl">
-            <p className="text-sm font-black uppercase tracking-[0.18em] text-[#8FD8B4]">Choose your clean</p>
+            <p className="text-sm font-black uppercase tracking-[0.18em] text-[#7DD3FC]">Choose your clean</p>
             <h2 className="mt-3 text-3xl font-black leading-tight sm:text-4xl md:text-5xl">
               One trusted team for homes, hosts, and workplaces.
             </h2>
@@ -271,7 +271,7 @@ export default function HomePage() {
               <div key={lane.title} className="rounded-[8px] border border-white/12 bg-white/[0.06] p-6">
                 <div className="mb-6 flex items-center justify-between gap-4">
                   <div className="flex h-12 w-12 items-center justify-center rounded-[8px] bg-white/10">
-                    <lane.icon className="h-6 w-6 text-[#F2C14E]" />
+                    <lane.icon className="h-6 w-6 text-[#F5C84C]" />
                   </div>
                   <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-black uppercase tracking-[0.14em] text-white/62">
                     {lane.eyebrow}
@@ -279,7 +279,7 @@ export default function HomePage() {
                 </div>
                 <h3 className="text-2xl font-black">{lane.title}</h3>
                 <p className="mt-4 min-h-24 text-sm leading-6 text-white/66">{lane.text}</p>
-                <Link href={lane.href} className="mt-6 inline-flex items-center gap-2 text-sm font-black text-[#8FD8B4] transition hover:text-white">
+                <Link href={lane.href} className="mt-6 inline-flex items-center gap-2 text-sm font-black text-[#7DD3FC] transition hover:text-white">
                   {lane.cta}
                   <ArrowRight className="h-4 w-4" />
                 </Link>
@@ -296,7 +296,7 @@ export default function HomePage() {
               className="min-h-[280px] sm:min-h-[360px] lg:min-h-[460px]"
               style={{
                 backgroundImage:
-                  "linear-gradient(180deg, rgba(23,36,52,0.03), rgba(23,36,52,0.24)), url('https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=1200&q=85')",
+                  "linear-gradient(180deg, rgba(11,53,88,0.03), rgba(11,53,88,0.24)), url('https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=1200&q=85')",
                 backgroundPosition: 'center',
                 backgroundSize: 'cover',
               }}
@@ -304,28 +304,28 @@ export default function HomePage() {
           </div>
 
           <div id="airbnb">
-            <p className="text-sm font-black uppercase tracking-[0.18em] text-[#2F7D6B]">For Airbnb hosts</p>
-            <h2 className="mt-3 text-3xl font-black leading-tight text-[#172434] sm:text-4xl md:text-5xl">
+            <p className="text-sm font-black uppercase tracking-[0.18em] text-[#1D7ED0]">For Airbnb hosts</p>
+            <h2 className="mt-3 text-3xl font-black leading-tight text-[#0B3558] sm:text-4xl md:text-5xl">
               Checkout at 10. New guest at 3. We handle the reset.
             </h2>
-            <p className="mt-5 text-lg leading-8 text-[#5F6E78]">
+            <p className="mt-5 text-lg leading-8 text-[#60798F]">
               Fast, repeatable turnover cleaning for short-stay hosts who need fresh beds, spotless bathrooms,
               stocked essentials, and proof the place is guest-ready.
             </p>
             <div className="mt-8 grid gap-3 sm:grid-cols-2">
               {HOST_FEATURES.map((feature) => (
-                <div key={feature} className="flex items-start gap-3 rounded-[8px] border border-[#E5DDD3] bg-white px-4 py-3 text-sm font-bold text-[#172434]">
-                  <Check className="mt-0.5 h-4 w-4 flex-none text-[#2F7D6B]" />
+                <div key={feature} className="flex items-start gap-3 rounded-[8px] border border-[#CFE0ED] bg-white px-4 py-3 text-sm font-bold text-[#0B3558]">
+                  <Check className="mt-0.5 h-4 w-4 flex-none text-[#1D7ED0]" />
                   {feature}
                 </div>
               ))}
             </div>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Link href="/commercial#airbnb" className="inline-flex items-center justify-center gap-2 rounded-full bg-[#172434] px-7 py-4 font-black text-white transition hover:-translate-y-0.5 hover:bg-[#24384F]">
+              <Link href="/commercial#airbnb" className="inline-flex items-center justify-center gap-2 rounded-full bg-[#0B3558] px-7 py-4 font-black text-white transition hover:-translate-y-0.5 hover:bg-[#24384F]">
                 Build my host plan
                 <ArrowRight className="h-5 w-5" />
               </Link>
-              <Link href="/customer/book" className="inline-flex items-center justify-center rounded-full border border-[#CBBFB2] px-7 py-4 font-black text-[#172434] transition hover:-translate-y-0.5 hover:bg-white">
+              <Link href="/customer/book" className="inline-flex items-center justify-center rounded-full border border-[#B8CBDA] px-7 py-4 font-black text-[#0B3558] transition hover:-translate-y-0.5 hover:bg-white">
                 Book one turnover
               </Link>
             </div>
@@ -338,21 +338,21 @@ export default function HomePage() {
           <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
             <div>
               <p className="text-sm font-black uppercase tracking-[0.18em] text-[#C58A24]">Finishing touches</p>
-              <h2 className="mt-3 text-3xl font-black leading-tight text-[#172434] sm:text-4xl md:text-5xl">
+              <h2 className="mt-3 text-3xl font-black leading-tight text-[#0B3558] sm:text-4xl md:text-5xl">
                 Add the little luxuries at checkout.
               </h2>
-              <p className="mt-5 text-lg leading-8 text-[#5F6E78]">
+              <p className="mt-5 text-lg leading-8 text-[#60798F]">
                 Start with the essentials, then add the extras that make your place feel properly reset.
               </p>
             </div>
 
             <div className="grid gap-3 sm:grid-cols-2">
               {ADD_ONS.map((addon) => (
-                <div key={addon} className="flex items-center gap-3 rounded-[8px] border border-[#E8E2DA] bg-[#F7F3EE] p-4">
+                <div key={addon} className="flex items-center gap-3 rounded-[8px] border border-[#D8E8F2] bg-[#EFF7FC] p-4">
                   <div className="flex h-10 w-10 flex-none items-center justify-center rounded-[8px] bg-white">
                     <Sparkles className="h-5 w-5 text-[#C58A24]" />
                   </div>
-                  <span className="font-black text-[#172434]">{addon}</span>
+                  <span className="font-black text-[#0B3558]">{addon}</span>
                 </div>
               ))}
             </div>
@@ -363,23 +363,23 @@ export default function HomePage() {
       <section className="px-4 py-16 sm:px-6 sm:py-20">
         <div className="mx-auto max-w-6xl">
           <div className="text-center">
-            <p className="text-sm font-black uppercase tracking-[0.18em] text-[#2F7D6B]">How it works</p>
-            <h2 className="mx-auto mt-3 max-w-3xl text-3xl font-black leading-tight text-[#172434] sm:text-4xl md:text-5xl">
+            <p className="text-sm font-black uppercase tracking-[0.18em] text-[#1D7ED0]">How it works</p>
+            <h2 className="mx-auto mt-3 max-w-3xl text-3xl font-black leading-tight text-[#0B3558] sm:text-4xl md:text-5xl">
               A calm home in three clean moves.
             </h2>
           </div>
 
           <div className="mt-10 grid gap-5 md:grid-cols-3">
             {RESET_STEPS.map((step, index) => (
-              <div key={step.title} className="rounded-[8px] border border-[#E5DDD3] bg-white p-6 shadow-sm">
+              <div key={step.title} className="rounded-[8px] border border-[#CFE0ED] bg-white p-6 shadow-sm">
                 <div className="mb-8 flex items-center justify-between">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-[8px] bg-[#172434] text-white">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-[8px] bg-[#0B3558] text-white">
                     <step.icon className="h-6 w-6" />
                   </div>
-                  <span className="text-sm font-black text-[#B4A79A]">0{index + 1}</span>
+                  <span className="text-sm font-black text-[#87A2B7]">0{index + 1}</span>
                 </div>
-                <h3 className="text-xl font-black text-[#172434]">{step.title}</h3>
-                <p className="mt-3 text-sm leading-6 text-[#5F6E78]">{step.text}</p>
+                <h3 className="text-xl font-black text-[#0B3558]">{step.title}</h3>
+                <p className="mt-3 text-sm leading-6 text-[#60798F]">{step.text}</p>
               </div>
             ))}
           </div>
@@ -387,10 +387,10 @@ export default function HomePage() {
       </section>
 
       <section className="px-4 py-16 sm:px-6 sm:py-20">
-        <div className="mx-auto max-w-6xl overflow-hidden rounded-[8px] bg-[#172434] shadow-2xl">
+        <div className="mx-auto max-w-6xl overflow-hidden rounded-[8px] bg-[#0B3558] shadow-2xl">
           <div className="grid lg:grid-cols-[1.05fr_0.95fr]">
             <div className="p-8 text-white md:p-12">
-              <p className="text-sm font-black uppercase tracking-[0.18em] text-[#8FD8B4]">Start here</p>
+              <p className="text-sm font-black uppercase tracking-[0.18em] text-[#7DD3FC]">Start here</p>
               <h2 className="mt-3 text-3xl font-black leading-tight sm:text-4xl md:text-5xl">
                 Make next week feel lighter.
               </h2>
@@ -399,7 +399,7 @@ export default function HomePage() {
                 Cleanngo turns cleaning into one less thing your brain has to carry.
               </p>
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <Link href="/customer/plan" className="inline-flex items-center justify-center gap-2 rounded-full bg-[#F2C14E] px-8 py-4 font-black text-[#172434] transition hover:-translate-y-0.5 hover:bg-[#F6CF72]">
+                <Link href="/customer/plan" className="inline-flex items-center justify-center gap-2 rounded-full bg-[#F5C84C] px-8 py-4 font-black text-[#0B3558] transition hover:-translate-y-0.5 hover:bg-[#F8D978]">
                   Get my reset price
                   <ArrowRight className="h-5 w-5" />
                 </Link>
@@ -418,8 +418,8 @@ export default function HomePage() {
                 { icon: Timer, label: 'Fast quote', value: '60 sec' },
                 { icon: Camera, label: 'Proof', value: 'photos' },
               ].map((stat) => (
-                <div key={stat.label} className="bg-[#203149] p-6 text-white">
-                  <stat.icon className="h-6 w-6 text-[#8FD8B4]" />
+                <div key={stat.label} className="bg-[#12476F] p-6 text-white">
+                  <stat.icon className="h-6 w-6 text-[#7DD3FC]" />
                   <div className="mt-6 text-2xl font-black">{stat.value}</div>
                   <div className="mt-1 text-xs font-black uppercase tracking-[0.16em] text-white/48">{stat.label}</div>
                 </div>
