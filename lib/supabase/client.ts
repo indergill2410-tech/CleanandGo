@@ -1,8 +1,11 @@
 import { createBrowserClient } from '@supabase/ssr'
+import { assertSupabaseProjectUrl } from './project'
 
 export function createClient() {
-  return createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL ?? 'https://placeholder.supabase.co',
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? 'placeholder-key'
-  )
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL ?? 'https://placeholder.supabase.co'
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? 'placeholder-key'
+
+  assertSupabaseProjectUrl(url, 'Supabase browser client')
+
+  return createBrowserClient(url, anonKey)
 }

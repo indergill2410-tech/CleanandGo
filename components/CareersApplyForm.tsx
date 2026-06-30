@@ -104,7 +104,7 @@ export default function CareersApplyForm() {
       <textarea placeholder="Cleaning experience (optional)" value={form.experience} onChange={e => set('experience', e.target.value)} rows={3} className={inputCls} />
 
       <label className="flex items-center gap-3 text-white/80 text-sm">
-        <input type="checkbox" checked={form.rightToWork} onChange={e => set('rightToWork', e.target.checked)} className="w-4 h-4 accent-[#2F7D6B]" />
+        <input type="checkbox" checked={form.rightToWork} onChange={e => set('rightToWork', e.target.checked)} className="w-4 h-4 accent-[#1D7ED0]" />
         I have the right to work in Australia
       </label>
 
@@ -119,13 +119,13 @@ export default function CareersApplyForm() {
         <p className="text-white/40 text-xs">Not required — but adding these makes your profile stronger and gets you verified faster.</p>
 
         <label className="flex items-center gap-3 text-white/80 text-sm">
-          <input type="checkbox" checked={form.hasPoliceCheck} onChange={e => set('hasPoliceCheck', e.target.checked)} className="w-4 h-4 accent-[#2F7D6B]" />
+          <input type="checkbox" checked={form.hasPoliceCheck} onChange={e => set('hasPoliceCheck', e.target.checked)} className="w-4 h-4 accent-[#1D7ED0]" />
           I have a current National Police Check
         </label>
         {renderDocButton('police', 'Attach police check')}
 
         <label className="flex items-center gap-3 text-white/80 text-sm pt-1">
-          <input type="checkbox" checked={form.hasWwcc} onChange={e => set('hasWwcc', e.target.checked)} className="w-4 h-4 accent-[#2F7D6B]" />
+          <input type="checkbox" checked={form.hasWwcc} onChange={e => set('hasWwcc', e.target.checked)} className="w-4 h-4 accent-[#1D7ED0]" />
           I have a current Working With Children Check
         </label>
         {renderDocButton('wwcc', 'Attach WWCC')}
@@ -133,7 +133,7 @@ export default function CareersApplyForm() {
 
       {error && <div className="bg-red-500/20 border border-red-500/30 rounded-xl px-4 py-3 text-red-200 text-sm">{error}</div>}
 
-      <button type="submit" disabled={submitting || uploadingKey !== ''} className="w-full py-3.5 rounded-xl bg-white text-[#172434] font-bold hover:bg-white/90 transition disabled:opacity-50">
+      <button type="submit" disabled={submitting || uploadingKey !== ''} className="w-full py-3.5 rounded-xl bg-white text-[#0B3558] font-bold hover:bg-white/90 transition disabled:opacity-50">
         {submitting ? 'Submitting…' : uploadingKey ? 'Uploading…' : 'Submit application →'}
       </button>
     </form>

@@ -26,19 +26,19 @@ export default function ServiceCard({ icon, title, description, tag, tagColor, f
 
       <div className="text-4xl mb-4">{icon}</div>
       <h3 className={`text-xl font-bold mb-2 ${
-        highlight ? 'text-white' : 'text-[#172434]'
+        highlight ? 'text-white' : 'text-[#0B3558]'
       }`}>{title}</h3>
       <p className={`text-sm mb-6 leading-relaxed ${
-        highlight ? 'text-white/80' : 'text-[#5F6E78]'
+        highlight ? 'text-white/80' : 'text-[#60798F]'
       }`}>{description}</p>
 
       <ul className="space-y-2 mb-6">
         {features.map((f, i) => (
           <li key={i} className={`text-sm flex items-center gap-2 ${
-            highlight ? 'text-white/90' : 'text-[#172434]'
+            highlight ? 'text-white/90' : 'text-[#0B3558]'
           }`}>
             <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${
-              highlight ? 'bg-white' : 'bg-[#2F7D6B]'
+              highlight ? 'bg-white' : 'bg-[#1D7ED0]'
             }`} />
             {f}
           </li>
@@ -48,18 +48,18 @@ export default function ServiceCard({ icon, title, description, tag, tagColor, f
       <div className="flex items-end justify-between">
         <div>
           <div className={`text-xs mb-1 ${
-            highlight ? 'text-white/70' : 'text-[#5F6E78]'
+            highlight ? 'text-white/70' : 'text-[#60798F]'
           }`}>Pricing</div>
           <div className={`text-lg font-bold ${
-            highlight ? 'text-white' : 'text-[#172434]'
+            highlight ? 'text-white' : 'text-[#0B3558]'
           }`}>Custom quote</div>
         </div>
         <Link
           href="/customer/book"
           className={`text-sm font-semibold px-5 py-2.5 rounded-full transition-all ${
             highlight
-              ? 'bg-white text-[#172434] hover:bg-white/90'
-              : 'bg-[#172434] text-white hover:bg-[#2F7D6B]'
+              ? 'bg-white text-[#0B3558] hover:bg-white/90'
+              : 'bg-[#0B3558] text-white hover:bg-[#1D7ED0]'
           }`}
         >Get a quote →</Link>
       </div>

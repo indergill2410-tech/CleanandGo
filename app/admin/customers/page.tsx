@@ -34,7 +34,7 @@ export default function AdminCustomers() {
   const money = (cents: number) => `$${(cents / 100).toFixed(0)}`
 
   return (
-    <div className="min-h-screen py-6 px-6" style={{ background: 'linear-gradient(135deg, #172434 0%, #172434 100%)' }}>
+    <div className="min-h-screen py-6 px-6" style={{ background: 'linear-gradient(135deg, #0B3558 0%, #0B3558 100%)' }}>
       <div className="max-w-5xl mx-auto">
         <div className="mb-6">
           <Link href="/admin" className="text-white/50 text-sm hover:text-white">← Dashboard</Link>

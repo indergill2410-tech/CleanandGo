@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 
 export default function CareersApplyPage() {
   return (
-    <main className="min-h-screen" style={{ background: 'linear-gradient(135deg, #172434 0%, #172434 100%)' }}>
+    <main className="min-h-screen" style={{ background: 'linear-gradient(135deg, #0B3558 0%, #0B3558 100%)' }}>
       <Navbar />
       <section className="pt-36 pb-24 px-6">
         <div className="max-w-3xl mx-auto text-center mb-10">

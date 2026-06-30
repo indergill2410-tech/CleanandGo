@@ -3,15 +3,15 @@
 @tailwind utilities;
 
 :root {
-  --bg: #F7F3EE;
-  --surface: #FEFCF9;
-  --primary: #172434;
-  --accent: #2F7D6B;
-  --highlight: #8FD8B4;
-  --text: #172434;
-  --muted: #5F6E78;
-  --gold: #F2C14E;
-  --gold-soft: #F6CF72;
+  --bg: #EFF7FC;
+  --surface: #F8FBFF;
+  --primary: #0B3558;
+  --accent: #1D7ED0;
+  --highlight: #7DD3FC;
+  --text: #0B3558;
+  --muted: #60798F;
+  --gold: #F5C84C;
+  --gold-soft: #F8D978;
   --glass: rgba(255,255,255,0.15);
   --glass-border: rgba(255,255,255,0.3);
   --glass-strong: rgba(255,255,255,0.25);
@@ -64,7 +64,7 @@ canvas {
 }
 
 .gradient-hero {
-  background: linear-gradient(135deg, #172434 0%, #203149 45%, #2F7D6B 100%);
+  background: linear-gradient(135deg, #0B3558 0%, #12476F 45%, #1D7ED0 100%);
 }
 
 .gradient-card {
@@ -72,7 +72,7 @@ canvas {
 }
 
 .gradient-cta {
-  background: linear-gradient(135deg, #172434 0%, #2F7D6B 100%);
+  background: linear-gradient(135deg, #0B3558 0%, #1D7ED0 100%);
 }
 
 @keyframes fadeUp {
@@ -110,8 +110,8 @@ canvas {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  background: linear-gradient(135deg, #F2C14E, #F6CF72);
-  color: #172434;
+  background: linear-gradient(135deg, #F5C84C, #F8D978);
+  color: #0B3558;
   font-weight: 700;
   padding: 16px 36px;
   border-radius: 50px;
@@ -120,12 +120,12 @@ canvas {
   transition: all 0.3s ease;
   font-size: 1rem;
   letter-spacing: 0.02em;
-  box-shadow: 0 4px 24px rgba(242,193,78,0.35);
+  box-shadow: 0 4px 24px rgba(245,200,76,0.35);
 }
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 32px rgba(242,193,78,0.45);
+  box-shadow: 0 8px 32px rgba(245,200,76,0.45);
 }
 
 .btn-secondary {
@@ -156,7 +156,7 @@ canvas {
 
 .card-hover:hover {
   transform: translateY(-6px);
-  box-shadow: 0 20px 60px rgba(23,36,52,0.15);
+  box-shadow: 0 20px 60px rgba(11,53,88,0.15);
 }
 
 input, select, textarea {
@@ -167,7 +167,7 @@ input, select, textarea {
 
 input:focus, select:focus, textarea:focus {
   border-color: var(--accent) !important;
-  box-shadow: 0 0 0 3px rgba(47,125,107,0.15);
+  box-shadow: 0 0 0 3px rgba(29,126,208,0.15);
 }
 
 ::-webkit-scrollbar { width: 6px; }

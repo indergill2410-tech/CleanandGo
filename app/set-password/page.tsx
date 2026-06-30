@@ -50,7 +50,7 @@ export default function SetPasswordPage() {
   const inputCls = 'w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 text-sm'
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4" style={{ background: 'linear-gradient(135deg, #172434 0%, #172434 100%)' }}>
+    <div className="min-h-screen flex items-center justify-center px-4" style={{ background: 'linear-gradient(135deg, #0B3558 0%, #0B3558 100%)' }}>
       <div className="glass-strong rounded-3xl p-10 w-full max-w-sm">
         <div className="text-center mb-8">
           <Link href="/" className="text-white/50 text-sm hover:text-white mb-4 inline-block">← cleanngo</Link>
@@ -70,7 +70,7 @@ export default function SetPasswordPage() {
             <input type="password" placeholder="New password" value={password} onChange={e => setPassword(e.target.value)} required minLength={8} className={inputCls} />
             <input type="password" placeholder="Confirm password" value={confirm} onChange={e => setConfirm(e.target.value)} required className={inputCls} />
             {error && <div className="bg-red-500/20 border border-red-500/30 rounded-xl px-4 py-3 text-red-200 text-sm">{error}</div>}
-            <button type="submit" disabled={saving} className="w-full py-3.5 rounded-xl bg-white text-[#172434] font-bold hover:bg-white/90 transition disabled:opacity-50">
+            <button type="submit" disabled={saving} className="w-full py-3.5 rounded-xl bg-white text-[#0B3558] font-bold hover:bg-white/90 transition disabled:opacity-50">
               {saving ? 'Saving…' : 'Set password & continue →'}
             </button>
           </form>

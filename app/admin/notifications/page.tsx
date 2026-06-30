@@ -30,7 +30,7 @@ export default function AdminNotifications() {
   const unread = items.filter(n => !n.read).length
 
   return (
-    <div className="min-h-screen py-6 px-6" style={{ background: 'linear-gradient(135deg, #172434 0%, #172434 100%)' }}>
+    <div className="min-h-screen py-6 px-6" style={{ background: 'linear-gradient(135deg, #0B3558 0%, #0B3558 100%)' }}>
       <div className="max-w-3xl mx-auto">
         <div className="mb-6 flex items-end justify-between">
           <div>

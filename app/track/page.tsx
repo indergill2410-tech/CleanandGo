@@ -56,7 +56,7 @@ function Lookup() {
           placeholder="Booking reference"
           className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 text-sm"
         />
-        <button type="submit" className="w-full py-3.5 rounded-xl bg-white text-[#172434] font-bold hover:bg-white/90 transition">
+        <button type="submit" className="w-full py-3.5 rounded-xl bg-white text-[#0B3558] font-bold hover:bg-white/90 transition">
           Track
         </button>
       </form>
@@ -173,7 +173,7 @@ function TrackInner() {
               <button
                 onClick={startPayment}
                 disabled={startingPay}
-                className="w-full py-3.5 rounded-xl bg-white text-[#172434] font-bold hover:bg-white/90 transition disabled:opacity-50"
+                className="w-full py-3.5 rounded-xl bg-white text-[#0B3558] font-bold hover:bg-white/90 transition disabled:opacity-50"
               >
                 {startingPay ? 'Loading…' : 'Pay & Confirm Booking'}
               </button>
@@ -228,11 +228,11 @@ function TrackInner() {
 
 export default function TrackPage() {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-4 py-12" style={{ background: 'linear-gradient(135deg, #172434 0%, #172434 100%)' }}>
+    <div className="min-h-screen flex flex-col items-center justify-center px-4 py-12" style={{ background: 'linear-gradient(135deg, #0B3558 0%, #0B3558 100%)' }}>
       <HomeLink className="fixed top-6 left-6 z-20" />
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-20 right-10 w-80 h-80 rounded-full blur-3xl opacity-20" style={{ background: '#8FD8B4' }} />
-        <div className="absolute bottom-20 left-10 w-96 h-96 rounded-full blur-3xl opacity-10" style={{ background: '#2F7D6B' }} />
+        <div className="absolute top-20 right-10 w-80 h-80 rounded-full blur-3xl opacity-20" style={{ background: '#7DD3FC' }} />
+        <div className="absolute bottom-20 left-10 w-96 h-96 rounded-full blur-3xl opacity-10" style={{ background: '#1D7ED0' }} />
       </div>
       <Suspense fallback={<div className="text-white/60">Loading…</div>}>
         <TrackInner />

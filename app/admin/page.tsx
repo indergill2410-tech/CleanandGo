@@ -231,25 +231,25 @@ export default function AdminDashboard() {
   }
 
   return (
-    <main className="min-h-screen bg-[#F4F7FA] text-[#172434]">
+    <main className="min-h-screen bg-[#F4F7FA] text-[#0B3558]">
       <header className="border-b border-[#DCE5ED] bg-white">
         <div className="mx-auto max-w-7xl px-4 py-5 sm:px-6">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div>
-              <Link href="/" className="text-sm font-bold text-[#2F7D6B]">cleanngo home</Link>
+              <Link href="/" className="text-sm font-bold text-[#1D7ED0]">cleanngo home</Link>
               <h1 className="mt-2 text-3xl font-black sm:text-4xl">Operations control centre</h1>
-              <p className="mt-1 text-[#657380]">Quote, assign, message, schedule, and recover every job from one screen.</p>
+              <p className="mt-1 text-[#60798F]">Quote, assign, message, schedule, and recover every job from one screen.</p>
             </div>
             <div className="flex flex-wrap gap-2">
               {counts.pending > 0 && <span className="inline-flex min-h-11 items-center gap-2 rounded-full bg-amber-100 px-5 text-sm font-black text-amber-800"><AlertTriangle className="h-4 w-4" />{counts.pending} quote{counts.pending === 1 ? '' : 's'} waiting</span>}
               {metrics.unreadMessages > 0 && <span className="inline-flex min-h-11 items-center gap-2 rounded-full bg-blue-100 px-5 text-sm font-black text-blue-800"><MessageCircle className="h-4 w-4" />{metrics.unreadMessages} customer message{metrics.unreadMessages === 1 ? '' : 's'}</span>}
               {newApps > 0 && <Link href="/admin/applications" className="inline-flex min-h-11 items-center gap-2 rounded-full bg-emerald-100 px-5 text-sm font-black text-emerald-800">{newApps} new applicant{newApps === 1 ? '' : 's'}</Link>}
-              <button onClick={signOut} className="min-h-11 rounded-full border border-[#DCE5ED] px-5 text-sm font-bold text-[#657380]">Sign out</button>
+              <button onClick={signOut} className="min-h-11 rounded-full border border-[#DCE5ED] px-5 text-sm font-bold text-[#60798F]">Sign out</button>
             </div>
           </div>
           <nav className="-mx-4 mt-6 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:px-0">
             {NAV.map(item => (
-              <Link key={item.href} href={item.href} className="shrink-0 rounded-full border border-[#DCE5ED] bg-white px-4 py-2 text-sm font-black text-[#172434] hover:border-[#2F7D6B]">
+              <Link key={item.href} href={item.href} className="shrink-0 rounded-full border border-[#DCE5ED] bg-white px-4 py-2 text-sm font-black text-[#0B3558] hover:border-[#1D7ED0]">
                 {item.label}
               </Link>
             ))}
@@ -269,26 +269,26 @@ export default function AdminDashboard() {
             <button key={item.label} onClick={() => setFilter(item.label === 'Awaiting quote' ? 'pending' : item.label === 'Needs recovery' ? 'missed' : item.label.toLowerCase().replace(' ', '_'))} className="rounded-[8px] border border-[#DCE5ED] bg-white p-4 text-left shadow-sm">
               <item.icon className={`h-5 w-5 ${item.color}`} />
               <div className="mt-4 text-3xl font-black">{item.value}</div>
-              <div className="text-sm font-semibold text-[#657380]">{item.label}</div>
+              <div className="text-sm font-semibold text-[#60798F]">{item.label}</div>
             </button>
           ))}
         </section>
 
         <section className="mt-4 grid gap-4 lg:grid-cols-3">
           <div className="rounded-[8px] border border-[#DCE5ED] bg-white p-4 shadow-sm">
-            <Bell className="h-5 w-5 text-[#2F7D6B]" />
+            <Bell className="h-5 w-5 text-[#1D7ED0]" />
             <div className="mt-3 text-2xl font-black">{metrics.unreadNotifications}</div>
-            <div className="text-sm font-semibold text-[#657380]">Unread admin alerts</div>
+            <div className="text-sm font-semibold text-[#60798F]">Unread admin alerts</div>
           </div>
           <div className="rounded-[8px] border border-[#DCE5ED] bg-white p-4 shadow-sm">
-            <MessageCircle className="h-5 w-5 text-[#2F7D6B]" />
+            <MessageCircle className="h-5 w-5 text-[#1D7ED0]" />
             <div className="mt-3 text-2xl font-black">{metrics.unreadMessages}</div>
-            <div className="text-sm font-semibold text-[#657380]">Unread customer messages</div>
+            <div className="text-sm font-semibold text-[#60798F]">Unread customer messages</div>
           </div>
           <div className="rounded-[8px] border border-[#DCE5ED] bg-white p-4 shadow-sm">
-            <CreditCard className="h-5 w-5 text-[#2F7D6B]" />
+            <CreditCard className="h-5 w-5 text-[#1D7ED0]" />
             <div className="mt-3 text-2xl font-black">{money(metrics.openInvoiceCents)}</div>
-            <div className="text-sm font-semibold text-[#657380]">Open invoices</div>
+            <div className="text-sm font-semibold text-[#60798F]">Open invoices</div>
           </div>
         </section>
 
@@ -297,7 +297,7 @@ export default function AdminDashboard() {
             <div className="border-b border-[#DCE5ED] p-4">
               <div className="flex flex-wrap gap-2">
                 {['all', 'pending', 'confirmed', 'in_progress', 'completed', 'missed', 'cancelled'].map((status) => (
-                  <button key={status} onClick={() => setFilter(status)} className={`rounded-full px-4 py-2 text-sm font-black ${filter === status ? 'bg-[#172434] text-white' : 'bg-[#F4F7FA] text-[#657380]'}`}>
+                  <button key={status} onClick={() => setFilter(status)} className={`rounded-full px-4 py-2 text-sm font-black ${filter === status ? 'bg-[#0B3558] text-white' : 'bg-[#F4F7FA] text-[#60798F]'}`}>
                     {status === 'all' ? 'All jobs' : status.replace('_', ' ')}
                   </button>
                 ))}
@@ -305,18 +305,18 @@ export default function AdminDashboard() {
             </div>
             <div className="max-h-[calc(100vh-22rem)] overflow-y-auto p-3">
               {loading ? (
-                <div className="p-10 text-center text-[#657380]">Loading jobs...</div>
+                <div className="p-10 text-center text-[#60798F]">Loading jobs...</div>
               ) : filtered.length === 0 ? (
-                <div className="p-10 text-center text-[#657380]">No jobs in this view.</div>
+                <div className="p-10 text-center text-[#60798F]">No jobs in this view.</div>
               ) : filtered.map((booking) => {
                 const customer = one(booking.customers)
                 const staff = one(booking.staff)
                 return (
-                  <button key={booking.id} onClick={() => setSelectedId(booking.id)} className={`mb-3 w-full rounded-[8px] border p-4 text-left transition ${selected?.id === booking.id ? 'border-[#172434] bg-[#EEF5FA]' : 'border-[#E4EAF0] bg-white hover:border-[#9DB6CA]'}`}>
+                  <button key={booking.id} onClick={() => setSelectedId(booking.id)} className={`mb-3 w-full rounded-[8px] border p-4 text-left transition ${selected?.id === booking.id ? 'border-[#0B3558] bg-[#EEF5FA]' : 'border-[#E4EAF0] bg-white hover:border-[#9DB6CA]'}`}>
                     <div className="flex items-start justify-between gap-3">
                       <div>
                         <div className="font-black">{customer?.name || 'Customer'} · {SERVICE_LABELS[booking.service_type] || booking.service_type}</div>
-                        <div className="mt-1 flex flex-wrap gap-x-3 gap-y-1 text-sm text-[#657380]">
+                        <div className="mt-1 flex flex-wrap gap-x-3 gap-y-1 text-sm text-[#60798F]">
                           <span>{dateLabel(booking.scheduled_date)} {timeLabel(booking.scheduled_time)}</span>
                           <span>{booking.suburb || booking.address}</span>
                           <span>{money(booking.price_cents)}</span>
@@ -325,9 +325,9 @@ export default function AdminDashboard() {
                       <span className={`shrink-0 rounded-full border px-3 py-1 text-xs font-black ${STATUS_STYLES[booking.status] || STATUS_STYLES.pending}`}>{booking.status.replace('_', ' ')}</span>
                     </div>
                     <div className="mt-3 grid gap-2 text-xs sm:grid-cols-3">
-                      <span className="rounded bg-[#F4F7FA] px-2 py-1 font-bold text-[#657380]">{booking.bedrooms} bed / {booking.bathrooms} bath</span>
-                      <span className="rounded bg-[#F4F7FA] px-2 py-1 font-bold text-[#657380]">{staff?.name || 'Cleaner unassigned'}</span>
-                      <span className="rounded bg-[#F4F7FA] px-2 py-1 font-bold text-[#657380]">{(booking.extras || []).length} extras</span>
+                      <span className="rounded bg-[#F4F7FA] px-2 py-1 font-bold text-[#60798F]">{booking.bedrooms} bed / {booking.bathrooms} bath</span>
+                      <span className="rounded bg-[#F4F7FA] px-2 py-1 font-bold text-[#60798F]">{staff?.name || 'Cleaner unassigned'}</span>
+                      <span className="rounded bg-[#F4F7FA] px-2 py-1 font-bold text-[#60798F]">{(booking.extras || []).length} extras</span>
                     </div>
                   </button>
                 )
@@ -356,7 +356,7 @@ export default function AdminDashboard() {
                 onMessage={sendCustomerMessage}
               />
             ) : (
-              <div className="p-10 text-center text-[#657380]">Select a job to see full controls.</div>
+              <div className="p-10 text-center text-[#60798F]">Select a job to see full controls.</div>
             )}
           </div>
         </section>
@@ -414,9 +414,9 @@ function JobInspector({
       <div className="border-b border-[#DCE5ED] p-5">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div>
-            <p className="text-xs font-black uppercase tracking-[0.16em] text-[#2F7D6B]">Job control</p>
+            <p className="text-xs font-black uppercase tracking-[0.16em] text-[#1D7ED0]">Job control</p>
             <h2 className="mt-1 text-2xl font-black">{SERVICE_LABELS[booking.service_type] || booking.service_type}</h2>
-            <p className="mt-1 text-sm text-[#657380]">Ref {booking.id.slice(0, 8)} · created {new Date(booking.created_at).toLocaleDateString()}</p>
+            <p className="mt-1 text-sm text-[#60798F]">Ref {booking.id.slice(0, 8)} · created {new Date(booking.created_at).toLocaleDateString()}</p>
           </div>
           <span className={`w-fit rounded-full border px-3 py-1 text-xs font-black ${STATUS_STYLES[booking.status] || STATUS_STYLES.pending}`}>{booking.status.replace('_', ' ')}</span>
         </div>
@@ -424,33 +424,33 @@ function JobInspector({
 
       <div className="grid gap-5 p-5 xl:grid-cols-2">
         <section className="rounded-[8px] bg-[#F4F7FA] p-4">
-          <h3 className="flex items-center gap-2 font-black"><UserRound className="h-5 w-5 text-[#2F7D6B]" />Customer</h3>
+          <h3 className="flex items-center gap-2 font-black"><UserRound className="h-5 w-5 text-[#1D7ED0]" />Customer</h3>
           <div className="mt-4 space-y-2 text-sm">
             <div className="font-black">{customer?.name || 'Customer'}</div>
-            <div className="flex items-center gap-2 text-[#657380]"><Mail className="h-4 w-4" />{customer?.email || 'No email'}</div>
-            <div className="flex items-center gap-2 text-[#657380]"><Phone className="h-4 w-4" />{customer?.phone || 'No phone'}</div>
+            <div className="flex items-center gap-2 text-[#60798F]"><Mail className="h-4 w-4" />{customer?.email || 'No email'}</div>
+            <div className="flex items-center gap-2 text-[#60798F]"><Phone className="h-4 w-4" />{customer?.phone || 'No phone'}</div>
           </div>
         </section>
 
         <section className="rounded-[8px] bg-[#F4F7FA] p-4">
-          <h3 className="flex items-center gap-2 font-black"><Home className="h-5 w-5 text-[#2F7D6B]" />Job detail</h3>
+          <h3 className="flex items-center gap-2 font-black"><Home className="h-5 w-5 text-[#1D7ED0]" />Job detail</h3>
           <div className="mt-4 grid gap-2 text-sm">
-            <div className="flex items-center gap-2 text-[#657380]"><MapPin className="h-4 w-4" />{booking.address}</div>
-            <div className="flex items-center gap-2 text-[#657380]"><CalendarDays className="h-4 w-4" />{dateLabel(booking.scheduled_date)} at {timeLabel(booking.scheduled_time)}</div>
+            <div className="flex items-center gap-2 text-[#60798F]"><MapPin className="h-4 w-4" />{booking.address}</div>
+            <div className="flex items-center gap-2 text-[#60798F]"><CalendarDays className="h-4 w-4" />{dateLabel(booking.scheduled_date)} at {timeLabel(booking.scheduled_time)}</div>
             <div className="font-bold">{booking.bedrooms} bedrooms · {booking.bathrooms} bathrooms · {money(booking.price_cents)}</div>
-            {(booking.extras || []).length > 0 && <div className="text-[#657380]">Extras: {(booking.extras || []).join(', ')}</div>}
-            {booking.notes && <div className="rounded bg-white p-3 text-[#657380]">{booking.notes}</div>}
+            {(booking.extras || []).length > 0 && <div className="text-[#60798F]">Extras: {(booking.extras || []).join(', ')}</div>}
+            {booking.notes && <div className="rounded bg-white p-3 text-[#60798F]">{booking.notes}</div>}
           </div>
         </section>
 
         <section className="rounded-[8px] border border-[#DCE5ED] p-4">
           <h3 className="font-black">Quote and payment</h3>
-          <p className="mt-1 text-sm text-[#657380]">Send a clear customer quote and move the job toward confirmation.</p>
+          <p className="mt-1 text-sm text-[#60798F]">Send a clear customer quote and move the job toward confirmation.</p>
           <div className="mt-4 grid gap-3 sm:grid-cols-[160px_1fr]">
             <input type="number" placeholder="Price" value={quotePrice} onChange={(e) => setQuotePrice(e.target.value)} className="rounded-xl border border-[#DCE5ED] px-4 py-3 text-sm" />
             <input placeholder="Customer note, optional" value={quoteNote} onChange={(e) => setQuoteNote(e.target.value)} className="rounded-xl border border-[#DCE5ED] px-4 py-3 text-sm" />
           </div>
-          <button onClick={onQuote} disabled={saving || !quotePrice} className="mt-3 inline-flex min-h-11 items-center gap-2 rounded-full bg-[#172434] px-5 text-sm font-black text-white disabled:opacity-50">
+          <button onClick={onQuote} disabled={saving || !quotePrice} className="mt-3 inline-flex min-h-11 items-center gap-2 rounded-full bg-[#0B3558] px-5 text-sm font-black text-white disabled:opacity-50">
             <CreditCard className="h-4 w-4" />
             Send quote
           </button>
@@ -458,7 +458,7 @@ function JobInspector({
 
         <section className="rounded-[8px] border border-[#DCE5ED] p-4">
           <h3 className="font-black">Cleaner assignment</h3>
-          <p className="mt-1 text-sm text-[#657380]">Current cleaner: <span className="font-bold text-[#172434]">{staff?.name || 'Unassigned'}</span></p>
+          <p className="mt-1 text-sm text-[#60798F]">Current cleaner: <span className="font-bold text-[#0B3558]">{staff?.name || 'Unassigned'}</span></p>
           <select value={booking.staff_id || ''} disabled={saving} onChange={(e) => onPatch({ staff_id: e.target.value || null })} className="mt-4 w-full rounded-xl border border-[#DCE5ED] px-4 py-3 text-sm">
             <option value="">Unassigned</option>
             {cleaners.map((cleaner) => <option key={cleaner.id} value={cleaner.id}>{cleaner.name}{cleaner.suburb ? ` · ${cleaner.suburb}` : ''}</option>)}
@@ -475,14 +475,14 @@ function JobInspector({
             <input value={opsDraft.suburb} onChange={(e) => setOpsDraft({ ...opsDraft, suburb: e.target.value })} className="rounded-xl border border-[#DCE5ED] px-4 py-3 text-sm" placeholder="Suburb" />
           </div>
           <textarea rows={3} value={opsDraft.notes} onChange={(e) => setOpsDraft({ ...opsDraft, notes: e.target.value })} className="mt-3 w-full rounded-xl border border-[#DCE5ED] px-4 py-3 text-sm" placeholder="Internal job notes and customer preferences" />
-          <button disabled={saving} onClick={() => onPatch(opsDraft)} className="mt-3 rounded-full border border-[#172434] px-5 py-3 text-sm font-black text-[#172434] disabled:opacity-50">Save schedule and notes</button>
+          <button disabled={saving} onClick={() => onPatch(opsDraft)} className="mt-3 rounded-full border border-[#0B3558] px-5 py-3 text-sm font-black text-[#0B3558] disabled:opacity-50">Save schedule and notes</button>
         </section>
 
         <section className="rounded-[8px] border border-[#DCE5ED] p-4">
           <h3 className="font-black">Status controls</h3>
           <div className="mt-4 flex flex-wrap gap-2">
             {STATUS_ACTIONS.map((status) => (
-              <button key={status} disabled={saving || booking.status === status} onClick={() => onPatch({ status })} className={`rounded-full border px-4 py-2 text-sm font-black disabled:opacity-40 ${booking.status === status ? 'bg-[#172434] text-white' : 'border-[#DCE5ED] text-[#172434]'}`}>
+              <button key={status} disabled={saving || booking.status === status} onClick={() => onPatch({ status })} className={`rounded-full border px-4 py-2 text-sm font-black disabled:opacity-40 ${booking.status === status ? 'bg-[#0B3558] text-white' : 'border-[#DCE5ED] text-[#0B3558]'}`}>
                 {status.replace('_', ' ')}
               </button>
             ))}
@@ -492,27 +492,27 @@ function JobInspector({
         <section className="rounded-[8px] border border-[#DCE5ED] p-4">
           <h3 className="font-black">Proof and completion</h3>
           <div className="mt-4 grid grid-cols-3 gap-3 text-sm">
-            <div className="rounded bg-[#F4F7FA] p-3"><div className="font-black">{photoCount}</div><div className="text-[#657380]">photos</div></div>
-            <div className="rounded bg-[#F4F7FA] p-3"><div className="font-black">{done?.start_time ? 'Yes' : 'No'}</div><div className="text-[#657380]">started</div></div>
-            <div className="rounded bg-[#F4F7FA] p-3"><div className="font-black">{done?.submitted_at ? 'Yes' : 'No'}</div><div className="text-[#657380]">submitted</div></div>
+            <div className="rounded bg-[#F4F7FA] p-3"><div className="font-black">{photoCount}</div><div className="text-[#60798F]">photos</div></div>
+            <div className="rounded bg-[#F4F7FA] p-3"><div className="font-black">{done?.start_time ? 'Yes' : 'No'}</div><div className="text-[#60798F]">started</div></div>
+            <div className="rounded bg-[#F4F7FA] p-3"><div className="font-black">{done?.submitted_at ? 'Yes' : 'No'}</div><div className="text-[#60798F]">submitted</div></div>
           </div>
-          {done?.notes && <p className="mt-3 rounded bg-[#F4F7FA] p-3 text-sm text-[#657380]">{done.notes}</p>}
+          {done?.notes && <p className="mt-3 rounded bg-[#F4F7FA] p-3 text-sm text-[#60798F]">{done.notes}</p>}
         </section>
 
         <section className="rounded-[8px] border border-[#DCE5ED] p-4 xl:col-span-2">
-          <h3 className="flex items-center gap-2 font-black"><Camera className="h-5 w-5 text-[#2F7D6B]" />Job photos</h3>
-          <p className="mt-1 text-sm text-[#657380]">Customer-uploaded photos and cleaner proof photos stay visible here for admin review.</p>
+          <h3 className="flex items-center gap-2 font-black"><Camera className="h-5 w-5 text-[#1D7ED0]" />Job photos</h3>
+          <p className="mt-1 text-sm text-[#60798F]">Customer-uploaded photos and cleaner proof photos stay visible here for admin review.</p>
           <PhotoStrip title="Customer request photos" photos={customerPhotos} />
           <PhotoStrip title="Cleaner before photos" photos={beforePhotos} />
           <PhotoStrip title="Cleaner after photos" photos={afterPhotos} />
         </section>
 
         <section className="rounded-[8px] border border-[#DCE5ED] p-4 xl:col-span-2">
-          <h3 className="flex items-center gap-2 font-black"><MessageCircle className="h-5 w-5 text-[#2F7D6B]" />Message customer in-app</h3>
-          <p className="mt-1 text-sm text-[#657380]">Use clear, reassuring customer language. This appears in their Cleanngo account and sends an email notification.</p>
+          <h3 className="flex items-center gap-2 font-black"><MessageCircle className="h-5 w-5 text-[#1D7ED0]" />Message customer in-app</h3>
+          <p className="mt-1 text-sm text-[#60798F]">Use clear, reassuring customer language. This appears in their Cleanngo account and sends an email notification.</p>
           <textarea rows={4} value={messageText} onChange={(e) => setMessageText(e.target.value)} className="mt-4 w-full rounded-xl border border-[#DCE5ED] px-4 py-3 text-sm" placeholder="Example: Hi Jane, your quote is ready. We included the oven reset you requested and can confirm Tuesday at 9:00." />
-          {messageStatus && <p className="mt-2 text-sm font-bold text-[#172434]">{messageStatus}</p>}
-          <button onClick={onMessage} disabled={saving || !messageText.trim()} className="mt-3 inline-flex min-h-11 items-center gap-2 rounded-full bg-[#172434] px-5 text-sm font-black text-white disabled:opacity-50">
+          {messageStatus && <p className="mt-2 text-sm font-bold text-[#0B3558]">{messageStatus}</p>}
+          <button onClick={onMessage} disabled={saving || !messageText.trim()} className="mt-3 inline-flex min-h-11 items-center gap-2 rounded-full bg-[#0B3558] px-5 text-sm font-black text-white disabled:opacity-50">
             <Send className="h-4 w-4" />
             Send message
           </button>
@@ -524,11 +524,11 @@ function JobInspector({
               </div>
               <div className="mt-3 max-h-72 space-y-3 overflow-y-auto pr-1">
                 {thread.messages.length === 0 ? (
-                  <div className="text-sm text-[#657380]">No messages yet.</div>
+                  <div className="text-sm text-[#60798F]">No messages yet.</div>
                 ) : thread.messages.map((message) => (
-                  <div key={message.id} className={`rounded-[8px] p-3 text-sm ${message.sender_type === 'admin' ? 'bg-white text-[#172434]' : 'bg-[#172434] text-white'}`}>
+                  <div key={message.id} className={`rounded-[8px] p-3 text-sm ${message.sender_type === 'admin' ? 'bg-white text-[#0B3558]' : 'bg-[#0B3558] text-white'}`}>
                     <div className="whitespace-pre-wrap">{message.body}</div>
-                    <div className={`mt-2 text-xs ${message.sender_type === 'admin' ? 'text-[#657380]' : 'text-white/55'}`}>
+                    <div className={`mt-2 text-xs ${message.sender_type === 'admin' ? 'text-[#60798F]' : 'text-white/55'}`}>
                       {message.sender_type === 'admin' ? 'Admin' : 'Customer'} · {new Date(message.created_at).toLocaleString()}
                     </div>
                   </div>
@@ -545,9 +545,9 @@ function JobInspector({
 function PhotoStrip({ title, photos }: { title: string; photos: string[] }) {
   return (
     <div className="mt-4">
-      <div className="text-xs font-black uppercase tracking-[0.14em] text-[#657380]">{title}</div>
+      <div className="text-xs font-black uppercase tracking-[0.14em] text-[#60798F]">{title}</div>
       {photos.length === 0 ? (
-        <div className="mt-2 rounded-[8px] bg-[#F4F7FA] p-4 text-sm text-[#657380]">No photos uploaded.</div>
+        <div className="mt-2 rounded-[8px] bg-[#F4F7FA] p-4 text-sm text-[#60798F]">No photos uploaded.</div>
       ) : (
         <div className="mt-2 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {photos.map((src, index) => (

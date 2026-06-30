@@ -14,13 +14,13 @@ export default function TestimonialCard({ name, suburb, rating, text, service }:
           <span key={i} className="text-amber-400 text-lg">★</span>
         ))}
       </div>
-      <p className="text-[#172434] text-sm leading-relaxed mb-6 italic">"{text}"</p>
+      <p className="text-[#0B3558] text-sm leading-relaxed mb-6 italic">"{text}"</p>
       <div className="flex items-center justify-between">
         <div>
-          <div className="font-semibold text-[#172434] text-sm">{name}</div>
-          <div className="text-[#5F6E78] text-xs">{suburb}</div>
+          <div className="font-semibold text-[#0B3558] text-sm">{name}</div>
+          <div className="text-[#60798F] text-xs">{suburb}</div>
         </div>
-        <span className="text-xs bg-[#EBF3F9] text-[#172434] px-3 py-1 rounded-full font-medium">{service}</span>
+        <span className="text-xs bg-[#EBF3F9] text-[#0B3558] px-3 py-1 rounded-full font-medium">{service}</span>
       </div>
     </div>
   )

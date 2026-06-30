@@ -103,7 +103,7 @@ export default function AddressAutocomplete({
         className={className}
       />
       {open && suggestions.length > 0 && (
-        <ul className="absolute z-20 mt-1 w-full bg-[#172434] border border-white/20 rounded-xl overflow-hidden shadow-xl">
+        <ul className="absolute z-20 mt-1 w-full bg-[#0B3558] border border-white/20 rounded-xl overflow-hidden shadow-xl">
           {suggestions.map((s, i) => (
             <li key={i}>
               <button type="button" onMouseDown={() => choose(s)}

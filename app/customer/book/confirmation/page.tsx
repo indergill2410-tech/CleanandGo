@@ -9,10 +9,10 @@ export default async function ConfirmationPage({ searchParams }: Props) {
   const { service = 'Clean', date = '', time = '', address = '', name = 'there', bookingId = '' } = params
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-12" style={{ background: 'linear-gradient(135deg, #172434 0%, #172434 100%)' }}>
+    <div className="min-h-screen flex items-center justify-center px-4 py-12" style={{ background: 'linear-gradient(135deg, #0B3558 0%, #0B3558 100%)' }}>
       <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute top-20 right-20 w-96 h-96 rounded-full blur-3xl opacity-20" style={{ background: '#8FD8B4' }} />
-        <div className="absolute bottom-10 left-20 w-80 h-80 rounded-full blur-3xl opacity-10" style={{ background: '#2F7D6B' }} />
+        <div className="absolute top-20 right-20 w-96 h-96 rounded-full blur-3xl opacity-20" style={{ background: '#7DD3FC' }} />
+        <div className="absolute bottom-10 left-20 w-80 h-80 rounded-full blur-3xl opacity-10" style={{ background: '#1D7ED0' }} />
       </div>
       <div className="glass-strong rounded-3xl p-10 w-full max-w-md text-center relative z-10 shadow-2xl">
         {/* Icon */}
@@ -65,7 +65,7 @@ export default async function ConfirmationPage({ searchParams }: Props) {
         )}
 
         <div className="flex flex-col gap-3">
-          <Link href={bookingId ? `/track?id=${bookingId}` : '/track'} className="w-full py-3.5 rounded-xl bg-white text-[#172434] font-bold hover:bg-white/90 transition text-center">
+          <Link href={bookingId ? `/track?id=${bookingId}` : '/track'} className="w-full py-3.5 rounded-xl bg-white text-[#0B3558] font-bold hover:bg-white/90 transition text-center">
             Track My Request →
           </Link>
           <Link href="/" className="w-full py-3 rounded-xl border border-white/20 text-white/70 hover:bg-white/10 transition text-center text-sm">

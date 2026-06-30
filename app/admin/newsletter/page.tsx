@@ -76,7 +76,7 @@ export default function AdminNewsletter() {
           <button onClick={() => act(p.id, '/publish')} disabled={busy === p.id} className="text-sm px-4 py-2 rounded-full border border-white/20 text-white/80 hover:bg-white/10 disabled:opacity-50">Publish</button>
         )}
         <button onClick={() => act(p.id, '/send', `Send “${p.title}” to ${subscriberCount} subscriber(s)?`)} disabled={busy === p.id || subscriberCount === 0}
-          className="text-sm px-4 py-2 rounded-full bg-white text-[#172434] font-semibold hover:bg-white/90 disabled:opacity-40">
+          className="text-sm px-4 py-2 rounded-full bg-white text-[#0B3558] font-semibold hover:bg-white/90 disabled:opacity-40">
           {isDraft ? 'Publish & send' : 'Send'}
         </button>
         {!isDraft && <Link href={`/blog/${p.slug}`} className="text-sm px-4 py-2 rounded-full border border-white/20 text-white/80 hover:bg-white/10">View ↗</Link>}
@@ -88,7 +88,7 @@ export default function AdminNewsletter() {
   )
 
   return (
-    <div className="min-h-screen py-6 px-6" style={{ background: 'linear-gradient(135deg, #172434 0%, #172434 100%)' }}>
+    <div className="min-h-screen py-6 px-6" style={{ background: 'linear-gradient(135deg, #0B3558 0%, #0B3558 100%)' }}>
       <div className="max-w-3xl mx-auto">
         <div className="mb-6 flex items-end justify-between gap-4">
           <div>
@@ -96,7 +96,7 @@ export default function AdminNewsletter() {
             <h1 className="text-3xl font-bold text-white mt-2">Newsletter</h1>
             <p className="text-white/50 mt-1">{subscriberCount} subscriber{subscriberCount === 1 ? '' : 's'} · weekly AI drafts land here to review.</p>
           </div>
-          <button onClick={generate} disabled={busy === 'generate'} className="shrink-0 text-sm px-5 py-2.5 rounded-full bg-white text-[#172434] font-bold hover:bg-white/90 disabled:opacity-50">
+          <button onClick={generate} disabled={busy === 'generate'} className="shrink-0 text-sm px-5 py-2.5 rounded-full bg-white text-[#0B3558] font-bold hover:bg-white/90 disabled:opacity-50">
             {busy === 'generate' ? 'Researching…' : '✨ Generate draft'}
           </button>
         </div>

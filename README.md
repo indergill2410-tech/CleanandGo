@@ -51,15 +51,23 @@ Deploy via the `render.yaml` Blueprint. It provisions the Next.js web service
 ## Creating the first admin
 
 Admin/cleaner access is granted through the `staff` table. The quickest way is
-the helper script (needs `NEXT_PUBLIC_SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY`
-in your env):
+the helper script. It refuses to run unless `NEXT_PUBLIC_SUPABASE_URL` matches
+`NEXT_PUBLIC_SUPABASE_PROJECT_REF` and the target database has the Cleanngo app
+tables:
 
 ```bash
 npm run create-admin -- admin@cleanngo.com.au 'a-strong-password' 'Owner Name'
 ```
 
-It creates the auth user (or promotes an existing one) and inserts an active
-`admin` staff row. You can also do it by hand in SQL — see `supabase/seed.sql`.
+To provision the default owner admins, keep the password in your shell env:
+
+```bash
+ADMIN_PASSWORD='a-strong-password' npm run create-admin -- --default-admins
+```
+
+That creates or updates `fizaadrees879@gmail.com` and
+`indergill2410@gmail.com` as active admins. You can also do it by hand in SQL —
+see `supabase/seed.sql`.
 
 ## Project Structure
 

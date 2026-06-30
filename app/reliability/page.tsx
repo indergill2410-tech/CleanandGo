@@ -36,11 +36,11 @@ const STEPS = [
 
 export default function ReliabilityPage() {
   return (
-    <main className="min-h-screen" style={{ background: '#F7F3EE' }}>
+    <main className="min-h-screen" style={{ background: '#EFF7FC' }}>
       <Navbar />
 
       <section className="gradient-hero pt-36 pb-24 px-6 relative overflow-hidden">
-        <div className="absolute top-20 right-10 w-96 h-96 rounded-full opacity-20 blur-3xl" style={{ background: '#8FD8B4' }} />
+        <div className="absolute top-20 right-10 w-96 h-96 rounded-full opacity-20 blur-3xl" style={{ background: '#7DD3FC' }} />
         <div className="relative z-10 max-w-3xl mx-auto text-center">
           <p className="text-white/60 font-semibold text-sm uppercase tracking-widest mb-3">The Reliability Guarantee</p>
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-5 leading-tight">We won&apos;t leave you hanging</h1>
@@ -56,26 +56,26 @@ export default function ReliabilityPage() {
           {PROMISES.map(p => (
             <div key={p.title} className="bg-white/80 backdrop-blur-sm border border-white/60 rounded-3xl p-8 shadow-lg">
               <div className="text-4xl mb-4">{p.icon}</div>
-              <h2 className="text-lg font-bold text-[#172434] mb-2">{p.title}</h2>
-              <p className="text-[#5F6E78] text-sm leading-relaxed">{p.desc}</p>
+              <h2 className="text-lg font-bold text-[#0B3558] mb-2">{p.title}</h2>
+              <p className="text-[#60798F] text-sm leading-relaxed">{p.desc}</p>
             </div>
           ))}
         </div>
       </section>
 
       {/* How backup works */}
-      <section className="py-20 px-6" style={{ background: 'linear-gradient(180deg, #F7F3EE 0%, #EFE7DC 100%)' }}>
+      <section className="py-20 px-6" style={{ background: 'linear-gradient(180deg, #EFF7FC 0%, #DCECF8 100%)' }}>
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-14">
-            <p className="text-[#2F7D6B] font-semibold text-sm uppercase tracking-widest mb-3">Backup coverage</p>
-            <h2 className="text-3xl font-bold text-[#172434]">How we keep your clean on track</h2>
+            <p className="text-[#1D7ED0] font-semibold text-sm uppercase tracking-widest mb-3">Backup coverage</p>
+            <h2 className="text-3xl font-bold text-[#0B3558]">How we keep your clean on track</h2>
           </div>
           <div className="grid md:grid-cols-3 gap-8">
             {STEPS.map(s => (
               <div key={s.n} className="text-center">
-                <div className="text-[#8FD8B4] font-bold text-sm tracking-widest mb-3">{s.n}</div>
-                <h3 className="font-bold text-[#172434] mb-2">{s.t}</h3>
-                <p className="text-[#5F6E78] text-sm leading-relaxed">{s.d}</p>
+                <div className="text-[#7DD3FC] font-bold text-sm tracking-widest mb-3">{s.n}</div>
+                <h3 className="font-bold text-[#0B3558] mb-2">{s.t}</h3>
+                <p className="text-[#60798F] text-sm leading-relaxed">{s.d}</p>
               </div>
             ))}
           </div>
@@ -86,7 +86,7 @@ export default function ReliabilityPage() {
         <div className="max-w-2xl mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Cleaning you can actually count on</h2>
           <p className="text-white/70 text-lg mb-8">Start a recurring plan with a named cleaner and a guaranteed backup.</p>
-          <Link href="/customer/plan" className="inline-flex items-center gap-2 bg-white text-[#172434] font-bold px-10 py-4 rounded-full text-lg hover:bg-white/90 transition-all hover:-translate-y-1">
+          <Link href="/customer/plan" className="inline-flex items-center gap-2 bg-white text-[#0B3558] font-bold px-10 py-4 rounded-full text-lg hover:bg-white/90 transition-all hover:-translate-y-1">
             Start My Plan →
           </Link>
         </div>
