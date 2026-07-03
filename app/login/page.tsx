@@ -31,13 +31,26 @@ function LoginForm() {
     setError('')
     const supabase = createClient()
 
-    const { error } =
+    const { data, error } =
       tab === 'client' && mode === 'signup'
-        ? await supabase.auth.signUp({ email, password, options: { data: { full_name: name } } })
+        ? await supabase.auth.signUp({
+            email,
+            password,
+            options: {
+              emailRedirectTo: `${window.location.origin}/account`,
+              data: { full_name: name },
+            },
+          })
         : await supabase.auth.signInWithPassword({ email, password })
 
     if (error) {
       setError(error.message)
+      setLoading(false)
+      return
+    }
+
+    if (tab === 'client' && mode === 'signup' && !data.session) {
+      setError('Account created. Check your email to confirm it, then sign in to open your dashboard.')
       setLoading(false)
       return
     }

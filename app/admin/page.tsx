@@ -110,6 +110,7 @@ export default function AdminDashboard() {
   const [conversations, setConversations] = useState<Conversation[]>([])
   const [metrics, setMetrics] = useState<Metrics>({ unreadNotifications: 0, unreadMessages: 0, openInvoiceCents: 0, capturedPaymentCents: 0 })
   const [saving, setSaving] = useState(false)
+  const [loadError, setLoadError] = useState('')
   const [quotePrice, setQuotePrice] = useState('')
   const [quoteNote, setQuoteNote] = useState('')
   const [messageText, setMessageText] = useState('')
@@ -120,16 +121,27 @@ export default function AdminDashboard() {
   const filtered = useMemo(() => filter === 'all' ? bookings : bookings.filter((booking) => booking.status === filter), [bookings, filter])
 
   const fetchBookings = useCallback(async (keepSelected = true) => {
-    const res = await fetch('/api/admin/operations')
-    const data = await res.json()
-    const list = data.bookings || []
-    setBookings(list)
-    setCleaners((data.staff || []).filter((staff: Cleaner) => staff.role === 'cleaner' && staff.status === 'active'))
-    setApps(data.applications || [])
-    setConversations(data.conversations || [])
-    setMetrics(data.metrics || { unreadNotifications: 0, unreadMessages: 0, openInvoiceCents: 0, capturedPaymentCents: 0 })
-    setLoading(false)
-    if (!keepSelected || !selectedId) setSelectedId(list.find((b: Booking) => b.status === filter)?.id || list[0]?.id || '')
+    try {
+      const res = await fetch('/api/admin/operations')
+      const data = await res.json().catch(() => ({}))
+      if (!res.ok) {
+        setLoadError(data.error || 'Could not load admin operations.')
+        setLoading(false)
+        return
+      }
+      const list = data.bookings || []
+      setLoadError('')
+      setBookings(list)
+      setCleaners((data.staff || []).filter((staff: Cleaner) => staff.role === 'cleaner' && staff.status === 'active'))
+      setApps(data.applications || [])
+      setConversations(data.conversations || [])
+      setMetrics(data.metrics || { unreadNotifications: 0, unreadMessages: 0, openInvoiceCents: 0, capturedPaymentCents: 0 })
+      setLoading(false)
+      if (!keepSelected || !selectedId) setSelectedId(list.find((b: Booking) => b.status === filter)?.id || list[0]?.id || '')
+    } catch {
+      setLoadError('Network error while loading admin operations.')
+      setLoading(false)
+    }
   }, [filter, selectedId])
 
   useEffect(() => {
@@ -258,6 +270,13 @@ export default function AdminDashboard() {
       </header>
 
       <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6">
+        {loadError && (
+          <section className="mb-6 rounded-[8px] border border-red-200 bg-red-50 p-5 text-red-900">
+            <h2 className="font-black">Admin data could not load</h2>
+            <p className="mt-1 text-sm">{loadError}</p>
+            <button onClick={() => { setLoading(true); fetchBookings(false) }} className="mt-3 rounded-full bg-red-900 px-5 py-2 text-sm font-black text-white">Try again</button>
+          </section>
+        )}
         <section className="grid gap-4 md:grid-cols-5">
           {[
             { label: 'Awaiting quote', value: counts.pending, icon: CreditCard, color: 'text-amber-600' },

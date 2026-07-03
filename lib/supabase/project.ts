@@ -1,4 +1,18 @@
 const PLACEHOLDER_REFS = new Set(['placeholder', 'your-project-ref', 'your_supabase_project_ref'])
+const PUBLIC_CONFIG_KEYS = ['NEXT_PUBLIC_SUPABASE_URL', 'NEXT_PUBLIC_SUPABASE_ANON_KEY'] as const
+
+export function getSupabasePublicConfig() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  const missing = PUBLIC_CONFIG_KEYS.filter((key) => !process.env[key])
+
+  return {
+    ok: missing.length === 0,
+    url,
+    anonKey,
+    missing,
+  }
+}
 
 export function supabaseProjectRefFromUrl(url: string | undefined | null) {
   if (!url) return null
@@ -22,9 +36,10 @@ export function assertSupabaseProjectUrl(url: string | undefined | null, context
   if (!actualRef) return
 
   if (!configuredRef || PLACEHOLDER_REFS.has(configuredRef)) {
-    throw new Error(
-      `${context}: set NEXT_PUBLIC_SUPABASE_PROJECT_REF to ${actualRef} so this app can verify it is using the intended Supabase project.`
+    console.warn(
+      `${context}: NEXT_PUBLIC_SUPABASE_PROJECT_REF is not set. Set it to ${actualRef} to enable Supabase project verification.`
     )
+    return
   }
 
   if (actualRef !== configuredRef) {

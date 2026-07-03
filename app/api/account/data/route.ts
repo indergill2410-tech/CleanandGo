@@ -7,9 +7,15 @@ export async function GET() {
   const auth = await requireCustomer()
   if (!auth.ok) return NextResponse.json({ error: auth.error }, { status: auth.status })
 
-  const supabase = createAdminClient()
+  let supabase
+  try {
+    supabase = createAdminClient()
+  } catch (error) {
+    console.error('Customer dashboard client failed:', error)
+    return NextResponse.json({ error: 'Account service is temporarily unavailable' }, { status: 503 })
+  }
 
-  const [{ data: subscriptions }, { data: credits }, { data: invoices }, { data: bookings }, { data: conversations }] = await Promise.all([
+  const [subscriptionsResult, creditsResult, invoicesResult, bookingsResult, conversationsResult] = await Promise.all([
     supabase
       .from('subscriptions')
       .select('id, property_type, frequency, address, suburb, state, postcode, status, price_cents, preferred_day, preferred_time, stripe_subscription_id, primary_staff:primary_staff_id(name, phone, suburb), backup_staff:backup_staff_id(name, phone, suburb)')
@@ -40,12 +46,22 @@ export async function GET() {
       .order('last_message_at', { ascending: false }),
   ])
 
+  const firstError = [
+    subscriptionsResult.error,
+    creditsResult.error,
+    invoicesResult.error,
+    bookingsResult.error,
+    conversationsResult.error,
+  ].find(Boolean)
+
+  if (firstError) return NextResponse.json({ error: firstError.message }, { status: 500 })
+
   return NextResponse.json({
     customer: { name: auth.customer.name, email: auth.customer.email, phone: auth.customer.phone },
-    subscriptions: subscriptions || [],
-    credits: credits || [],
-    invoices: invoices || [],
-    bookings: bookings || [],
-    conversations: conversations || [],
+    subscriptions: subscriptionsResult.data || [],
+    credits: creditsResult.data || [],
+    invoices: invoicesResult.data || [],
+    bookings: bookingsResult.data || [],
+    conversations: conversationsResult.data || [],
   })
 }

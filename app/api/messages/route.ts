@@ -23,9 +23,15 @@ type Message = {
 }
 
 const cleanBody = (value: unknown) => (typeof value === 'string' ? value.trim() : '')
+const asError = (error: unknown) => error instanceof Error ? error : new Error('Messaging service is temporarily unavailable')
 
 async function conversationsWithMessages(customerId?: string, bookingId?: string) {
-  const supabase = createAdminClient()
+  let supabase
+  try {
+    supabase = createAdminClient()
+  } catch (error) {
+    return { error: asError(error) }
+  }
   let query = supabase
     .from('conversations')
     .select('id, subject, customer_id, booking_id, last_message_at, created_at')
@@ -66,7 +72,6 @@ async function conversationsWithMessages(customerId?: string, bookingId?: string
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
   const bookingId = searchParams.get('bookingId') || undefined
-  const supabase = createAdminClient()
 
   const staffAuth = await requireStaff()
   if (staffAuth.ok && staffAuth.staff.role === 'admin') {
@@ -74,6 +79,7 @@ export async function GET(request: Request) {
     if (result.error) return NextResponse.json({ error: result.error.message }, { status: 500 })
     const ids = (result.conversations || []).map((conversation) => conversation.id)
     if (ids.length > 0) {
+      const supabase = createAdminClient()
       await supabase
         .from('messages')
         .update({ read_by_admin_at: new Date().toISOString() })
@@ -91,6 +97,7 @@ export async function GET(request: Request) {
   if (result.error) return NextResponse.json({ error: result.error.message }, { status: 500 })
   const ids = (result.conversations || []).map((conversation) => conversation.id)
   if (ids.length > 0) {
+    const supabase = createAdminClient()
     await supabase
       .from('messages')
       .update({ read_by_customer_at: new Date().toISOString() })
@@ -113,10 +120,16 @@ export async function POST(request: Request) {
   if (!messageBody) return NextResponse.json({ error: 'Message is required' }, { status: 400 })
   if (messageBody.length > 2000) return NextResponse.json({ error: 'Message is too long' }, { status: 400 })
 
-  const supabase = createAdminClient()
   const staffAuth = await requireStaff()
 
   if (staffAuth.ok && staffAuth.staff.role === 'admin') {
+    let supabase
+    try {
+      supabase = createAdminClient()
+    } catch (error) {
+      console.error('Admin message client failed:', error)
+      return NextResponse.json({ error: 'Messaging service is temporarily unavailable' }, { status: 503 })
+    }
     const bookingId = cleanBody(body.bookingId)
     if (!bookingId) return NextResponse.json({ error: 'Booking is required' }, { status: 400 })
 
@@ -182,6 +195,14 @@ export async function POST(request: Request) {
 
   const customerAuth = await requireCustomer()
   if (!customerAuth.ok) return NextResponse.json({ error: customerAuth.error }, { status: customerAuth.status })
+
+  let supabase
+  try {
+    supabase = createAdminClient()
+  } catch (error) {
+    console.error('Customer message client failed:', error)
+    return NextResponse.json({ error: 'Messaging service is temporarily unavailable' }, { status: 503 })
+  }
 
   const conversationId = cleanBody(body.conversationId)
   if (!conversationId) return NextResponse.json({ error: 'Conversation is required' }, { status: 400 })

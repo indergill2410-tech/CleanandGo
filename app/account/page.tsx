@@ -113,24 +113,36 @@ export default function AccountPage() {
   const [bookings, setBookings] = useState<Booking[]>([])
   const [conversations, setConversations] = useState<Conversation[]>([])
   const [busy, setBusy] = useState<string>('')
+  const [error, setError] = useState('')
   const [pay, setPay] = useState<{ id: string; clientSecret: string; amountCents: number } | null>(null)
   const [request, setRequest] = useState<{ type: string; title: string; bookingId?: string; message: string } | null>(null)
   const [requestStatus, setRequestStatus] = useState('')
   const [sendingRequest, setSendingRequest] = useState(false)
 
   const load = useCallback(async () => {
-    await fetch('/api/account/claim', { method: 'POST' }).catch(() => {})
-    const res = await fetch('/api/account/data')
-    if (res.status === 401 || res.status === 403) { router.push('/login?tab=client'); return }
-    const data = await res.json()
-    setName(data.customer?.name || '')
-    setEmail(data.customer?.email || '')
-    setSubs(data.subscriptions || [])
-    setCredits(data.credits || [])
-    setInvoices(data.invoices || [])
-    setBookings(data.bookings || [])
-    setConversations(data.conversations || [])
-    setLoading(false)
+    setError('')
+    try {
+      await fetch('/api/account/claim', { method: 'POST' }).catch(() => {})
+      const res = await fetch('/api/account/data')
+      if (res.status === 401 || res.status === 403) { router.push('/login?tab=client'); return }
+      const data = await res.json().catch(() => ({}))
+      if (!res.ok) {
+        setError(data.error || 'Could not load your dashboard.')
+        setLoading(false)
+        return
+      }
+      setName(data.customer?.name || '')
+      setEmail(data.customer?.email || '')
+      setSubs(data.subscriptions || [])
+      setCredits(data.credits || [])
+      setInvoices(data.invoices || [])
+      setBookings(data.bookings || [])
+      setConversations(data.conversations || [])
+      setLoading(false)
+    } catch {
+      setError('Network error while loading your dashboard.')
+      setLoading(false)
+    }
   }, [router])
 
   useEffect(() => { load() }, [load])
@@ -208,6 +220,21 @@ export default function AccountPage() {
 
   if (loading) {
     return <div className="min-h-screen flex items-center justify-center bg-[#EFF7FC] text-[#0B3558]">Preparing your dashboard...</div>
+  }
+
+  if (error) {
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-[#EFF7FC] px-4 text-[#0B3558]">
+        <section className="w-full max-w-md rounded-[8px] border border-[#CFE0ED] bg-white p-6 text-center shadow-sm">
+          <h1 className="text-2xl font-black">Dashboard could not load</h1>
+          <p className="mt-3 text-sm text-[#60798F]">{error}</p>
+          <div className="mt-5 flex flex-col gap-2 sm:flex-row sm:justify-center">
+            <button onClick={() => { setLoading(true); load() }} className="min-h-11 rounded-full bg-[#0B3558] px-5 text-sm font-black text-white">Try again</button>
+            <Link href="/login?tab=client" className="inline-flex min-h-11 items-center justify-center rounded-full border border-[#C9D7E2] px-5 text-sm font-black text-[#0B3558]">Sign in</Link>
+          </div>
+        </section>
+      </main>
+    )
   }
 
   return (

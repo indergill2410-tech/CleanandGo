@@ -27,16 +27,22 @@ const base = (content: string) => `
 <html>
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width"></head>
 <body style="margin:0;padding:0;background:#EFF7FC;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="background:#EFF7FC;padding:40px 20px;">
+  <div style="display:none;max-height:0;overflow:hidden;color:transparent;">Cleanngo keeps your cleaning simple, reliable and easy to manage.</div>
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#EFF7FC;padding:34px 16px;">
     <tr><td align="center">
-      <table width="560" cellpadding="0" cellspacing="0" style="background:#0B3558;border-radius:24px;overflow:hidden;max-width:560px;width:100%;">
-        <tr><td style="background:linear-gradient(135deg,#0B3558,#0B3558);padding:32px 40px;text-align:center;">
-          <div style="font-size:28px;font-weight:800;color:#ffffff;letter-spacing:-0.5px;">cleanngo</div>
-          <div style="font-size:13px;color:rgba(255,255,255,0.5);margin-top:4px;">cleanngo.com.au</div>
+      <table width="600" cellpadding="0" cellspacing="0" style="background:#0B3558;border-radius:24px;overflow:hidden;max-width:600px;width:100%;box-shadow:0 24px 60px rgba(11,53,88,0.18);">
+        <tr><td style="background:#0B3558;padding:30px 34px 22px;text-align:left;border-bottom:1px solid rgba(255,255,255,0.12);">
+          <div style="font-size:28px;font-weight:900;color:#ffffff;letter-spacing:0;">cleanngo</div>
+          <div style="font-size:13px;color:#9ED8FF;margin-top:6px;font-weight:700;">Australia-wide cleaning, handled properly</div>
         </td></tr>
-        <tr><td style="padding:36px 40px;">${content}</td></tr>
-        <tr><td style="padding:24px 40px;border-top:1px solid rgba(255,255,255,0.1);text-align:center;">
-          <div style="font-size:12px;color:rgba(255,255,255,0.3);">cleanngo · Australia-wide · <a href="https://cleanngo.com.au" style="color:rgba(255,255,255,0.4);">cleanngo.com.au</a></div>
+        <tr><td style="padding:34px;">${content}</td></tr>
+        <tr><td style="padding:0 34px 30px;">
+          <table width="100%" cellpadding="0" cellspacing="0" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:18px;">
+            <tr>
+              <td style="font-size:12px;color:rgba(255,255,255,0.70);line-height:1.5;"><strong style="color:#ffffff;">Cleanngo promise</strong><br>Clear quotes, vetted cleaners, backup cover when life gets messy.</td>
+            </tr>
+          </table>
+          <div style="font-size:12px;color:rgba(255,255,255,0.42);text-align:center;margin-top:22px;line-height:1.6;">cleanngo · Australia-wide · <a href="https://cleanngo.com.au" style="color:rgba(255,255,255,0.72);">cleanngo.com.au</a></div>
         </td></tr>
       </table>
     </td></tr>
@@ -45,18 +51,29 @@ const base = (content: string) => `
 </html>`
 
 const h1 = (t: string) => `<h1 style="margin:0 0 8px;font-size:24px;font-weight:700;color:#ffffff;">${t}</h1>`
-const p = (t: string) => `<p style="margin:0 0 16px;font-size:15px;color:rgba(255,255,255,0.65);line-height:1.6;">${t}</p>`
+const p = (t: string) => `<p style="margin:0 0 16px;font-size:15px;color:rgba(255,255,255,0.72);line-height:1.65;">${t}</p>`
 const row = (label: string, value: string) => `
   <tr>
     <td style="padding:8px 0;font-size:13px;color:rgba(255,255,255,0.4);width:120px;">${label}</td>
     <td style="padding:8px 0;font-size:13px;color:#ffffff;font-weight:500;">${value}</td>
   </tr>`
 const btn = (href: string, text: string) => `
-  <a href="${href}" style="display:inline-block;margin-top:24px;padding:14px 32px;background:#ffffff;color:#0B3558;font-weight:700;font-size:15px;border-radius:12px;text-decoration:none;">${text}</a>`
+  <a href="${href}" style="display:inline-block;margin-top:24px;padding:15px 28px;background:#ffffff;color:#0B3558;font-weight:900;font-size:15px;border-radius:999px;text-decoration:none;">${text}</a>`
 const table = (rows: string) => `
   <table width="100%" cellpadding="0" cellspacing="0" style="background:rgba(255,255,255,0.07);border-radius:12px;padding:16px 20px;margin:20px 0;">
     <tbody>${rows}</tbody>
   </table>`
+const infoNote = (title: string, text: string) => `
+  <div style="background:rgba(125,211,252,0.10);border:1px solid rgba(125,211,252,0.22);border-radius:16px;padding:18px 20px;margin:20px 0;">
+    <div style="font-size:14px;color:#ffffff;font-weight:900;margin-bottom:6px;">${title}</div>
+    <div style="font-size:14px;color:rgba(255,255,255,0.72);line-height:1.6;">${text}</div>
+  </div>`
+const upsell = (title: string, text: string, href: string, cta: string) => `
+  <div style="background:#ffffff;border-radius:18px;padding:20px;margin:24px 0 4px;color:#0B3558;">
+    <div style="font-size:16px;font-weight:900;margin-bottom:6px;">${title}</div>
+    <div style="font-size:14px;line-height:1.6;color:#496B84;">${text}</div>
+    <a href="${href}" style="display:inline-block;margin-top:14px;color:#0B3558;font-size:14px;font-weight:900;text-decoration:none;">${cta} →</a>
+  </div>`
 
 // ─── 1. Customer: Quote request received ─────────────────────────
 export async function sendBookingConfirmationEmail({
@@ -70,7 +87,7 @@ export async function sendBookingConfirmationEmail({
 
   const html = base(`
     ${h1('Quote request received 📋')}
-    ${p(`Hi ${customerName}, we've got your job details and we're putting together a custom quote for you.`)}
+    ${p(`Hi ${customerName}, your clean is now in our queue. We're reviewing the details so we can send a clear, tailored quote instead of a vague price range.`)}
     ${table(
       row('Service', serviceLabel) +
       row('Date', date) +
@@ -79,8 +96,10 @@ export async function sendBookingConfirmationEmail({
       row('Size', `${beds} bed · ${baths} bath`) +
       (extras?.length ? row('Extras', extras.join(', ')) : '')
     )}
-    ${p('We usually send quotes within <strong style="color:#fff;">60 minutes</strong> during business hours. You\'ll get another email the moment it\'s ready.')}
+    ${infoNote('What happens next', 'We check the home details, extras and timing, then send the price and next step. Most quotes go out within 60 minutes during business hours.')}
+    ${p('Want the easiest option? Many customers move from a one-off clean to a weekly or fortnightly reset once they see how much time it gives back.')}
     ${btn(`${APP_URL}/track`, 'Track Your Request →')}
+    ${upsell('Make clean-home feeling automatic', 'A recurring plan gives you a regular cleaner, backup coverage, and fewer last-minute chores before guests or inspections.', `${APP_URL}/customer/plan`, 'Explore recurring plans')}
   `)
 
   return getResend().emails.send({
@@ -145,8 +164,8 @@ export async function sendQuoteReadyEmail({
     <div style="display:inline-block;padding:6px 14px;background:rgba(29,126,208,0.2);border:1px solid rgba(29,126,208,0.4);border-radius:20px;margin-bottom:20px;">
       <span style="color:#60A5FA;font-size:13px;font-weight:600;">💰 Your quote is ready</span>
     </div>
-    ${h1(`Your quote: $${price}`)}
-    ${p(`Hi ${customerName}, your quote for a ${serviceLabel} is ready.`)}
+    ${h1(`Your quote is ready: $${price}`)}
+    ${p(`Hi ${customerName}, we priced your ${serviceLabel} carefully so you know exactly what to expect before we arrive.`)}
     ${table(
       row('Service', serviceLabel) +
       row('Date', date) +
@@ -154,8 +173,10 @@ export async function sendQuoteReadyEmail({
       row('Quoted price', `<strong style="font-size:20px;color:#ffffff;">$${price}</strong>`)
     )}
     ${note ? `<div style="background:rgba(255,255,255,0.07);border-radius:12px;padding:16px 20px;margin:16px 0;"><div style="font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:6px;">Note from us</div><div style="font-size:14px;color:rgba(255,255,255,0.8);">${note}</div></div>` : ''}
-    ${p('Happy with the price? Hit the button below to confirm your booking.')}
+    ${infoNote('Why book now', 'Once you accept, we can lock the schedule, prepare the cleaner notes, and keep you updated from your Cleanngo account.')}
+    ${p('Happy with the price? Confirm the booking and we will take it from quote to handled.')}
     ${btn(`${APP_URL}/track?id=${bookingId}`, 'Accept Quote →')}
+    ${upsell('Prefer not to think about cleaning again?', 'Ask us to turn this into a weekly or fortnightly service with the same standard and a guaranteed backup cleaner.', `${APP_URL}/customer/plan`, 'Ask about a recurring plan')}
   `)
 
   return getResend().emails.send({
@@ -181,7 +202,7 @@ export async function sendAdminNewPlanEmail({
       <span style="color:#fbbf24;font-size:13px;font-weight:600;">⏳ New recurring-plan request — action required</span>
     </div>
     ${h1(`New ${frequency} ${propertyType} plan from ${name}`)}
-    ${p('A customer requested a recurring plan. Log in to price it and assign a cleaner + backup.')}
+    ${p('A customer is ready for a recurring relationship. Price it quickly, assign a primary cleaner and backup, then send a confident next step.')}
     ${table(
       row('Type', `${propertyType} · ${frequency}`) +
       row('Size', size) +
@@ -252,9 +273,10 @@ export async function sendStaffInviteEmail({
       <span style="color:#60A5FA;font-size:13px;font-weight:600;">🎉 Welcome to the team</span>
     </div>
     ${h1(`Welcome aboard, ${name}!`)}
-    ${p(`Your cleanngo ${roleLabel} account is ready. Set your password to log in${role === 'admin' ? '' : ' and start receiving jobs'}.`)}
+    ${p(`Your cleanngo ${roleLabel} account is ready. Set your password to log in${role === 'admin' ? '' : ' and start receiving jobs with clear notes, proof uploads and simple scheduling'}.`)}
     ${btn(actionLink, 'Set Your Password →')}
-    ${p('<span style="font-size:13px;color:rgba(255,255,255,0.4);">This link expires for security. If it does, contact us and we\'ll send a fresh one.</span>')}
+    ${infoNote('A quick standard', role === 'admin' ? 'Use the dashboard to quote quickly, assign confidently and keep every customer conversation in one place.' : 'Great work here is simple: arrive on time, start the job in-app, upload proof, and leave the customer with that freshly reset feeling.')}
+    ${p('<span style="font-size:13px;color:rgba(255,255,255,0.48);">This link expires for security. If it does, contact us and we\'ll send a fresh one.</span>')}
   `)
 
   return getResend().emails.send({
@@ -273,8 +295,9 @@ export async function sendPasswordResetEmail({
 }) {
   const html = base(`
     ${h1('Reset your password')}
-    ${p('We received a request to reset your cleanngo password. Click below to choose a new one. If you didn\'t request this, you can safely ignore this email.')}
+    ${p('We received a request to reset your cleanngo password. Choose a new one below and you can get straight back to your bookings, quotes and messages.')}
     ${btn(actionLink, 'Reset Password →')}
+    ${p('<span style="font-size:13px;color:rgba(255,255,255,0.48);">If you did not request this, you can safely ignore this email.</span>')}
   `)
 
   return getResend().emails.send({
@@ -296,14 +319,15 @@ export async function sendPaymentReceiptEmail({
       <span style="color:#60A5FA;font-size:13px;font-weight:600;">✅ Payment received</span>
     </div>
     ${h1(`Payment received — $${amount}`)}
-    ${p(`Hi ${customerName}, thanks! We've received your payment.`)}
+    ${p(`Hi ${customerName}, thanks. Your payment is confirmed, so the clean can move ahead without admin back-and-forth.`)}
     ${table(
       row('Amount', `<strong style="color:#fff;">$${amount}</strong>`) +
       (description ? row('For', description) : '') +
       (date ? row('Date', date) : '')
     )}
-    ${p('A team member will be in touch about scheduling. Thanks for choosing cleanngo.')}
+    ${infoNote('You are all set', 'We keep the booking, payment and service notes together so your cleaner has the right context before arriving.')}
     ${btn(`${APP_URL}/account`, 'View Your Account →')}
+    ${upsell('Keep the reset going', 'If this clean is something you need often, a recurring plan can save the repeat booking work and keep your home on rhythm.', `${APP_URL}/customer/plan`, 'See recurring options')}
   `)
   return getResend().emails.send({ from: FROM, to: customerEmail, subject: `Payment received — $${amount} · cleanngo`, html })
 }
@@ -337,8 +361,8 @@ export async function sendBookingConfirmedEmail({
     <div style="display:inline-block;padding:6px 14px;background:rgba(59,130,246,0.2);border:1px solid rgba(59,130,246,0.4);border-radius:20px;margin-bottom:20px;">
       <span style="color:#60a5fa;font-size:13px;font-weight:600;">📅 Your clean is booked</span>
     </div>
-    ${h1('You\'re all booked in')}
-    ${p(`Hi ${customerName}, your ${serviceLabel} is confirmed${cleanerName ? ` with <strong style="color:#fff;">${cleanerName}</strong>` : ''}.`)}
+    ${h1('You are booked in')}
+    ${p(`Hi ${customerName}, your ${serviceLabel} is confirmed${cleanerName ? ` with <strong style="color:#fff;">${cleanerName}</strong>` : ''}. We will keep the details tidy from here so you can get on with your day.`)}
     ${table(
       row('Service', serviceLabel) +
       row('Date', date) +
@@ -346,6 +370,7 @@ export async function sendBookingConfirmedEmail({
       row('Address', `${address}, ${suburb}`) +
       (cleanerName ? row('Cleaner', cleanerName) : '')
     )}
+    ${infoNote('Before we arrive', 'Add access notes or message us from your account if anything changes. Small details help us deliver a better clean on the first visit.')}
     ${btn(`${APP_URL}/account`, 'View Your Booking →')}
   `)
   return getResend().emails.send({ from: FROM, to: customerEmail, subject: 'Your cleanngo clean is confirmed', html })
@@ -363,14 +388,15 @@ export async function sendCleanerAssignedEmail({
     <div style="display:inline-block;padding:6px 14px;background:rgba(29,126,208,0.2);border:1px solid rgba(29,126,208,0.4);border-radius:20px;margin-bottom:20px;">
       <span style="color:#60A5FA;font-size:13px;font-weight:600;">🧽 New job assigned</span>
     </div>
-    ${h1('You\'ve got a new job')}
-    ${p(`Hi ${cleanerName}, you've been assigned a ${serviceLabel}. Open your portal for full details and to clock on.`)}
+    ${h1('You have a new job')}
+    ${p(`Hi ${cleanerName}, you have been assigned a ${serviceLabel}. Open your portal for customer notes, address details and proof upload.`)}
     ${table(
       row('Service', serviceLabel) +
       row('Date', date) +
       row('Time', time) +
       row('Address', `${address}, ${suburb}`)
     )}
+    ${infoNote('Service standard', 'Start the job in-app, upload before/after proof, and leave clear notes for admin if anything changes on site.')}
     ${btn(`${APP_URL}/cleaner`, 'Open Your Jobs →')}
   `)
   return getResend().emails.send({ from: FROM, to: cleanerEmail, subject: 'New cleanngo job assigned', html })
@@ -387,9 +413,11 @@ export async function sendJobCompletedEmail({
     <div style="display:inline-block;padding:6px 14px;background:rgba(34,197,94,0.2);border:1px solid rgba(34,197,94,0.4);border-radius:20px;margin-bottom:20px;">
       <span style="color:#4ade80;font-size:13px;font-weight:600;">✨ Clean complete</span>
     </div>
-    ${h1('Your clean is done ✨')}
-    ${p(`Hi ${customerName}, your ${serviceLabel} on ${date} is complete. We hope it's spotless! If anything isn't right, just reply and we'll make it right.`)}
+    ${h1('Your clean is complete ✨')}
+    ${p(`Hi ${customerName}, your ${serviceLabel} on ${date} is complete. We hope the place feels lighter the moment you walk in.`)}
+    ${infoNote('Need anything adjusted?', 'Reply or message us from your account if something needs attention. We would rather fix it properly than leave you half happy.')}
     ${btn(`${APP_URL}/account`, 'View Your Account →')}
+    ${upsell('Want this feeling on repeat?', 'Turn a great clean into a weekly or fortnightly rhythm with a regular cleaner and backup coverage.', `${APP_URL}/customer/plan`, 'Start a recurring plan')}
   `)
   return getResend().emails.send({ from: FROM, to: customerEmail, subject: 'Your cleanngo clean is complete ✨', html })
 }
@@ -404,8 +432,9 @@ export async function sendMissedVisitCreditEmail({
     <div style="display:inline-block;padding:6px 14px;background:rgba(251,191,36,0.2);border:1px solid rgba(251,191,36,0.4);border-radius:20px;margin-bottom:20px;">
       <span style="color:#fbbf24;font-size:13px;font-weight:600;">🛟 We missed your visit</span>
     </div>
-    ${h1('We missed your visit — and we\'re sorry')}
-    ${p(`Hi ${customerName}, we couldn't make your clean on ${date}. That's on us.${creditAmount ? ` We've added a <strong style="color:#fff;">$${creditAmount}</strong> credit to your account.` : ' We\'ve added an account credit to make it right.'} Our reliability guarantee means you're never left stranded.`)}
+    ${h1('We missed your visit — and we are sorry')}
+    ${p(`Hi ${customerName}, we could not make your clean on ${date}. That is on us.${creditAmount ? ` We have added a <strong style="color:#fff;">$${creditAmount}</strong> credit to your account.` : ' We have added an account credit to make it right.'}`)}
+    ${infoNote('How we recover', 'Our backup promise means we do not leave the issue sitting with you. We will help reschedule and keep your credit visible in your account.')}
     ${btn(`${APP_URL}/account`, 'View Your Credit →')}
   `)
   return getResend().emails.send({ from: FROM, to: customerEmail, subject: 'About your missed clean — account credit added', html })
@@ -419,7 +448,7 @@ export async function sendApplicationDeclinedEmail({
 }) {
   const html = base(`
     ${h1('Thanks for applying to cleanngo')}
-    ${p(`Hi ${name}, thank you for your interest in joining the cleanngo team. After reviewing your application, we won't be progressing it at this time. We genuinely appreciate the time you took to apply and wish you all the best.`)}
+    ${p(`Hi ${name}, thank you for your interest in joining the cleanngo team. After reviewing your application, we will not be progressing it at this time. We genuinely appreciate the time you took to apply and wish you all the best.`)}
     ${p('<span style="font-size:13px;color:rgba(255,255,255,0.4);">You\'re welcome to apply again in the future as our needs change.</span>')}
   `)
   return getResend().emails.send({ from: FROM, to: email, subject: 'Your cleanngo application', html })

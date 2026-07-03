@@ -52,24 +52,36 @@ export default function CleanerPortal() {
   const [loading, setLoading] = useState(true)
   const [expanded, setExpanded] = useState<string | null>(null)
   const [busy, setBusy] = useState('')
+  const [error, setError] = useState('')
   const [before, setBefore] = useState<Record<string, string[]>>({})
   const [after, setAfter] = useState<Record<string, string[]>>({})
   const [notes, setNotes] = useState<Record<string, string>>({})
 
   const load = useCallback(async () => {
-    const [jobsRes, profileRes] = await Promise.all([
-      fetch('/api/cleaner/jobs'),
-      fetch('/api/cleaner/profile'),
-    ])
-    if (jobsRes.status === 401 || jobsRes.status === 403 || profileRes.status === 401 || profileRes.status === 403) {
-      router.push('/login?redirectTo=/cleaner')
-      return
+    setError('')
+    try {
+      const [jobsRes, profileRes] = await Promise.all([
+        fetch('/api/cleaner/jobs'),
+        fetch('/api/cleaner/profile'),
+      ])
+      if (jobsRes.status === 401 || jobsRes.status === 403 || profileRes.status === 401 || profileRes.status === 403) {
+        router.push('/login?redirectTo=/cleaner')
+        return
+      }
+      const jobsData = await jobsRes.json().catch(() => ({}))
+      const profileData = await profileRes.json().catch(() => ({}))
+      if (!jobsRes.ok || !profileRes.ok) {
+        setError(jobsData.error || profileData.error || 'Could not load your workboard.')
+        setLoading(false)
+        return
+      }
+      setJobs(jobsData.jobs || [])
+      setProfile(profileData)
+      setLoading(false)
+    } catch {
+      setError('Network error while loading your workboard.')
+      setLoading(false)
     }
-    const jobsData = await jobsRes.json()
-    const profileData = await profileRes.json()
-    setJobs(jobsData.jobs || [])
-    setProfile(profileData)
-    setLoading(false)
   }, [router])
 
   useEffect(() => { load() }, [load])
@@ -113,6 +125,18 @@ export default function CleanerPortal() {
 
   if (loading) {
     return <div className="min-h-screen flex items-center justify-center bg-[#F4F7FA] text-[#0B3558]">Loading your workboard...</div>
+  }
+
+  if (error) {
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-[#F4F7FA] px-4 text-[#0B3558]">
+        <section className="w-full max-w-md rounded-[8px] border border-[#DCE5ED] bg-white p-6 text-center shadow-sm">
+          <h1 className="text-2xl font-black">Workboard could not load</h1>
+          <p className="mt-3 text-sm text-[#60798F]">{error}</p>
+          <button onClick={() => { setLoading(true); load() }} className="mt-5 min-h-11 rounded-full bg-[#0B3558] px-5 text-sm font-black text-white">Try again</button>
+        </section>
+      </main>
+    )
   }
 
   return (
