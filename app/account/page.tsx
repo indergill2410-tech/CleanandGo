@@ -252,7 +252,7 @@ export default function AccountPage() {
               Messages
             </Link>
             <Link href="/customer/book" className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-[#0B3558] px-5 text-sm font-black text-white hover:bg-[#0B3558]">
-              Book a clean
+              Post a job
               <ArrowRight className="h-4 w-4" />
             </Link>
             <button onClick={signOut} className="min-h-11 rounded-full px-4 text-sm font-bold text-[#60798F] hover:bg-white">Sign out</button>
@@ -283,7 +283,7 @@ export default function AccountPage() {
                 <p className="text-sm font-black uppercase tracking-[0.16em] text-[#7DD3FC]">Your next clean</p>
                 <h2 className="mt-2 text-3xl font-black">{nextBooking ? SERVICE_LABELS[nextBooking.service_type] || nextBooking.service_type : 'No clean scheduled yet'}</h2>
                 <p className="mt-2 text-white/64">
-                  {nextBooking ? `${dateLabel(nextBooking.scheduled_date)} at ${timeLabel(nextBooking.scheduled_time)} · ${nextBooking.address}` : 'Start with a one-off clean or create a recurring plan.'}
+                  {nextBooking ? `${dateLabel(nextBooking.scheduled_date)} at ${timeLabel(nextBooking.scheduled_time)} · ${nextBooking.address}` : 'Post a one-off job or create a recurring plan. New job requests go straight to the admin queue for quoting.'}
                 </p>
               </div>
               {nextBooking && (
@@ -317,7 +317,7 @@ export default function AccountPage() {
             ) : (
               <div className="mt-6 flex flex-col gap-3 sm:flex-row">
                 <Link href="/customer/plan" className="inline-flex justify-center rounded-full bg-[#F5C84C] px-6 py-3 font-black text-[#0B3558]">Start a weekly reset</Link>
-                <Link href="/customer/book" className="inline-flex justify-center rounded-full border border-white/20 px-6 py-3 font-black text-white">Book a one-off clean</Link>
+                <Link href="/customer/book" className="inline-flex justify-center rounded-full border border-white/20 px-6 py-3 font-black text-white">Post a one-off job</Link>
               </div>
             )}
           </div>
@@ -490,7 +490,7 @@ export default function AccountPage() {
             {bookings.length === 0 ? (
               <div className="rounded-[8px] border border-[#CFE0ED] bg-white p-6 text-center">
                 <p className="text-[#60798F]">No one-off jobs yet.</p>
-                <Link href="/customer/book" className="mt-4 inline-flex rounded-full bg-[#0B3558] px-5 py-3 text-sm font-black text-white">Request a quote</Link>
+                <Link href="/customer/book" className="mt-4 inline-flex rounded-full bg-[#0B3558] px-5 py-3 text-sm font-black text-white">Post a job</Link>
               </div>
             ) : (
               <div className="space-y-4">
