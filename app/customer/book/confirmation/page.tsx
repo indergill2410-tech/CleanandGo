@@ -22,9 +22,9 @@ export default async function ConfirmationPage({ searchParams }: Props) {
           </svg>
         </div>
 
-        <h1 className="text-3xl font-bold text-white mb-2">Quote requested!</h1>
-        <p className="text-white/60 mb-2">Hi {name}, we've received your job details.</p>
-        <p className="text-white/40 text-sm mb-8">You'll receive a custom quote via email and in the app — usually within 60 minutes.</p>
+        <h1 className="text-3xl font-bold text-white mb-2">Job posted!</h1>
+        <p className="text-white/60 mb-2">Hi {name}, your job is now in the Cleanngo admin queue.</p>
+        <p className="text-white/40 text-sm mb-8">You’ll receive a custom quote via email and in the app, usually within 60 minutes.</p>
 
         {/* Request summary */}
         <div className="bg-white/10 rounded-2xl p-6 text-left space-y-3 mb-6 border border-white/20">
@@ -46,7 +46,7 @@ export default async function ConfirmationPage({ searchParams }: Props) {
           <div className="text-white/70 font-semibold text-xs uppercase tracking-wider mb-3">What happens next</div>
           <div className="space-y-3">
             {[
-              { step: '1', text: 'Admin reviews your request', done: true },
+              { step: '1', text: 'Admin queue received the job', done: true },
               { step: '2', text: 'Custom quote sent to your email', done: false },
               { step: '3', text: 'You accept → job confirmed', done: false },
             ].map(item => (
@@ -66,7 +66,7 @@ export default async function ConfirmationPage({ searchParams }: Props) {
 
         <div className="flex flex-col gap-3">
           <Link href={bookingId ? `/track?id=${bookingId}` : '/track'} className="w-full py-3.5 rounded-xl bg-white text-[#0B3558] font-bold hover:bg-white/90 transition text-center">
-            Track My Request →
+            Track My Job →
           </Link>
           <Link href="/" className="w-full py-3 rounded-xl border border-white/20 text-white/70 hover:bg-white/10 transition text-center text-sm">
             Back to Home
