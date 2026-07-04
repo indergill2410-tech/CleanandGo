@@ -42,6 +42,7 @@ const NAV = [
 ]
 
 const STATUS_ACTIONS = ['pending', 'confirmed', 'in_progress', 'completed', 'missed', 'cancelled'] as const
+const FILTERS = ['all', 'pending', 'confirmed', 'in_progress', 'completed', 'missed', 'cancelled'] as const
 
 type Person = { name: string; email?: string | null; phone?: string | null; suburb?: string | null; role?: string | null; status?: string | null }
 type Relation<T> = T | T[] | null
@@ -110,6 +111,7 @@ const timeLabel = (time?: string | null) => time ? time.slice(0, 5) : 'No time'
 const dateLabel = (date?: string | null) => date ? new Date(`${date}T00:00:00`).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' }) : 'No date'
 const shortDateTime = (value?: string | null) => value ? new Date(value).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) : 'Now'
 const quoteAgeMinutes = (booking: Booking) => Math.max(0, Math.round((Date.now() - new Date(booking.created_at).getTime()) / 60000))
+const statusLabel = (status: string) => status === 'all' ? 'All jobs' : status.replace('_', ' ')
 
 const urgencyFor = (booking: Booking, unreadAlerts: number) => {
   if (booking.status === 'missed') return { label: 'Recovery', className: 'border-red-200 bg-red-50 text-red-700' }
@@ -119,12 +121,22 @@ const urgencyFor = (booking: Booking, unreadAlerts: number) => {
   return { label: 'Normal', className: 'border-slate-200 bg-slate-50 text-slate-600' }
 }
 
+const priorityScore = (booking: Booking, unreadAlerts: number) => {
+  if (booking.status === 'missed') return 90
+  if (unreadAlerts > 0) return 80
+  if (booking.status === 'pending' && quoteAgeMinutes(booking) >= 60) return 70
+  if (!booking.staff_id && ['pending', 'confirmed'].includes(booking.status)) return 60
+  if (booking.status === 'in_progress') return 40
+  return 10
+}
+
 export default function AdminDashboard() {
   const router = useRouter()
   const [bookings, setBookings] = useState<Booking[]>([])
   const [selectedId, setSelectedId] = useState('')
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState('pending')
+  const [query, setQuery] = useState('')
   const [apps, setApps] = useState<{ id: string; name: string; suburbs: string | null; status: string }[]>([])
   const [cleaners, setCleaners] = useState<Cleaner[]>([])
   const [conversations, setConversations] = useState<Conversation[]>([])
@@ -138,8 +150,6 @@ export default function AdminDashboard() {
   const [messageStatus, setMessageStatus] = useState('')
   const [opsDraft, setOpsDraft] = useState<OpsDraft>({ scheduled_date: '', scheduled_time: '', address: '', suburb: '', notes: '' })
 
-  const selected = useMemo(() => bookings.find((booking) => booking.id === selectedId) || bookings[0] || null, [bookings, selectedId])
-  const filtered = useMemo(() => filter === 'all' ? bookings : bookings.filter((booking) => booking.status === filter), [bookings, filter])
   const notificationCountByBooking = useMemo(() => {
     const counts = new Map<string, number>()
     for (const notification of notifications) {
@@ -147,6 +157,30 @@ export default function AdminDashboard() {
     }
     return counts
   }, [notifications])
+  const filtered = useMemo(() => {
+    const term = query.trim().toLowerCase()
+    return bookings
+      .filter((booking) => filter === 'all' || booking.status === filter)
+      .filter((booking) => {
+        if (!term) return true
+        const customer = one(booking.customers)
+        return [
+          customer?.name,
+          customer?.email,
+          customer?.phone,
+          booking.address,
+          booking.suburb,
+          booking.service_type,
+          booking.id,
+        ].filter(Boolean).some((value) => String(value).toLowerCase().includes(term))
+      })
+      .sort((a, b) => {
+        const priorityDiff = priorityScore(b, notificationCountByBooking.get(b.id) || 0) - priorityScore(a, notificationCountByBooking.get(a.id) || 0)
+        if (priorityDiff !== 0) return priorityDiff
+        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      })
+  }, [bookings, filter, notificationCountByBooking, query])
+  const selected = useMemo(() => bookings.find((booking) => booking.id === selectedId) || filtered[0] || bookings[0] || null, [bookings, filtered, selectedId])
   const selectedAlerts = useMemo(() => selected ? notifications.filter((notification) => notification.booking_id === selected.id) : [], [notifications, selected])
 
   const counts = useMemo(() => ({
@@ -163,6 +197,10 @@ export default function AdminDashboard() {
   const overdueQuotes = bookings.filter((booking) => booking.status === 'pending' && quoteAgeMinutes(booking) >= 60).length
   const unassignedJobs = bookings.filter((booking) => ['pending', 'confirmed'].includes(booking.status) && !booking.staff_id).length
   const activeCleaners = cleaners.filter((cleaner) => cleaner.status === 'active').length
+  const activeJobs = counts.confirmed + counts.in_progress
+  const quoteSlaPercent = counts.pending > 0 ? Math.max(0, Math.round(((counts.pending - overdueQuotes) / counts.pending) * 100)) : 100
+  const latestAlerts = notifications.slice(0, 5)
+  const selectedThread = selected ? conversations.find((conversation) => conversation.booking_id === selected.id) : null
 
   const fetchBookings = useCallback(async (keepSelected = true) => {
     try {
@@ -278,192 +316,247 @@ export default function AdminDashboard() {
   }
 
   return (
-    <main className="min-h-screen bg-[#EEF5FA] text-[#0B3558]">
-      <header className="border-b border-[#CFE0ED] bg-white">
-        <div className="mx-auto max-w-[1500px] px-4 py-5 sm:px-6 xl:px-8">
-          <div className="flex flex-col gap-5 xl:flex-row xl:items-end xl:justify-between">
-            <div>
-              <Link href="/" className="inline-flex items-center gap-2 text-sm font-black text-[#1D7ED0]">
-                cleanngo home <ArrowUpRight className="h-4 w-4" />
-              </Link>
-              <h1 className="mt-3 text-3xl font-black sm:text-5xl">Operations command centre</h1>
-              <p className="mt-2 max-w-3xl text-base font-semibold text-[#60798F]">New job posts, quote follow-up, dispatch, customer messages, and recovery in one organised console.</p>
-            </div>
-            <div className="flex flex-wrap items-center gap-2">
-              <Link href="/customer/book" className="inline-flex min-h-11 items-center gap-2 rounded-full bg-[#0B3558] px-5 text-sm font-black text-white shadow-sm">
-                <Sparkles className="h-4 w-4" />
-                New customer job
-              </Link>
-              <button onClick={() => { setLoading(true); fetchBookings(true) }} className="inline-flex min-h-11 items-center gap-2 rounded-full border border-[#CFE0ED] bg-white px-4 text-sm font-black text-[#0B3558]">
-                <RefreshCw className="h-4 w-4" />
-                Refresh
-              </button>
-              <button onClick={signOut} className="min-h-11 rounded-full border border-[#CFE0ED] bg-white px-5 text-sm font-black text-[#60798F]">Sign out</button>
-            </div>
+    <main className="min-h-screen bg-[#EAF3F8] text-[#0B3558]">
+      <div className="mx-auto flex min-h-screen max-w-[1680px]">
+        <aside className="hidden w-64 shrink-0 border-r border-[#C7DAE8] bg-[#082E4C] px-4 py-5 text-white xl:flex xl:flex-col">
+          <Link href="/" className="inline-flex items-center gap-2 text-base font-black">
+            cleanngo <ArrowUpRight className="h-4 w-4 text-[#7DD3FC]" />
+          </Link>
+          <div className="mt-8 rounded-[8px] border border-white/10 bg-white/[0.08] p-4">
+            <p className="text-xs font-black uppercase tracking-[0.16em] text-[#7DD3FC]">Control room</p>
+            <div className="mt-3 text-3xl font-black">{counts.pending}</div>
+            <p className="mt-1 text-sm font-bold text-white/[0.65]">jobs waiting for quote</p>
           </div>
-          <nav className="-mx-4 mt-6 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:px-0">
-            <Link href="/admin" className="inline-flex shrink-0 items-center gap-2 rounded-full bg-[#0B3558] px-4 py-2 text-sm font-black text-white">
+          <nav className="mt-6 space-y-1">
+            <Link href="/admin" className="flex min-h-10 items-center gap-3 rounded-[8px] bg-white px-3 text-sm font-black text-[#082E4C]">
               <ClipboardList className="h-4 w-4" />
               Console
             </Link>
             {NAV.map((item) => (
-              <Link key={item.href} href={item.href} className="shrink-0 rounded-full border border-[#CFE0ED] bg-white px-4 py-2 text-sm font-black text-[#0B3558] hover:border-[#1D7ED0]">
+              <Link key={item.href} href={item.href} className="flex min-h-10 items-center rounded-[8px] px-3 text-sm font-bold text-white/[0.68] hover:bg-white/10 hover:text-white">
                 {item.label}
               </Link>
             ))}
           </nav>
-        </div>
-      </header>
-
-      <div className="mx-auto max-w-[1500px] px-4 py-6 sm:px-6 xl:px-8">
-        {loadError && (
-          <section className="mb-5 rounded-[8px] border border-red-200 bg-red-50 p-4 text-red-900">
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="mt-auto rounded-[8px] border border-white/10 bg-white/[0.08] p-4">
+            <p className="text-xs font-black uppercase tracking-[0.16em] text-[#7DD3FC]">Today</p>
+            <div className="mt-3 grid grid-cols-2 gap-3 text-sm">
               <div>
-                <h2 className="font-black">Admin data could not load</h2>
-                <p className="mt-1 text-sm">{loadError}</p>
+                <div className="text-xl font-black">{todayJobs}</div>
+                <div className="text-white/[0.55]">on road</div>
               </div>
-              <button onClick={() => { setLoading(true); fetchBookings(false) }} className="inline-flex min-h-10 items-center justify-center gap-2 rounded-full bg-red-900 px-4 text-sm font-black text-white">
-                <RefreshCw className="h-4 w-4" />
-                Try again
-              </button>
+              <div>
+                <div className="text-xl font-black">{activeCleaners}</div>
+                <div className="text-white/[0.55]">cleaners</div>
+              </div>
             </div>
-          </section>
-        )}
+          </div>
+        </aside>
 
-        <section className="grid gap-4 xl:grid-cols-[1.25fr_0.75fr]">
-          <div className="rounded-[8px] border border-[#CFE0ED] bg-white p-4 shadow-sm">
+        <section className="min-w-0 flex-1">
+          <header className="sticky top-0 z-20 border-b border-[#C7DAE8] bg-white/[0.92] px-4 py-4 backdrop-blur sm:px-6 xl:px-8">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
               <div>
-                <p className="text-xs font-black uppercase tracking-[0.16em] text-[#1D7ED0]">Live workload</p>
-                <h2 className="mt-1 text-2xl font-black">Today's operating picture</h2>
+                <p className="text-xs font-black uppercase tracking-[0.18em] text-[#1D7ED0]">Operations command centre</p>
+                <h1 className="mt-1 text-2xl font-black sm:text-4xl">Run quotes, dispatch, messages, and recovery</h1>
               </div>
-              <div className="flex flex-wrap gap-2">
-                {counts.pending > 0 && <button onClick={() => setFilter('pending')} className="inline-flex min-h-10 items-center gap-2 rounded-full bg-amber-100 px-4 text-sm font-black text-amber-800"><AlertTriangle className="h-4 w-4" />{counts.pending} quotes waiting</button>}
-                {metrics.unreadMessages > 0 && <button onClick={() => setFilter('all')} className="inline-flex min-h-10 items-center gap-2 rounded-full bg-blue-100 px-4 text-sm font-black text-blue-800"><MessageCircle className="h-4 w-4" />{metrics.unreadMessages} messages</button>}
-                {newApps > 0 && <Link href="/admin/applications" className="inline-flex min-h-10 items-center gap-2 rounded-full bg-emerald-100 px-4 text-sm font-black text-emerald-800">{newApps} applicant{newApps === 1 ? '' : 's'}</Link>}
+              <div className="flex flex-wrap items-center gap-2">
+                <Link href="/customer/book" className="inline-flex min-h-11 items-center gap-2 rounded-full bg-[#0B3558] px-5 text-sm font-black text-white shadow-sm">
+                  <Sparkles className="h-4 w-4" />
+                  New customer job
+                </Link>
+                <button onClick={() => { setLoading(true); fetchBookings(true) }} className="inline-flex min-h-11 items-center gap-2 rounded-full border border-[#CFE0ED] bg-white px-4 text-sm font-black text-[#0B3558]">
+                  <RefreshCw className="h-4 w-4" />
+                  Refresh
+                </button>
+                <button onClick={signOut} className="min-h-11 rounded-full border border-[#CFE0ED] bg-white px-5 text-sm font-black text-[#60798F]">Sign out</button>
               </div>
             </div>
-            <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+            <nav className="-mx-4 mt-4 flex gap-2 overflow-x-auto px-4 pb-1 xl:hidden">
+              <Link href="/admin" className="inline-flex shrink-0 items-center gap-2 rounded-full bg-[#0B3558] px-4 py-2 text-sm font-black text-white">
+                <ClipboardList className="h-4 w-4" />
+                Console
+              </Link>
+              {NAV.map((item) => (
+                <Link key={item.href} href={item.href} className="shrink-0 rounded-full border border-[#CFE0ED] bg-white px-4 py-2 text-sm font-black text-[#0B3558]">
+                  {item.label}
+                </Link>
+              ))}
+            </nav>
+          </header>
+
+          <div className="px-4 py-5 sm:px-6 xl:px-8">
+            {loadError && (
+              <section className="mb-5 rounded-[8px] border border-red-200 bg-red-50 p-4 text-red-900">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <div>
+                    <h2 className="font-black">Admin data could not load</h2>
+                    <p className="mt-1 text-sm">{loadError}</p>
+                  </div>
+                  <button onClick={() => { setLoading(true); fetchBookings(false) }} className="inline-flex min-h-10 items-center justify-center gap-2 rounded-full bg-red-900 px-4 text-sm font-black text-white">
+                    <RefreshCw className="h-4 w-4" />
+                    Try again
+                  </button>
+                </div>
+              </section>
+            )}
+
+            <section className="grid gap-3 md:grid-cols-2 2xl:grid-cols-6">
               {[
-                { label: 'Quote backlog', value: counts.pending, helper: `${overdueQuotes} over 60 min`, icon: ClipboardList, tone: 'text-amber-600', filterValue: 'pending' },
-                { label: 'Today on road', value: todayJobs, helper: `${counts.in_progress} active now`, icon: CalendarDays, tone: 'text-blue-600', filterValue: 'confirmed' },
+                { label: 'Quote backlog', value: counts.pending, helper: `${overdueQuotes} outside SLA`, icon: ClipboardList, tone: 'text-amber-600', filterValue: 'pending' },
+                { label: 'Active jobs', value: activeJobs, helper: `${counts.in_progress} in progress`, icon: CalendarDays, tone: 'text-blue-600', filterValue: 'confirmed' },
                 { label: 'Unassigned', value: unassignedJobs, helper: `${activeCleaners} active cleaners`, icon: UsersRound, tone: 'text-sky-600', filterValue: 'all' },
-                { label: 'Recovery risk', value: counts.missed, helper: 'missed jobs', icon: ShieldCheck, tone: 'text-red-600', filterValue: 'missed' },
+                { label: 'Recovery', value: counts.missed, helper: 'needs follow-up', icon: ShieldCheck, tone: 'text-red-600', filterValue: 'missed' },
+                { label: 'Messages', value: metrics.unreadMessages, helper: 'customer replies', icon: MessageCircle, tone: 'text-[#1D7ED0]', filterValue: 'all' },
+                { label: 'Open invoices', value: money(metrics.openInvoiceCents), helper: `${money(metrics.capturedPaymentCents)} captured`, icon: CircleDollarSign, tone: 'text-emerald-600', filterValue: 'all' },
               ].map((item) => (
-                <button key={item.label} onClick={() => setFilter(item.filterValue)} className="rounded-[8px] border border-[#E1EAF2] bg-[#F8FBFD] p-4 text-left transition hover:border-[#9EC9E7]">
-                  <div className="flex items-center justify-between gap-2">
+                <button key={item.label} onClick={() => setFilter(item.filterValue)} className="min-h-32 rounded-[8px] border border-[#CFE0ED] bg-white p-4 text-left shadow-sm transition hover:border-[#8BBFE2]">
+                  <div className="flex items-center justify-between gap-3">
                     <item.icon className={`h-5 w-5 ${item.tone}`} />
                     <ChevronRight className="h-4 w-4 text-[#8BA1B2]" />
                   </div>
-                  <div className="mt-4 text-3xl font-black">{item.value}</div>
-                  <div className="text-sm font-black">{item.label}</div>
+                  <div className="mt-4 truncate text-3xl font-black">{item.value}</div>
+                  <div className="mt-1 text-sm font-black">{item.label}</div>
                   <div className="mt-1 text-xs font-bold text-[#60798F]">{item.helper}</div>
                 </button>
               ))}
-            </div>
-          </div>
+            </section>
 
-          <div className="rounded-[8px] border border-[#CFE0ED] bg-white p-4 shadow-sm">
-            <p className="text-xs font-black uppercase tracking-[0.16em] text-[#1D7ED0]">Finance and alerts</p>
-            <div className="mt-4 grid gap-3 sm:grid-cols-3 xl:grid-cols-1">
-              {[
-                { label: 'Unread alerts', value: metrics.unreadNotifications, icon: Bell, tone: 'text-[#1D7ED0]' },
-                { label: 'Open invoices', value: money(metrics.openInvoiceCents), icon: CreditCard, tone: 'text-amber-600' },
-                { label: 'Captured payments', value: money(metrics.capturedPaymentCents), icon: CircleDollarSign, tone: 'text-emerald-600' },
-              ].map((item) => (
-                <div key={item.label} className="flex items-center gap-3 rounded-[8px] bg-[#F8FBFD] p-3">
-                  <item.icon className={`h-5 w-5 ${item.tone}`} />
-                  <div>
-                    <div className="text-xl font-black">{item.value}</div>
-                    <div className="text-xs font-bold text-[#60798F]">{item.label}</div>
+            <section className="mt-5 grid gap-5 2xl:grid-cols-[430px_minmax(0,1fr)_320px]">
+              <aside className="rounded-[8px] border border-[#CFE0ED] bg-white shadow-sm">
+                <div className="border-b border-[#DCE5ED] p-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <p className="flex items-center gap-2 text-xs font-black uppercase tracking-[0.16em] text-[#1D7ED0]"><Filter className="h-4 w-4" /> Priority queue</p>
+                      <h2 className="mt-1 text-xl font-black">{filtered.length} job{filtered.length === 1 ? '' : 's'} in view</h2>
+                    </div>
+                    <span className="rounded-full bg-[#EEF5FA] px-3 py-1 text-xs font-black text-[#60798F]">auto-prioritised</span>
+                  </div>
+                  <div className="mt-4">
+                    <input
+                      value={query}
+                      onChange={(event) => setQuery(event.target.value)}
+                      placeholder="Search customer, suburb, phone, ref"
+                      className="h-11 w-full rounded-full border border-[#CFE0ED] bg-[#F8FBFD] px-4 text-sm font-bold outline-none focus:border-[#1D7ED0]"
+                    />
+                  </div>
+                  <div className="mt-3 flex gap-2 overflow-x-auto pb-1">
+                    {FILTERS.map((status) => (
+                      <button key={status} onClick={() => setFilter(status)} className={`shrink-0 rounded-full px-3 py-2 text-xs font-black ${filter === status ? 'bg-[#0B3558] text-white' : 'bg-[#F4F7FA] text-[#60798F]'}`}>
+                        {statusLabel(status)}
+                      </button>
+                    ))}
                   </div>
                 </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section className="mt-6 grid gap-6 xl:grid-cols-[0.82fr_1.18fr]">
-          <div className="rounded-[8px] border border-[#DCE5ED] bg-white shadow-sm">
-            <div className="border-b border-[#DCE5ED] p-4">
-              <div className="flex items-center justify-between gap-3">
-                <div>
-                  <p className="flex items-center gap-2 text-xs font-black uppercase tracking-[0.16em] text-[#1D7ED0]"><Filter className="h-4 w-4" /> Dispatch queue</p>
-                  <h2 className="mt-1 text-xl font-black">{filtered.length} job{filtered.length === 1 ? '' : 's'} in view</h2>
-                </div>
-              </div>
-              <div className="mt-4 flex flex-wrap gap-2">
-                {['all', 'pending', 'confirmed', 'in_progress', 'completed', 'missed', 'cancelled'].map((status) => (
-                  <button key={status} onClick={() => setFilter(status)} className={`rounded-full px-4 py-2 text-sm font-black ${filter === status ? 'bg-[#0B3558] text-white' : 'bg-[#F4F7FA] text-[#60798F]'}`}>
-                    {status === 'all' ? 'All jobs' : status.replace('_', ' ')}
-                  </button>
-                ))}
-              </div>
-            </div>
-            <div className="max-h-[calc(100vh-18rem)] overflow-y-auto p-3">
-              {loading ? (
-                <div className="p-10 text-center text-[#60798F]">Loading jobs...</div>
-              ) : filtered.length === 0 ? (
-                <div className="p-10 text-center text-[#60798F]">No jobs in this view.</div>
-              ) : filtered.map((booking) => {
-                const customer = one(booking.customers)
-                const staff = one(booking.staff)
-                const unreadAlerts = notificationCountByBooking.get(booking.id) || 0
-                const urgency = urgencyFor(booking, unreadAlerts)
-                return (
-                  <button key={booking.id} onClick={() => setSelectedId(booking.id)} className={`mb-3 w-full rounded-[8px] border p-4 text-left transition ${selected?.id === booking.id ? 'border-[#0B3558] bg-[#EEF5FA]' : 'border-[#E4EAF0] bg-white hover:border-[#9DB6CA]'}`}>
-                    <div className="flex items-start justify-between gap-3">
-                      <div>
-                        <div className="font-black">{customer?.name || 'Customer'} - {SERVICE_LABELS[booking.service_type] || booking.service_type}</div>
-                        <div className="mt-1 flex flex-wrap gap-x-3 gap-y-1 text-sm text-[#60798F]">
-                          <span>{dateLabel(booking.scheduled_date)} {timeLabel(booking.scheduled_time)}</span>
-                          <span>{booking.suburb || booking.address}</span>
-                          <span>{money(booking.price_cents)}</span>
+                <div className="max-h-[calc(100vh-18rem)] overflow-y-auto p-3">
+                  {loading ? (
+                    <div className="p-10 text-center text-[#60798F]">Loading jobs...</div>
+                  ) : filtered.length === 0 ? (
+                    <div className="p-10 text-center text-[#60798F]">No jobs match this view.</div>
+                  ) : filtered.map((booking) => {
+                    const customer = one(booking.customers)
+                    const staff = one(booking.staff)
+                    const unreadAlerts = notificationCountByBooking.get(booking.id) || 0
+                    const urgency = urgencyFor(booking, unreadAlerts)
+                    return (
+                      <button key={booking.id} onClick={() => setSelectedId(booking.id)} className={`mb-3 w-full rounded-[8px] border p-4 text-left transition ${selected?.id === booking.id ? 'border-[#0B3558] bg-[#EEF5FA] shadow-sm' : 'border-[#E4EAF0] bg-white hover:border-[#9DB6CA]'}`}>
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="min-w-0">
+                            <div className="truncate font-black">{customer?.name || 'Customer'}</div>
+                            <div className="mt-1 truncate text-sm font-bold text-[#60798F]">{SERVICE_LABELS[booking.service_type] || booking.service_type} - {booking.suburb || booking.address}</div>
+                          </div>
+                          <span className={`shrink-0 rounded-full border px-2.5 py-1 text-[11px] font-black ${STATUS_STYLES[booking.status] || STATUS_STYLES.pending}`}>{booking.status.replace('_', ' ')}</span>
                         </div>
-                      </div>
-                      <span className={`shrink-0 rounded-full border px-3 py-1 text-xs font-black ${STATUS_STYLES[booking.status] || STATUS_STYLES.pending}`}>{booking.status.replace('_', ' ')}</span>
-                    </div>
-                    <div className="mt-3 flex flex-wrap gap-2 text-xs">
-                      <span className={`rounded-full border px-3 py-1 font-black ${urgency.className}`}>{urgency.label}</span>
-                      {booking.status === 'pending' && <span className="rounded-full border border-[#DCE5ED] bg-white px-3 py-1 font-black text-[#60798F]">{quoteAgeMinutes(booking)} min old</span>}
-                      {unreadAlerts > 0 && <span className="rounded-full bg-[#1D7ED0] px-3 py-1 font-black text-white">{unreadAlerts} alert{unreadAlerts === 1 ? '' : 's'}</span>}
-                    </div>
-                    <div className="mt-3 grid gap-2 text-xs sm:grid-cols-3">
-                      <span className="rounded bg-[#F4F7FA] px-2 py-1 font-bold text-[#60798F]">{booking.bedrooms} bed / {booking.bathrooms} bath</span>
-                      <span className="rounded bg-[#F4F7FA] px-2 py-1 font-bold text-[#60798F]">{staff?.name || 'Cleaner unassigned'}</span>
-                      <span className="rounded bg-[#F4F7FA] px-2 py-1 font-bold text-[#60798F]">{(booking.extras || []).length} extras</span>
-                    </div>
-                  </button>
-                )
-              })}
-            </div>
-          </div>
+                        <div className="mt-3 flex flex-wrap gap-2 text-xs">
+                          <span className={`rounded-full border px-3 py-1 font-black ${urgency.className}`}>{urgency.label}</span>
+                          {booking.status === 'pending' && <span className="rounded-full border border-[#DCE5ED] bg-white px-3 py-1 font-black text-[#60798F]">{quoteAgeMinutes(booking)} min old</span>}
+                          {unreadAlerts > 0 && <span className="rounded-full bg-[#1D7ED0] px-3 py-1 font-black text-white">{unreadAlerts} alert{unreadAlerts === 1 ? '' : 's'}</span>}
+                        </div>
+                        <div className="mt-3 grid grid-cols-3 gap-2 text-xs">
+                          <span className="rounded bg-[#F4F7FA] px-2 py-1 font-bold text-[#60798F]">{dateLabel(booking.scheduled_date)}</span>
+                          <span className="rounded bg-[#F4F7FA] px-2 py-1 font-bold text-[#60798F]">{money(booking.price_cents)}</span>
+                          <span className="rounded bg-[#F4F7FA] px-2 py-1 font-bold text-[#60798F]">{staff?.name || 'Unassigned'}</span>
+                        </div>
+                      </button>
+                    )
+                  })}
+                </div>
+              </aside>
 
-          <div className="rounded-[8px] border border-[#DCE5ED] bg-white shadow-sm">
-            {selected ? (
-              <JobInspector
-                booking={selected}
-                cleaners={cleaners}
-                opsDraft={opsDraft}
-                setOpsDraft={setOpsDraft}
-                saving={saving}
-                quotePrice={quotePrice}
-                quoteNote={quoteNote}
-                setQuotePrice={setQuotePrice}
-                setQuoteNote={setQuoteNote}
-                messageText={messageText}
-                setMessageText={setMessageText}
-                messageStatus={messageStatus}
-                conversations={conversations.filter((conversation) => conversation.booking_id === selected.id)}
-                alerts={selectedAlerts}
-                onPatch={patchBooking}
-                onQuote={sendQuote}
-                onMessage={sendCustomerMessage}
-              />
-            ) : (
-              <div className="p-10 text-center text-[#60798F]">Select a job to see full controls.</div>
-            )}
+              <section className="min-w-0 overflow-hidden rounded-[8px] border border-[#CFE0ED] bg-white shadow-sm">
+                {selected ? (
+                  <JobInspector
+                    booking={selected}
+                    cleaners={cleaners}
+                    opsDraft={opsDraft}
+                    setOpsDraft={setOpsDraft}
+                    saving={saving}
+                    quotePrice={quotePrice}
+                    quoteNote={quoteNote}
+                    setQuotePrice={setQuotePrice}
+                    setQuoteNote={setQuoteNote}
+                    messageText={messageText}
+                    setMessageText={setMessageText}
+                    messageStatus={messageStatus}
+                    conversations={conversations.filter((conversation) => conversation.booking_id === selected.id)}
+                    alerts={selectedAlerts}
+                    onPatch={patchBooking}
+                    onQuote={sendQuote}
+                    onMessage={sendCustomerMessage}
+                  />
+                ) : (
+                  <div className="p-10 text-center text-[#60798F]">Select a job to see full controls.</div>
+                )}
+              </section>
+
+              <aside className="space-y-5">
+                <section className="rounded-[8px] border border-[#CFE0ED] bg-white p-4 shadow-sm">
+                  <p className="text-xs font-black uppercase tracking-[0.16em] text-[#1D7ED0]">SLA board</p>
+                  <div className="mt-4">
+                    <div className="flex items-end justify-between">
+                      <div className="text-3xl font-black">{quoteSlaPercent}%</div>
+                      <div className="text-sm font-bold text-[#60798F]">quote health</div>
+                    </div>
+                    <div className="mt-3 h-2 rounded-full bg-[#E1EAF2]">
+                      <div className="h-2 rounded-full bg-[#1D7ED0]" style={{ width: `${quoteSlaPercent}%` }} />
+                    </div>
+                  </div>
+                  <div className="mt-4 grid gap-2 text-sm">
+                    <div className="flex justify-between rounded-[8px] bg-[#F8FBFD] px-3 py-2"><span className="font-bold text-[#60798F]">Overdue quotes</span><span className="font-black">{overdueQuotes}</span></div>
+                    <div className="flex justify-between rounded-[8px] bg-[#F8FBFD] px-3 py-2"><span className="font-bold text-[#60798F]">Unread alerts</span><span className="font-black">{metrics.unreadNotifications}</span></div>
+                    <div className="flex justify-between rounded-[8px] bg-[#F8FBFD] px-3 py-2"><span className="font-bold text-[#60798F]">New applicants</span><span className="font-black">{newApps}</span></div>
+                  </div>
+                </section>
+
+                <section className="rounded-[8px] border border-[#CFE0ED] bg-white p-4 shadow-sm">
+                  <p className="text-xs font-black uppercase tracking-[0.16em] text-[#1D7ED0]">Selected signal</p>
+                  <div className="mt-4 grid gap-3">
+                    <div className="rounded-[8px] bg-[#F8FBFD] p-3">
+                      <div className="text-sm font-bold text-[#60798F]">Conversation</div>
+                      <div className="mt-1 text-2xl font-black">{selectedThread?.unread_admin_count || 0}</div>
+                    </div>
+                    <div className="rounded-[8px] bg-[#F8FBFD] p-3">
+                      <div className="text-sm font-bold text-[#60798F]">Job alerts</div>
+                      <div className="mt-1 text-2xl font-black">{selectedAlerts.filter((alert) => !alert.read).length}</div>
+                    </div>
+                  </div>
+                </section>
+
+                <section className="rounded-[8px] border border-[#CFE0ED] bg-white p-4 shadow-sm">
+                  <p className="text-xs font-black uppercase tracking-[0.16em] text-[#1D7ED0]">Latest alerts</p>
+                  <div className="mt-4 space-y-3">
+                    {latestAlerts.length === 0 ? (
+                      <p className="text-sm font-bold text-[#60798F]">No admin alerts yet.</p>
+                    ) : latestAlerts.map((alert) => (
+                      <div key={alert.id} className="border-l-2 border-[#1D7ED0] pl-3">
+                        <div className="text-sm font-black">{alert.title}</div>
+                        <div className="mt-1 line-clamp-2 text-xs font-bold text-[#60798F]">{alert.message}</div>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              </aside>
+            </section>
           </div>
         </section>
       </div>
@@ -584,8 +677,7 @@ function JobInspector({
             <div className="flex items-center gap-2 text-[#60798F]"><CalendarDays className="h-4 w-4" />{dateLabel(booking.scheduled_date)} at {timeLabel(booking.scheduled_time)}</div>
             <div className="font-bold">{booking.bedrooms} bedrooms / {booking.bathrooms} bathrooms / {money(booking.price_cents)}</div>
             {(booking.extras || []).length > 0 && <div className="text-[#60798F]">Extras: {(booking.extras || []).join(', ')}</div>}
-            {booking.notes && <div className="rounded bg-white p-3 text-[#60798F]">{booking.notes}</div>}
-          </div>
+            {booking.notes && <div className="rounded bg-white p-3 text-[#60798F]">{booking.notes}</div>
         </section>
 
         <section className="rounded-[8px] border border-[#DCE5ED] p-4">
@@ -647,65 +739,32 @@ function JobInspector({
           {done?.notes && <p className="mt-3 rounded bg-[#F4F7FA] p-3 text-sm text-[#60798F]">{done.notes}</p>}
         </section>
 
-        <section className="rounded-[8px] border border-[#DCE5ED] p-4 xl:col-span-2">
-          <h3 className="flex items-center gap-2 font-black"><Camera className="h-5 w-5 text-[#1D7ED0]" />Job photos</h3>
-          <p className="mt-1 text-sm text-[#60798F]">Customer-uploaded photos and cleaner proof photos stay visible here for admin review.</p>
-          <PhotoStrip title="Customer request photos" photos={customerPhotos} />
-          <PhotoStrip title="Cleaner before photos" photos={beforePhotos} />
-          <PhotoStrip title="Cleaner after photos" photos={afterPhotos} />
-        </section>
+        <section className="rounded-[8px] border border-[#DCE5ED] p-4 xl:col-span-2"Çà»€\‹”ò[YOHôõ^][\ÀXŸ[ù\àÿ\Làõ€ùXõX⁄»èèY\‹ÿYŸP⁄\ò€H€\‹”ò[YOHöMHÀMH^V»ÃQ—QHàœìY\‹ÿYŸH›\›€Y\à[ãX\⁄œÇà€\‹”ò[YOHõ]LH^\€H^V»ÕåŒNóHèï\ŸH€X\ãôX\‹›\ö[ô»›\›€Y\à[ô›XYŸKà\»\X\ú»[àZ\à€X[õô€»Xÿ€›[ù[ôŸ[ô»[à[XZ[õ›YöXÿ][€ãè‹Çà^\ôXHõ›‹œ^ÕHò[YO^€Y\‹ÿYŸU^H€ê⁄[ôŸO^ ]ô[ù
+HOàŸ]Y\‹ÿYŸU^
+]ô[ùù\ôŸ]ùò[YJ_H€\‹”ò[YOHõ]MÀYù[õ›[ôY^õ‹ô\àõ‹ô\ãV»——MQQHMKL»^\€HàXŸZ€\èHë^[\NàHò[ôK[›\à][›H\»ôXYKàŸH[ò€YYH›ô[àô\Ÿ][›Hô\]Y\›Y[ôÿ[à€€ôö\õHY\Ÿ^H]NåààœÇà€Y\‹ÿYŸT›]\»	âà€\‹”ò[YOHõ]Là^\€Hõ€ùXõ€^V»ÃåÕMNHèû€Y\‹ÿYŸT›]\ﬂO‹üBàù]€à€ê€X⁄œ^€€ìY\‹ÿYŸ_H\ÿXõY^‹ÿ]ö[ô»[Y\‹ÿYŸU^ùö[J
+_H€\‹”ò[YOHõ]L»[õ[ôKYõ^Z[ãZLLH][\ÀXŸ[ù\àÿ\Làõ›[ôYYù[ôÀV»ÃåÕMNHMH^\€Hõ€ùXõX⁄»^]⁄]H\ÿXõYõ‹X⁄]KMLèÇàŸ[ô€\‹”ò[YOHöMÀMàœÇàŸ[ôY\‹ÿYŸBàÿù]€èÇà›ôXY	âà
+à]à€\‹”ò[YOHõ]MHõ›[ôYVŒHôÀV»—çç—êWHMèÇà]à€\‹”ò[YOHôõ^][\ÀXŸ[ù\àù\›YûKXô]ŸY[àÿ\L»èÇà€\‹”ò[YOHôõ€ùXõX⁄»èê€€ùô\úÿ][€à\›‹ûO⁄Çà›ôXYù[úôXYÿYZ[óÿ€›[ùà	âà‹[à€\‹”ò[YOHúõ›[ôYYù[ôÀXõYKLLL»KLH^^»õ€ùXõX⁄»^XõYKNèû›ôXYù[úôXYÿYZ[óÿ€›[ùH[úôXY‹‹[èüBàŸ]èÇà]à€\‹”ò[YOHõ]L»X^ZMÃà‹XŸK^KL»›ô\ôõ›À^KX]]»ãLHèÇà›ôXYõY\‹ÿYŸ\Àõ[ô›OOH»
+à]à€\‹”ò[YOHù^\€H^V»ÕåŒNóHèìõ»Y\‹ÿYŸ\»Y]èŸ]èÇà
+HàôXYõY\‹ÿYŸ\ÀõX\
 
-        <section className="rounded-[8px] border border-[#DCE5ED] p-4 xl:col-span-2">
-          <h3 className="flex items-center gap-2 font-black"><MessageCircle className="h-5 w-5 text-[#1D7ED0]" />Message customer in-app</h3>
-          <p className="mt-1 text-sm text-[#60798F]">Use clear, reassuring customer language. This appears in their Cleanngo account and sends an email notification.</p>
-          <textarea rows={4} value={messageText} onChange={(event) => setMessageText(event.target.value)} className="mt-4 w-full rounded-xl border border-[#DCE5ED] px-4 py-3 text-sm" placeholder="Example: Hi Jane, your quote is ready. We included the oven reset you requested and can confirm Tuesday at 9:00." />
-          {messageStatus && <p className="mt-2 text-sm font-bold text-[#0B3558]">{messageStatus}</p>}
-          <button onClick={onMessage} disabled={saving || !messageText.trim()} className="mt-3 inline-flex min-h-11 items-center gap-2 rounded-full bg-[#0B3558] px-5 text-sm font-black text-white disabled:opacity-50">
-            <Send className="h-4 w-4" />
-            Send message
-          </button>
-          {thread && (
-            <div className="mt-5 rounded-[8px] bg-[#F4F7FA] p-4">
-              <div className="flex items-center justify-between gap-3">
-                <h4 className="font-black">Conversation history</h4>
-                {thread.unread_admin_count > 0 && <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-black text-blue-800">{thread.unread_admin_count} unread</span>}
-              </div>
-              <div className="mt-3 max-h-72 space-y-3 overflow-y-auto pr-1">
-                {thread.messages.length === 0 ? (
-                  <div className="text-sm text-[#60798F]">No messages yet.</div>
-                ) : thread.messages.map((message) => (
-                  <div key={message.id} className={`rounded-[8px] p-3 text-sm ${message.sender_type === 'admin' ? 'bg-white text-[#0B3558]' : 'bg-[#0B3558] text-white'}`}>
-                    <div className="whitespace-pre-wrap">{message.body}</div>
-                    <div className={`mt-2 text-xs ${message.sender_type === 'admin' ? 'text-[#60798F]' : 'text-white/55'}`}>
-                      {message.sender_type === 'admin' ? 'Admin' : 'Customer'} - {new Date(message.created_at).toLocaleString()}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </section>
-      </div>
-    </div>
-  )
-}
+Y\‹ÿYŸJHOà
+à]àŸ^O^€Y\‹ÿYŸKöYH€\‹”ò[YO^ÿõ›[ôYVŒHL»^\€H	€Y\‹ÿYŸKúŸ[ô\ó›\HOOH	ÿYZ[â»»	ÿôÀ]⁄]H^V»ÃåÕMNI»à	ÿôÀV»ÃåÕMNH^]⁄]IﬂXOÇà]à€\‹”ò[YOHù⁄]\‹XŸK\ôK]‹ò\èû€Y\‹ÿYŸKòõŸ_OŸ]èÇà]à€\‹”ò[YO^ÿ]Là^^»	€Y\‹ÿYŸKúŸ[ô\ó›\HOOH	ÿYZ[â»»	›^V»ÕåŒNóI»à	›^]⁄]K÷ÃçMWIﬂXOÇà€Y\‹ÿYŸKúŸ[ô\ó›\HOOH	ÿYZ[â»»	–YZ[â»à	–›\›€Y\âﬂHH€ô]»]JY\‹ÿYŸKò‹ôX]Yÿ]
+Kù”ÿÿ[T›ö[ô 
+_BàŸ]èÇàŸ]èÇà
+J_BàŸ]èÇàŸ]èÇà
+_Bà‹ŸX›[€èÇàŸ]èÇàŸ]èÇà
+BüBÇôù[ò›[€à›‘›ö\
+»]K›‹»Nà»]Nà›ö[ôŒ»›‹Œà›ö[ô÷◊HJH¬àô]\õà
+à]à€\‹”ò[YOHõ]MèÇà]à€\‹”ò[YOHù^^»õ€ùXõX⁄»\\òÿ\ŸHòX⁄⁄[ôÀVÃåM[WH^V»ÕåŒNóHèû›]_OŸ]èÇà‹›‹Àõ[ô›OOH»
+à]à€\‹”ò[YOHõ]Làõ›[ôYVŒHôÀV»—çç—êWHM^\€H^V»ÕåŒNóHèìõ»›‹»\ÿYYèŸ]èÇà
+Hà
+à]à€\‹”ò[YOHõ]Là‹öYÿ\L»€Nô‹öYX€€ÀLàŒô‹öYX€€ÀL»èÇà‹›‹ÀõX\
 
-function PhotoStrip({ title, photos }: { title: string; photos: string[] }) {
-  return (
-    <div className="mt-4">
-      <div className="text-xs font-black uppercase tracking-[0.14em] text-[#60798F]">{title}</div>
-      {photos.length === 0 ? (
-        <div className="mt-2 rounded-[8px] bg-[#F4F7FA] p-4 text-sm text-[#60798F]">No photos uploaded.</div>
-      ) : (
-        <div className="mt-2 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {photos.map((src, index) => (
-            <a key={`${src}-${index}`} href={src} target="_blank" rel="noopener noreferrer" className="group block overflow-hidden rounded-[8px] border border-[#DCE5ED] bg-[#F4F7FA]">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={src} alt={`${title} ${index + 1}`} className="aspect-video w-full object-cover transition group-hover:scale-[1.02]" />
-            </a>
-          ))}
-        </div>
-      )}
-    </div>
-  )
-}
+‹òÀ[ô^
+HOà
+àHŸ^O^ÿ	‹‹òﬂKI⁄[ô^XHôYè^‹‹òﬂH\ôŸ]Hóÿõ[ö»àô[Hõõ€‹[ô\àõ‹ôYô\úô\àà€\‹”ò[YOHô‹õ›\õÿ⁄»›ô\ôõ›ÀZY[àõ›[ôYVŒHõ‹ô\àõ‹ô\ãV»——MQQHôÀV»—çç—êWHèÇàÀ à\€[ùY\ÿXõK[ô^[[ôHô^€ô^€õÀZ[YÀY[[Y[ù
+ãﬂBà[Y»‹òœ^‹‹òﬂH[^ÿ	›]_H	⁄[ô^
+»_XH€\‹”ò[YOHò\‹X›]öY[»ÀYù[ÿöôX›X€›ô\àò[ú⁄][€à‹õ›\Z›ô\éúÿÿ[KVÃKåóHàœÇàÿOÇà
+J_BàŸ]èÇà
+_BàŸ]èÇà
+BüB
