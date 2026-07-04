@@ -103,8 +103,8 @@ export default function BookingPage() {
       <div className="relative z-10 flex min-h-screen flex-col items-center justify-center px-4 py-8 sm:py-12">
         <div className="text-center mb-6 sm:mb-8">
           <Link href="/" className="text-white/60 text-sm hover:text-white mb-4 inline-block">← Back to home</Link>
-          <h1 className="text-2xl font-bold text-white sm:text-3xl">Request a Quote</h1>
-          <p className="mx-auto mt-1 max-w-sm text-sm text-white/60 sm:text-base">Tell us about your job — we'll send a price within the hour</p>
+          <h1 className="text-2xl font-bold text-white sm:text-3xl">Post a Job</h1>
+          <p className="mx-auto mt-1 max-w-sm text-sm text-white/60 sm:text-base">Tell us about the clean — it lands in the admin queue for quoting.</p>
         </div>
 
         {/* Progress */}
@@ -290,7 +290,7 @@ export default function BookingPage() {
           {step === 4 && (
             <div>
               <h2 className="text-xl font-bold text-white mb-2">Review your request</h2>
-              <p className="text-white/50 text-sm mb-6">Once submitted, we'll review and send your quote within 60 minutes.</p>
+              <p className="text-white/50 text-sm mb-6">Once posted, your job appears in the admin console and we send your quote within 60 minutes.</p>
               <div className="space-y-3 mb-6">
                 {[
                   { label: 'Service', value: selectedService?.label },
@@ -327,7 +327,7 @@ export default function BookingPage() {
 
               <button onClick={handleSubmit} disabled={submitting}
                 className="w-full py-4 rounded-2xl font-bold text-lg transition-all bg-white text-[#0B3558] hover:bg-white/90 hover:shadow-xl disabled:opacity-60">
-                {submitting ? 'Submitting...' : 'Submit Quote Request →'}
+                {submitting ? 'Posting...' : 'Post Job →'}
               </button>
             </div>
           )}
