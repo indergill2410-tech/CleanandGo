@@ -677,7 +677,8 @@ function JobInspector({
             <div className="flex items-center gap-2 text-[#60798F]"><CalendarDays className="h-4 w-4" />{dateLabel(booking.scheduled_date)} at {timeLabel(booking.scheduled_time)}</div>
             <div className="font-bold">{booking.bedrooms} bedrooms / {booking.bathrooms} bathrooms / {money(booking.price_cents)}</div>
             {(booking.extras || []).length > 0 && <div className="text-[#60798F]">Extras: {(booking.extras || []).join(', ')}</div>}
-            {booking.notes && <div className="rounded bg-white p-3 text-[#60798F]">{booking.notes}</div>
+            {booking.notes && <div className="rounded bg-white p-3 text-[#60798F]">{booking.notes}</div>}
+          </div>
         </section>
 
         <section className="rounded-[8px] border border-[#DCE5ED] p-4">
@@ -739,32 +740,65 @@ function JobInspector({
           {done?.notes && <p className="mt-3 rounded bg-[#F4F7FA] p-3 text-sm text-[#60798F]">{done.notes}</p>}
         </section>
 
-        <section className="rounded-[8px] border border-[#DCE5ED] p-4 xl:col-span-2"‚ˆÈÛ\ÜÓ˜[YOH™›^][\ËXÙ[\ˆØ\Lˆ›ÛX›XÚÈY\ÜØYÙPÚ\˜ÛHÛ\ÜÓ˜[YOHšMHËMH^VÈÌQÑQHˆÏ“Y\ÜØYÙHİ\İÛY\ˆ[‹X\ÚÏ‚ˆÛ\ÜÓ˜[YOH›]LH^\ÛH^VÈÍŒÎN—H•\ÙHÛX\‹™X\Üİ\š[™Èİ\İÛY\ˆ[™İXYÙKˆ\È\X\œÈ[ˆZ\ˆÛX[›™ÛÈXØÛİ[[™Ù[™È[ˆ[XZ[›İYšXØ][Û‹Ü‚ˆ^\™XH›İÜÏ^ÍH˜[YO^ÛY\ÜØYÙU^HÛÚ[™ÙO^Ê]™[
-HOˆÙ]Y\ÜØYÙU^
-]™[\™Ù]˜[YJ_HÛ\ÜÓ˜[YOH›]MËY[›İ[™Y^›Ü™\ˆ›Ü™\‹VÈÑÑMQQHMKLÈ^\ÛHˆXÙZÛ\H‘^[\NˆH˜[™K[İ\ˆ][İH\È™XYKˆÙH[˜ÛYYHİ™[ˆ™\Ù][İH™\]Y\İY[™Ø[ˆÛÛ™š\›HY\Ù^H]NŒˆˆÏ‚ˆÛY\ÜØYÙTİ]\È	‰ˆÛ\ÜÓ˜[YOH›]Lˆ^\ÛH›ÛX›Û^VÈÌŒÍMNHÛY\ÜØYÙTİ]\ßOÜŸBˆ]ÛˆÛÛXÚÏ^ÛÛ“Y\ÜØYÙ_H\ØX›Y^ÜØ]š[™È[Y\ÜØYÙU^š[J
-_HÛ\ÜÓ˜[YOH›]LÈ[›[™KY›^Z[‹ZLLH][\ËXÙ[\ˆØ\Lˆ›İ[™YY[™ËVÈÌŒÍMNHMH^\ÛH›ÛX›XÚÈ^]Ú]H\ØX›Y›ÜXÚ]KML‚ˆÙ[™Û\ÜÓ˜[YOHšMËMˆÏ‚ˆÙ[™Y\ÜØYÙBˆØ]Û‚ˆİ™XY	‰ˆ
-ˆ]ˆÛ\ÜÓ˜[YOH›]MH›İ[™YVÎH™ËVÈÑÑWHM‚ˆ]ˆÛ\ÜÓ˜[YOH™›^][\ËXÙ[\ˆ\İYKX™]ÙY[ˆØ\LÈ‚ˆÛ\ÜÓ˜[YOH™›ÛX›XÚÈÛÛ™\œØ][Ûˆ\İÜOÚ‚ˆİ™XY[œ™XYØYZ[—ØÛİ[ˆ	‰ˆÜ[ˆÛ\ÜÓ˜[YOHœ›İ[™YY[™ËX›YKLLLÈKLH^^È›ÛX›XÚÈ^X›YKNİ™XY[œ™XYØYZ[—ØÛİ[H[œ™XYÜÜ[ŸBˆÙ]‚ˆ]ˆÛ\ÜÓ˜[YOH›]LÈX^ZMÌˆÜXÙK^KLÈİ™\™›İË^KX]]È‹LH‚ˆİ™XY›Y\ÜØYÙ\Ë›[™İOOHÈ
-ˆ]ˆÛ\ÜÓ˜[YOH^\ÛH^VÈÍŒÎN—H“›ÈY\ÜØYÙ\ÈY]Ù]‚ˆ
-Hˆ™XY›Y\ÜØYÙ\Ë›X\
+        <section className="rounded-[8px] border border-[#DCE5ED] p-4 xl:col-span-2">
+          <h3 className="flex items-center gap-2 font-black"><Camera className="h-5 w-5 text-[#1D7ED0]" />Job photos</h3>
+          <p className="mt-1 text-sm text-[#60798F]">Customer-uploaded photos and cleaner proof photos stay visible here for admin review.</p>
+          <PhotoStrip title="Customer request photos" photos={customerPhotos} />
+          <PhotoStrip title="Cleaner before photos" photos={beforePhotos} />
+          <PhotoStrip title="Cleaner after photos" photos={afterPhotos} />
+        </section>
 
-Y\ÜØYÙJHOˆ
-ˆ]ˆÙ^O^ÛY\ÜØYÙKšYHÛ\ÜÓ˜[YO^Ø›İ[™YVÎHLÈ^\ÛH	ÛY\ÜØYÙKœÙ[™\—İ\HOOH	ØYZ[‰ÈÈ	Ø™Ë]Ú]H^VÈÌŒÍMNIÈˆ	Ø™ËVÈÌŒÍMNH^]Ú]IßXO‚ˆ]ˆÛ\ÜÓ˜[YOHÚ]\ÜXÙK\™K]Ü˜\ÛY\ÜØYÙK˜›Ù_OÙ]‚ˆ]ˆÛ\ÜÓ˜[YO^Ø]Lˆ^^È	ÛY\ÜØYÙKœÙ[™\—İ\HOOH	ØYZ[‰ÈÈ	İ^VÈÍŒÎN—IÈˆ	İ^]Ú]KÖÌMWIßXO‚ˆÛY\ÜØYÙKœÙ[™\—İ\HOOH	ØYZ[‰ÈÈ	ĞYZ[‰Èˆ	Ğİ\İÛY\‰ßHHÛ™]È]JY\ÜØYÙK˜Ü™X]YØ]
-KÓØØ[Tİš[™Ê
-_BˆÙ]‚ˆÙ]‚ˆ
-J_BˆÙ]‚ˆÙ]‚ˆ
-_BˆÜÙXİ[Û‚ˆÙ]‚ˆÙ]‚ˆ
-BŸB‚™[˜İ[ÛˆİÔİš\
-È]KİÜÈNˆÈ]Nˆİš[™ÎÈİÜÎˆİš[™Ö×HJHÂˆ™]\›ˆ
-ˆ]ˆÛ\ÜÓ˜[YOH›]M‚ˆ]ˆÛ\ÜÓ˜[YOH^^È›ÛX›XÚÈ\\˜Ø\ÙH˜XÚÚ[™ËVÌŒM[WH^VÈÍŒÎN—Hİ]_OÙ]‚ˆÜİÜË›[™İOOHÈ
-ˆ]ˆÛ\ÜÓ˜[YOH›]Lˆ›İ[™YVÎH™ËVÈÑÑWHM^\ÛH^VÈÍŒÎN—H“›ÈİÜÈ\ØYYÙ]‚ˆ
-Hˆ
-ˆ]ˆÛ\ÜÓ˜[YOH›]LˆÜšYØ\LÈÛN™ÜšYXÛÛËLˆÎ™ÜšYXÛÛËLÈ‚ˆÜİÜË›X\
+        <section className="rounded-[8px] border border-[#DCE5ED] p-4 xl:col-span-2">
+          <h3 className="flex items-center gap-2 font-black"><MessageCircle className="h-5 w-5 text-[#1D7ED0]" />Message customer in-app</h3>
+          <p className="mt-1 text-sm text-[#60798F]">Use clear, reassuring customer language. This appears in their Cleanngo account and sends an email notification.</p>
+          <textarea rows={4} value={messageText} onChange={(event) => setMessageText(event.target.value)} className="mt-4 w-full rounded-xl border border-[#DCE5ED] px-4 py-3 text-sm" placeholder="Example: Hi Jane, your quote is ready. We included the oven reset you requested and can confirm Tuesday at 9:00." />
+          {messageStatus && <p className="mt-2 text-sm font-bold text-[#0B3558]">{messageStatus}</p>}
+          <button onClick={onMessage} disabled={saving || !messageText.trim()} className="mt-3 inline-flex min-h-11 items-center gap-2 rounded-full bg-[#0B3558] px-5 text-sm font-black text-white disabled:opacity-50">
+            <Send className="h-4 w-4" />
+            Send message
+          </button>
+          {thread && (
+            <div className="mt-5 rounded-[8px] bg-[#F4F7FA] p-4">
+              <div className="flex items-center justify-between gap-3">
+                <h4 className="font-black">Conversation history</h4>
+                {thread.unread_admin_count > 0 && <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-black text-blue-800">{thread.unread_admin_count} unread</span>}
+              </div>
+              <div className="mt-3 max-h-72 space-y-3 overflow-y-auto pr-1">
+                {thread.messages.length === 0 ? (
+                  <div className="text-sm text-[#60798F]">No messages yet.</div>
+                ) : thread.messages.map((message) => (
+                  <div key={message.id} className={`rounded-[8px] p-3 text-sm ${message.sender_type === 'admin' ? 'bg-white text-[#0B3558]' : 'bg-[#0B3558] text-white'}`}>
+                    <div className="whitespace-pre-wrap">{message.body}</div>
+                    <div className={`mt-2 text-xs ${message.sender_type === 'admin' ? 'text-[#60798F]' : 'text-white/55'}`}>
+                      {message.sender_type === 'admin' ? 'Admin' : 'Customer'} - {new Date(message.created_at).toLocaleString()}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </section>
+      </div>
+    </div>
+  )
+}
 
-Ü˜Ë[™^
-HOˆ
-ˆHÙ^O^Ø	ÜÜ˜ßKIÚ[™^XH™Y^ÜÜ˜ßH\™Ù]H—Ø›[šÈˆ™[H››ÛÜ[™\ˆ›Ü™Y™\œ™\ˆˆÛ\ÜÓ˜[YOH™Ü›İ\›ØÚÈİ™\™›İËZY[ˆ›İ[™YVÎH›Ü™\ˆ›Ü™\‹VÈÑÑMQQH™ËVÈÑÑWH‚ˆËÊˆ\Û[Y\ØX›K[™^[[™H™^Û™^Û›ËZ[YËY[[Y[
-‹ßBˆ[YÈÜ˜Ï^ÜÜ˜ßH[^Ø	İ]_H	Ú[™^
-È_XHÛ\ÜÓ˜[YOH˜\ÜXİ]šY[ÈËY[Øš™XİXÛİ™\ˆ˜[œÚ][ÛˆÜ›İ\Zİ™\œØØ[KVÌKŒ—HˆÏ‚ˆØO‚ˆ
-J_BˆÙ]‚ˆ
-_BˆÙ]‚ˆ
-BŸB
+function PhotoStrip({ title, photos }: { title: string; photos: string[] }) {
+  return (
+    <div className="mt-4">
+      <div className="text-xs font-black uppercase tracking-[0.14em] text-[#60798F]">{title}</div>
+      {photos.length === 0 ? (
+        <div className="mt-2 rounded-[8px] bg-[#F4F7FA] p-4 text-sm text-[#60798F]">No photos uploaded.</div>
+      ) : (
+        <div className="mt-2 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {photos.map((src, index) => (
+            <a key={`${src}-${index}`} href={src} target="_blank" rel="noopener noreferrer" className="group block overflow-hidden rounded-[8px] border border-[#DCE5ED] bg-[#F4F7FA]">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={src} alt={`${title} ${index + 1}`} className="aspect-video w-full object-cover transition group-hover:scale-[1.02]" />
+            </a>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
