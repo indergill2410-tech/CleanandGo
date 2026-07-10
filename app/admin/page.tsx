@@ -36,6 +36,7 @@ const NAV = [
   { href: '/admin/invoices', label: 'Invoices' },
   { href: '/admin/applications', label: 'Applications' },
   { href: '/admin/team', label: 'Team' },
+  { href: '/admin/finance', label: 'Finance' },
   { href: '/admin/timesheets', label: 'Timesheets' },
   { href: '/admin/newsletter', label: 'Newsletter' },
   { href: '/admin/notifications', label: 'Notifications' },

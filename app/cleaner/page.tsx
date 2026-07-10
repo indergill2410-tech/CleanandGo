@@ -169,6 +169,9 @@ export default function CleanerPortal() {
               <div>{profile?.staff.phone || 'Phone not set'}</div>
               <div>{profile?.staff.suburb || 'Primary area not set'}</div>
             </div>
+            <Link href="/cleaner/onboarding" className="mt-5 inline-flex min-h-11 w-full items-center justify-center rounded-full bg-[#0B3558] px-4 text-sm font-black text-white">
+              Contractor onboarding
+            </Link>
           </section>
 
           <section className="grid grid-cols-2 gap-3">
