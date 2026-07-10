@@ -1,7 +1,6 @@
 'use client'
 import { useEffect, useMemo, useState } from 'react'
-import Link from 'next/link'
-import { ArrowLeft, BadgeCheck, Banknote, CheckCircle2, CircleDollarSign, ClipboardCheck, Plus, ReceiptText, Search, XCircle } from 'lucide-react'
+import { BadgeCheck, Banknote, CheckCircle2, CircleDollarSign, ClipboardCheck, Plus, ReceiptText, Search, XCircle } from 'lucide-react'
 
 type Staff = {
   id: string
@@ -227,25 +226,20 @@ export default function AdminFinancePage() {
   }
 
   if (loading) {
-    return <main className="flex min-h-screen items-center justify-center bg-[#F4F7FA] text-[#0B3558]">Loading finance...</main>
+    return <section className="flex min-h-[70vh] items-center justify-center px-4 text-[#0B3558]">Loading finance...</section>
   }
 
   return (
-    <main className="min-h-screen bg-[#F4F7FA] text-[#0B3558]">
-      <header className="border-b border-[#DCE5ED] bg-white">
-        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6">
-          <Link href="/admin" className="inline-flex items-center gap-2 text-sm font-black text-[#1D7ED0]">
-            <ArrowLeft className="h-4 w-4" />
-            Operations dashboard
-          </Link>
-          <div className="mt-4">
-            <h1 className="text-3xl font-black sm:text-4xl">Finance and contractor ops</h1>
-            <p className="mt-1 text-[#60798F]">Timestamp staff wages, ABN payments, expenses and onboarding readiness.</p>
-          </div>
+    <section className="px-4 py-5 text-[#0B3558] sm:px-6 lg:px-8">
+      <header className="rounded-[8px] border border-[#DCE5ED] bg-white p-5 shadow-sm">
+        <div>
+          <p className="text-xs font-black uppercase tracking-[0.18em] text-[#1D7ED0]">Finance ops</p>
+          <h1 className="mt-2 text-3xl font-black sm:text-4xl">Contractor pay, spending, and readiness</h1>
+          <p className="mt-2 text-sm font-bold text-[#60798F]">Timestamp staff wages, ABN payments, expenses and onboarding readiness.</p>
         </div>
       </header>
 
-      <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6">
+      <div className="py-5">
         {error && <Alert tone="error">{error}</Alert>}
         {message && <Alert tone="success">{message}</Alert>}
 
@@ -439,7 +433,7 @@ export default function AdminFinancePage() {
           </aside>
         </div>
       </div>
-    </main>
+    </section>
   )
 }
 
