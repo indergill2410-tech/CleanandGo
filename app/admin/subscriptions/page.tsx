@@ -119,7 +119,7 @@ export default function AdminSubscriptions() {
     s.property_type === 'office' ? `${s.office_sqm ?? '?'} m²` : `${s.bedrooms ?? '?'} bed · ${s.bathrooms ?? '?'} bath`
 
   return (
-    <div className="min-h-screen bg-[#EFF7FC] text-[#0B3558]">
+    <div className="min-h-screen bg-[#DDECF5] text-[#0B3558]">
       <div className="relative z-10 mx-auto max-w-7xl px-4 py-5 sm:px-6 lg:px-8">
         <div className="mb-8">
           <Link href="/admin" className="text-sm font-black text-[#1D7ED0] hover:text-[#0B3558]">Back to overview</Link>
@@ -127,7 +127,7 @@ export default function AdminSubscriptions() {
           <p className="mt-1 text-sm font-bold text-[#60798F]">Price each plan, assign the regular cleaner, and arrange backup cover when needed.</p>
         </div>
 
-        <div className="mb-6 grid gap-5 rounded-[8px] border border-[#CFE0ED] bg-white p-5 shadow-sm md:grid-cols-2">
+        <div className="mb-6 grid gap-5 rounded-[8px] border border-[#B9CFDE] bg-[#F8FBFF] p-5 shadow-sm md:grid-cols-2">
           <div>
             <div className="mb-2 text-sm font-black text-[#0B3558]">Upcoming visits</div>
             <button onClick={generateVisits} className="rounded-full bg-[#0B3558] px-4 py-2.5 text-sm font-black text-white hover:bg-[#164A75]">
@@ -137,12 +137,12 @@ export default function AdminSubscriptions() {
           <div>
             <div className="mb-2 text-sm font-black text-[#0B3558]">Arrange backup cover</div>
             <div className="flex gap-2">
-              <select value={offStaff} onChange={e => setOffStaff(e.target.value)} className="flex-1 rounded-[8px] border border-[#CFE0ED] bg-[#F8FBFF] px-3 py-2.5 text-sm text-[#0B3558]">
+              <select value={offStaff} onChange={e => setOffStaff(e.target.value)} className="flex-1 rounded-[8px] border border-[#B9CFDE] bg-[#F8FBFF] px-3 py-2.5 text-sm text-[#0B3558]">
                 <option value="">Cleaner...</option>
                 {staff.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
               </select>
-              <input type="date" value={offDate} onChange={e => setOffDate(e.target.value)} className="rounded-[8px] border border-[#CFE0ED] bg-[#F8FBFF] px-3 py-2.5 text-sm text-[#0B3558]" />
-              <button onClick={reportOff} className="whitespace-nowrap rounded-full border border-[#CFE0ED] bg-white px-4 py-2.5 text-sm font-black text-[#0B3558] hover:border-[#1D7ED0]">Arrange cover</button>
+              <input type="date" value={offDate} onChange={e => setOffDate(e.target.value)} className="rounded-[8px] border border-[#B9CFDE] bg-[#F8FBFF] px-3 py-2.5 text-sm text-[#0B3558]" />
+              <button onClick={reportOff} className="whitespace-nowrap rounded-full border border-[#B9CFDE] bg-[#F8FBFF] px-4 py-2.5 text-sm font-black text-[#0B3558] hover:border-[#1D7ED0]">Arrange cover</button>
             </div>
           </div>
           {toolMsg && <div className="text-sm font-bold text-[#1D7ED0] md:col-span-2">{toolMsg}</div>}
@@ -151,11 +151,11 @@ export default function AdminSubscriptions() {
         {loading ? (
           <div className="text-[#60798F]">Loading...</div>
         ) : subs.length === 0 ? (
-          <div className="rounded-[8px] border border-[#CFE0ED] bg-white p-10 text-center text-[#60798F] shadow-sm">No plan requests yet.</div>
+          <div className="rounded-[8px] border border-[#B9CFDE] bg-[#F8FBFF] p-10 text-center text-[#60798F] shadow-sm">No plan requests yet.</div>
         ) : (
           <div className="grid gap-4">
             {subs.map(sub => (
-              <div key={sub.id} className="flex flex-col justify-between gap-4 rounded-[8px] border border-[#CFE0ED] bg-white p-5 shadow-sm md:flex-row md:items-center">
+              <div key={sub.id} className="flex flex-col justify-between gap-4 rounded-[8px] border border-[#B9CFDE] bg-[#F8FBFF] p-5 shadow-sm md:flex-row md:items-center">
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-1">
                     <span className="font-black text-[#0B3558]">{sub.customers?.name || 'Unknown'}</span>
@@ -171,7 +171,7 @@ export default function AdminSubscriptions() {
                   {sub.photos && sub.photos.length > 0 && (
                     <div className="flex gap-2 mt-2">
                       {sub.photos.map(url => (
-                        <a key={url} href={url} target="_blank" rel="noopener noreferrer" className="block h-12 w-12 overflow-hidden rounded-[8px] border border-[#CFE0ED]">
+                        <a key={url} href={url} target="_blank" rel="noopener noreferrer" className="block h-12 w-12 overflow-hidden rounded-[8px] border border-[#B9CFDE]">
                           {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img src={url} alt="Booking photo" className="w-full h-full object-cover" />
                         </a>
@@ -191,22 +191,22 @@ export default function AdminSubscriptions() {
       {/* Activate modal */}
       {selected && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={() => setSelected(null)}>
-          <div className="w-full max-w-md rounded-[8px] border border-[#CFE0ED] bg-white p-7 shadow-xl" onClick={e => e.stopPropagation()}>
+          <div className="w-full max-w-md rounded-[8px] border border-[#B9CFDE] bg-[#F8FBFF] p-7 shadow-xl" onClick={e => e.stopPropagation()}>
             <h2 className="mb-1 text-xl font-black text-[#0B3558]">Price and assign</h2>
             <p className="mb-5 text-sm font-bold text-[#60798F]">{selected.customers?.name} · {selected.property_type} · {selected.frequency}</p>
 
             <label className="mb-1 block text-sm font-black text-[#60798F]">Per-visit price (AUD)</label>
             <input type="number" min={0} step="0.01" value={price} onChange={e => setPrice(e.target.value)}
-              placeholder="e.g. 140" className="mb-4 w-full rounded-[8px] border border-[#CFE0ED] bg-[#F8FBFF] px-4 py-3 text-sm text-[#0B3558] placeholder:text-[#8AA0AC]" />
+              placeholder="e.g. 140" className="mb-4 w-full rounded-[8px] border border-[#B9CFDE] bg-[#F8FBFF] px-4 py-3 text-sm text-[#0B3558] placeholder:text-[#8AA0AC]" />
 
             <label className="mb-1 block text-sm font-black text-[#60798F]">Primary cleaner</label>
-            <select value={primary} onChange={e => setPrimary(e.target.value)} className="mb-4 w-full rounded-[8px] border border-[#CFE0ED] bg-[#F8FBFF] px-4 py-3 text-sm text-[#0B3558]">
+            <select value={primary} onChange={e => setPrimary(e.target.value)} className="mb-4 w-full rounded-[8px] border border-[#B9CFDE] bg-[#F8FBFF] px-4 py-3 text-sm text-[#0B3558]">
               <option value="">Unassigned</option>
               {staff.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
             </select>
 
             <label className="mb-1 block text-sm font-black text-[#60798F]">Backup cleaner</label>
-            <select value={backup} onChange={e => setBackup(e.target.value)} className="mb-5 w-full rounded-[8px] border border-[#CFE0ED] bg-[#F8FBFF] px-4 py-3 text-sm text-[#0B3558]">
+            <select value={backup} onChange={e => setBackup(e.target.value)} className="mb-5 w-full rounded-[8px] border border-[#B9CFDE] bg-[#F8FBFF] px-4 py-3 text-sm text-[#0B3558]">
               <option value="">Unassigned</option>
               {staff.filter(s => s.id !== primary).map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
             </select>
@@ -215,7 +215,7 @@ export default function AdminSubscriptions() {
             {msg && <div className="mb-4 rounded-[8px] border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-bold text-emerald-700">{msg}</div>}
 
             <div className="flex gap-3">
-              <button onClick={() => setSelected(null)} className="flex-1 rounded-[8px] border border-[#CFE0ED] py-3 text-sm font-black text-[#0B3558] transition hover:bg-[#EFF7FC]">Cancel</button>
+              <button onClick={() => setSelected(null)} className="flex-1 rounded-[8px] border border-[#B9CFDE] py-3 text-sm font-black text-[#0B3558] transition hover:bg-[#DDECF5]">Cancel</button>
               <button onClick={activate} disabled={saving || !price} className="flex-1 rounded-[8px] bg-[#0B3558] py-3 text-sm font-black text-white transition hover:bg-[#164A75] disabled:opacity-50">
                 {saving ? 'Saving...' : 'Confirm plan'}
               </button>
@@ -226,3 +226,4 @@ export default function AdminSubscriptions() {
     </div>
   )
 }
+

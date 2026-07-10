@@ -199,12 +199,12 @@ export default function CleanerOnboardingPage() {
   }
 
   if (loading) {
-    return <main className="flex min-h-screen items-center justify-center bg-[#F4F7FA] text-[#0B3558]">Loading onboarding...</main>
+    return <main className="flex min-h-screen items-center justify-center bg-[#EAF6FC] text-[#0B3558]">Loading onboarding...</main>
   }
 
   return (
-    <main className="min-h-screen bg-[#F4F7FA] text-[#0B3558]">
-      <header className="border-b border-[#DCE5ED] bg-white">
+    <main className="min-h-screen bg-[#EAF6FC] text-[#0B3558]">
+      <header className="border-b border-[#B9CFDE] bg-white">
         <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6">
           <Link href="/cleaner" className="inline-flex items-center gap-2 text-sm font-black text-[#1D7ED0]">
             <ArrowLeft className="h-4 w-4" />
@@ -241,7 +241,7 @@ export default function CleanerOnboardingPage() {
             <div className="grid gap-3 sm:grid-cols-2">
               <Field label="ABN" value={form.abn} onChange={(value) => set('abn', value)} required />
               <Field label="Business name" value={form.businessName} onChange={(value) => set('businessName', value)} />
-              <label className="flex min-h-11 items-center gap-3 rounded-[8px] border border-[#DCE5ED] bg-[#F8FAFC] px-4 text-sm font-bold text-[#60798F]">
+              <label className="flex min-h-11 items-center gap-3 rounded-[8px] border border-[#B9CFDE] bg-[#F8FAFC] px-4 text-sm font-bold text-[#60798F]">
                 <input type="checkbox" checked={form.gstRegistered} onChange={(event) => set('gstRegistered', event.target.checked)} className="h-4 w-4 accent-[#1D7ED0]" />
                 GST registered
               </label>
@@ -261,7 +261,7 @@ export default function CleanerOnboardingPage() {
               <Field label="WWCC number" value={form.wwccNumber} onChange={(value) => set('wwccNumber', value)} />
               <Field label="WWCC expiry" type="date" value={form.wwccExpiry} onChange={(value) => set('wwccExpiry', value)} />
               <Field label="Driver licence" value={form.driverLicence} onChange={(value) => set('driverLicence', value)} />
-              <label className="flex min-h-11 items-center gap-3 rounded-[8px] border border-[#DCE5ED] bg-[#F8FAFC] px-4 text-sm font-bold text-[#60798F]">
+              <label className="flex min-h-11 items-center gap-3 rounded-[8px] border border-[#B9CFDE] bg-[#F8FAFC] px-4 text-sm font-bold text-[#60798F]">
                 <input type="checkbox" checked={form.vehicleAvailable} onChange={(event) => set('vehicleAvailable', event.target.checked)} className="h-4 w-4 accent-[#1D7ED0]" />
                 Vehicle available
               </label>
@@ -276,7 +276,7 @@ export default function CleanerOnboardingPage() {
               {templates.map((template) => {
                 const accepted = acceptedTypes.has(template.type)
                 return (
-                  <article key={template.type} className="rounded-[8px] border border-[#DCE5ED] bg-[#F8FAFC] p-4">
+                  <article key={template.type} className="rounded-[8px] border border-[#B9CFDE] bg-[#F8FAFC] p-4">
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                       <div>
                         <h3 className="font-black">{template.title}</h3>
@@ -293,7 +293,7 @@ export default function CleanerOnboardingPage() {
                     </div>
                     <details className="mt-3 text-sm text-[#60798F]">
                       <summary className="cursor-pointer font-black text-[#1D7ED0]">Read agreement</summary>
-                      <pre className="mt-3 whitespace-pre-wrap rounded-[8px] bg-white p-4 text-xs leading-5 text-[#0B3558]">{template.body}</pre>
+                      <pre className="mt-3 whitespace-pre-wrap rounded-[8px] bg-[#F8FBFF] p-4 text-xs leading-5 text-[#0B3558]">{template.body}</pre>
                     </details>
                   </article>
                 )
@@ -302,7 +302,7 @@ export default function CleanerOnboardingPage() {
           </Panel>
 
           <div className="flex flex-col gap-3 sm:flex-row">
-            <button onClick={() => save(false)} disabled={saving} className="min-h-12 rounded-xl border border-[#DCE5ED] bg-white px-5 text-sm font-black text-[#0B3558] disabled:opacity-50">Save draft</button>
+            <button onClick={() => save(false)} disabled={saving} className="min-h-12 rounded-xl border border-[#B9CFDE] bg-[#F8FBFF] px-5 text-sm font-black text-[#0B3558] disabled:opacity-50">Save draft</button>
             <button onClick={() => save(true)} disabled={saving || !readyToSubmit} className="min-h-12 rounded-xl bg-[#0B3558] px-5 text-sm font-black text-white disabled:opacity-50">Submit for admin review</button>
           </div>
         </section>
@@ -316,7 +316,7 @@ export default function CleanerOnboardingPage() {
             tertiary={{ label: 'Review', value: profile?.onboarding_status || 'Draft' }}
           />
 
-          <section className="rounded-[8px] border border-[#DCE5ED] bg-white p-5 shadow-sm">
+          <section className="rounded-[8px] border border-[#B9CFDE] bg-[#F8FBFF] p-5 shadow-sm">
             <h2 className="flex items-center gap-2 font-black"><ClipboardCheck className="h-5 w-5 text-[#1D7ED0]" />Readiness</h2>
             <div className="mt-4 space-y-2">
               <CheckRow label="Required profile details" ok={essentialsDone} />
@@ -326,16 +326,16 @@ export default function CleanerOnboardingPage() {
             <p className="mt-4 text-sm text-[#60798F]">Complete these items so Cleanngo can assign jobs and pay you without delays.</p>
           </section>
 
-          <section className="rounded-[8px] border border-[#DCE5ED] bg-white p-5 shadow-sm">
+          <section className="rounded-[8px] border border-[#B9CFDE] bg-[#F8FBFF] p-5 shadow-sm">
             <h2 className="flex items-center gap-2 font-black"><BriefcaseBusiness className="h-5 w-5 text-[#1D7ED0]" />Recent payments</h2>
             <div className="mt-4 space-y-3">
               {payments.length === 0 ? (
                 <p className="text-sm text-[#60798F]">No contractor payments recorded yet.</p>
               ) : payments.slice(0, 6).map((payment) => (
-                <div key={payment.id} className="rounded-[8px] bg-[#F4F7FA] p-3 text-sm">
+                <div key={payment.id} className="rounded-[8px] bg-[#EAF6FC] p-3 text-sm">
                   <div className="flex items-center justify-between gap-3">
                     <span className="font-black">{money(payment.amount_cents)}</span>
-                    <span className="rounded-full bg-white px-2 py-1 text-xs font-black capitalize text-[#60798F]">{payment.status}</span>
+                    <span className="rounded-full bg-[#F8FBFF] px-2 py-1 text-xs font-black capitalize text-[#60798F]">{payment.status}</span>
                   </div>
                   <div className="mt-1 text-xs text-[#60798F]">{dateLabel(payment.pay_period_start)} to {dateLabel(payment.pay_period_end)}</div>
                   {payment.payment_reference && <div className="mt-1 text-xs font-bold text-[#60798F]">Ref: {payment.payment_reference}</div>}
@@ -351,7 +351,7 @@ export default function CleanerOnboardingPage() {
 
 function Panel({ title, icon: Icon, children }: { title: string; icon: typeof UserRound; children: React.ReactNode }) {
   return (
-    <section className="rounded-[8px] border border-[#DCE5ED] bg-white p-5 shadow-sm">
+    <section className="rounded-[8px] border border-[#B9CFDE] bg-[#F8FBFF] p-5 shadow-sm">
       <h2 className="mb-4 flex items-center gap-2 text-lg font-black"><Icon className="h-5 w-5 text-[#1D7ED0]" />{title}</h2>
       {children}
     </section>
@@ -362,7 +362,7 @@ function Field({ label, value, onChange, type = 'text', required = false }: { la
   return (
     <label className="block">
       <span className="mb-1 block text-xs font-black uppercase tracking-[0.12em] text-[#60798F]">{label}{required ? ' *' : ''}</span>
-      <input type={type} value={value} onChange={(event) => onChange(event.target.value)} className="min-h-11 w-full rounded-[8px] border border-[#DCE5ED] px-3 text-sm outline-none focus:border-[#1D7ED0]" />
+      <input type={type} value={value} onChange={(event) => onChange(event.target.value)} className="min-h-11 w-full rounded-[8px] border border-[#B9CFDE] px-3 text-sm outline-none focus:border-[#1D7ED0]" />
     </label>
   )
 }
@@ -371,7 +371,7 @@ function TextArea({ label, value, onChange }: { label: string; value: string; on
   return (
     <label className="block sm:col-span-2">
       <span className="mb-1 block text-xs font-black uppercase tracking-[0.12em] text-[#60798F]">{label}</span>
-      <textarea rows={3} value={value} onChange={(event) => onChange(event.target.value)} className="w-full rounded-[8px] border border-[#DCE5ED] px-3 py-2 text-sm outline-none focus:border-[#1D7ED0]" />
+      <textarea rows={3} value={value} onChange={(event) => onChange(event.target.value)} className="w-full rounded-[8px] border border-[#B9CFDE] px-3 py-2 text-sm outline-none focus:border-[#1D7ED0]" />
     </label>
   )
 }
@@ -383,7 +383,7 @@ function StatusBadge({ status }: { status: string }) {
 
 function CheckRow({ label, ok }: { label: string; ok: boolean }) {
   return (
-    <div className="flex items-center justify-between gap-3 rounded-[8px] bg-[#F4F7FA] px-3 py-2 text-sm">
+    <div className="flex items-center justify-between gap-3 rounded-[8px] bg-[#EAF6FC] px-3 py-2 text-sm">
       <span className="font-bold text-[#60798F]">{label}</span>
       <span className={`font-black ${ok ? 'text-emerald-700' : 'text-amber-700'}`}>{ok ? 'Done' : 'Needed'}</span>
     </div>
@@ -394,3 +394,4 @@ function Alert({ tone, children }: { tone: 'error' | 'success'; children: React.
   const style = tone === 'error' ? 'border-red-200 bg-red-50 text-red-700' : 'border-emerald-200 bg-emerald-50 text-emerald-700'
   return <div className={`rounded-[8px] border px-4 py-3 text-sm font-bold ${style}`}>{children}</div>
 }
+

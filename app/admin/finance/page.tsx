@@ -231,7 +231,7 @@ export default function AdminFinancePage() {
 
   return (
     <section className="px-4 py-5 text-[#0B3558] sm:px-6 lg:px-8">
-      <header className="rounded-[8px] border border-[#DCE5ED] bg-white p-5 shadow-sm">
+      <header className="rounded-[8px] border border-[#B9CFDE] bg-[#F8FBFF] p-5 shadow-sm">
         <div>
           <p className="text-xs font-black uppercase tracking-[0.18em] text-[#1D7ED0]">Finance</p>
           <h1 className="mt-2 text-3xl font-black sm:text-4xl">Staff pay, business spending, and onboarding checks</h1>
@@ -255,7 +255,7 @@ export default function AdminFinancePage() {
         <div className="grid gap-6 xl:grid-cols-[1fr_420px]">
           <section className="space-y-6">
             <Panel title="Contractor readiness">
-              <label className="mb-4 flex min-h-11 max-w-md items-center gap-2 rounded-full border border-[#DCE5ED] bg-[#F8FAFC] px-4">
+              <label className="mb-4 flex min-h-11 max-w-md items-center gap-2 rounded-full border border-[#B9CFDE] bg-[#F8FAFC] px-4">
                 <Search className="h-4 w-4 text-[#60798F]" />
                 <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search cleaner, ABN, email" className="w-full bg-transparent text-sm outline-none" />
               </label>
@@ -266,7 +266,7 @@ export default function AdminFinancePage() {
                   const bankOk = Boolean(profile?.bsb && profile?.account_number && profile?.bank_account_name)
                   const abnOk = Boolean(profile?.abn)
                   return (
-                    <article key={member.id} className="rounded-[8px] border border-[#DCE5ED] bg-[#F8FAFC] p-4">
+                    <article key={member.id} className="rounded-[8px] border border-[#B9CFDE] bg-[#F8FAFC] p-4">
                       <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
                         <div>
                           <div className="flex flex-wrap items-center gap-2">
@@ -334,14 +334,14 @@ export default function AdminFinancePage() {
                     ))}
                   </tbody>
                 </table>
-                {payments.length === 0 && <div className="rounded-[8px] bg-[#F4F7FA] p-6 text-center text-sm text-[#60798F]">No staff payments recorded yet.</div>}
+                {payments.length === 0 && <div className="rounded-[8px] bg-[#EAF6FC] p-6 text-center text-sm text-[#60798F]">No staff payments recorded yet.</div>}
               </div>
             </Panel>
 
             <Panel title="Business expenses">
               <div className="space-y-3">
                 {expenses.map((expense) => (
-                  <article key={expense.id} className="flex flex-col gap-3 rounded-[8px] border border-[#DCE5ED] bg-[#F8FAFC] p-4 sm:flex-row sm:items-center sm:justify-between">
+                  <article key={expense.id} className="flex flex-col gap-3 rounded-[8px] border border-[#B9CFDE] bg-[#F8FAFC] p-4 sm:flex-row sm:items-center sm:justify-between">
                     <div>
                       <div className="font-black">{expense.vendor || expense.category}</div>
                       <div className="mt-1 text-sm text-[#60798F]">{dateTimeLabel(expense.expense_at)} · {expense.category} · {expense.payment_method}</div>
@@ -353,7 +353,7 @@ export default function AdminFinancePage() {
                     </div>
                   </article>
                 ))}
-                {expenses.length === 0 && <div className="rounded-[8px] bg-[#F4F7FA] p-6 text-center text-sm text-[#60798F]">No expenses recorded yet.</div>}
+                {expenses.length === 0 && <div className="rounded-[8px] bg-[#EAF6FC] p-6 text-center text-sm text-[#60798F]">No expenses recorded yet.</div>}
               </div>
             </Panel>
           </section>
@@ -408,7 +408,7 @@ export default function AdminFinancePage() {
                 </Select>
                 <Field label="Vendor" value={expenseForm.vendor} onChange={(value) => setExpenseForm((current) => ({ ...current, vendor: value }))} />
                 <Field label="Amount $" value={expenseForm.amount} onChange={(value) => setExpenseForm((current) => ({ ...current, amount: value }))} required />
-                <label className="flex min-h-11 items-center gap-3 rounded-[8px] border border-[#DCE5ED] bg-[#F8FAFC] px-4 text-sm font-bold text-[#60798F]">
+                <label className="flex min-h-11 items-center gap-3 rounded-[8px] border border-[#B9CFDE] bg-[#F8FAFC] px-4 text-sm font-bold text-[#60798F]">
                   <input type="checkbox" checked={expenseForm.gstIncluded} onChange={(event) => setExpenseForm((current) => ({ ...current, gstIncluded: event.target.checked }))} className="h-4 w-4 accent-[#1D7ED0]" />
                   GST included
                 </label>
@@ -439,7 +439,7 @@ export default function AdminFinancePage() {
 
 function Panel({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section className="rounded-[8px] border border-[#DCE5ED] bg-white p-5 shadow-sm">
+    <section className="rounded-[8px] border border-[#B9CFDE] bg-[#F8FBFF] p-5 shadow-sm">
       <h2 className="mb-4 text-lg font-black">{title}</h2>
       {children}
     </section>
@@ -448,7 +448,7 @@ function Panel({ title, children }: { title: string; children: React.ReactNode }
 
 function Metric({ label, value, icon: Icon }: { label: string; value: string; icon: typeof CircleDollarSign }) {
   return (
-    <section className="rounded-[8px] border border-[#DCE5ED] bg-white p-4 shadow-sm">
+    <section className="rounded-[8px] border border-[#B9CFDE] bg-[#F8FBFF] p-4 shadow-sm">
       <Icon className="h-5 w-5 text-[#1D7ED0]" />
       <div className="mt-3 text-xl font-black">{value}</div>
       <div className="text-xs font-bold text-[#60798F]">{label}</div>
@@ -460,7 +460,7 @@ function Field({ label, value, onChange, type = 'text', required = false }: { la
   return (
     <label className="block">
       <span className="mb-1 block text-xs font-black uppercase tracking-[0.12em] text-[#60798F]">{label}{required ? ' *' : ''}</span>
-      <input type={type} value={value} required={required} onChange={(event) => onChange(event.target.value)} className="min-h-11 w-full rounded-[8px] border border-[#DCE5ED] px-3 text-sm outline-none focus:border-[#1D7ED0]" />
+      <input type={type} value={value} required={required} onChange={(event) => onChange(event.target.value)} className="min-h-11 w-full rounded-[8px] border border-[#B9CFDE] px-3 text-sm outline-none focus:border-[#1D7ED0]" />
     </label>
   )
 }
@@ -469,7 +469,7 @@ function Select({ label, value, onChange, required = false, children }: { label:
   return (
     <label className="block">
       <span className="mb-1 block text-xs font-black uppercase tracking-[0.12em] text-[#60798F]">{label}{required ? ' *' : ''}</span>
-      <select value={value} required={required} onChange={(event) => onChange(event.target.value)} className="min-h-11 w-full rounded-[8px] border border-[#DCE5ED] px-3 text-sm outline-none focus:border-[#1D7ED0]">
+      <select value={value} required={required} onChange={(event) => onChange(event.target.value)} className="min-h-11 w-full rounded-[8px] border border-[#B9CFDE] px-3 text-sm outline-none focus:border-[#1D7ED0]">
         {children}
       </select>
     </label>
@@ -480,7 +480,7 @@ function TextArea({ label, value, onChange }: { label: string; value: string; on
   return (
     <label className="block">
       <span className="mb-1 block text-xs font-black uppercase tracking-[0.12em] text-[#60798F]">{label}</span>
-      <textarea rows={3} value={value} onChange={(event) => onChange(event.target.value)} className="w-full rounded-[8px] border border-[#DCE5ED] px-3 py-2 text-sm outline-none focus:border-[#1D7ED0]" />
+      <textarea rows={3} value={value} onChange={(event) => onChange(event.target.value)} className="w-full rounded-[8px] border border-[#B9CFDE] px-3 py-2 text-sm outline-none focus:border-[#1D7ED0]" />
     </label>
   )
 }
@@ -495,10 +495,12 @@ function Chip({ ok, label }: { ok: boolean; label: string }) {
 }
 
 function SmallButton({ onClick, disabled, children }: { onClick: () => void; disabled?: boolean; children: React.ReactNode }) {
-  return <button onClick={onClick} disabled={disabled} className="rounded-full border border-[#DCE5ED] px-3 py-1.5 text-xs font-black text-[#0B3558] disabled:opacity-50">{children}</button>
+  return <button onClick={onClick} disabled={disabled} className="rounded-full border border-[#B9CFDE] px-3 py-1.5 text-xs font-black text-[#0B3558] disabled:opacity-50">{children}</button>
 }
 
 function Alert({ tone, children }: { tone: 'error' | 'success'; children: React.ReactNode }) {
   const style = tone === 'error' ? 'border-red-200 bg-red-50 text-red-700' : 'border-emerald-200 bg-emerald-50 text-emerald-700'
   return <div className={`mb-4 rounded-[8px] border px-4 py-3 text-sm font-bold ${style}`}>{children}</div>
 }
+
+

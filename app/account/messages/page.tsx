@@ -82,11 +82,11 @@ function MessagesView() {
   }
 
   if (loading) {
-    return <div className="min-h-screen flex items-center justify-center bg-[#EFF7FC] text-[#0B3558]">Opening your messages...</div>
+    return <div className="min-h-screen flex items-center justify-center bg-[#DDECF5] text-[#0B3558]">Opening your messages...</div>
   }
 
   return (
-    <div className="min-h-screen bg-[#EFF7FC] px-4 py-10 text-[#0B3558]">
+    <div className="min-h-screen bg-[#DDECF5] px-4 py-10 text-[#0B3558]">
       <div className="max-w-5xl mx-auto">
         <div className="mb-6">
           <Link href="/account" className="text-[#1D7ED0] text-sm font-black hover:text-[#0B3558]">Back to account</Link>
@@ -95,15 +95,15 @@ function MessagesView() {
         </div>
 
         {conversations.length === 0 ? (
-          <div className="rounded-[8px] border border-[#CFE0ED] bg-white p-10 text-center text-[#60798F] shadow-sm">No messages yet. When your service team sends an update, it will appear here.</div>
+          <div className="rounded-[8px] border border-[#B9CFDE] bg-[#F8FBFF] p-10 text-center text-[#60798F] shadow-sm">No messages yet. When your service team sends an update, it will appear here.</div>
         ) : (
           <div className="grid lg:grid-cols-[320px_1fr] gap-4">
-            <div className="h-fit space-y-2 rounded-[8px] border border-[#CFE0ED] bg-white p-3 shadow-sm">
+            <div className="h-fit space-y-2 rounded-[8px] border border-[#B9CFDE] bg-[#F8FBFF] p-3 shadow-sm">
               {conversations.map((conversation) => (
                 <button
                   key={conversation.id}
                   onClick={() => setSelectedId(conversation.id)}
-                  className={`w-full rounded-[8px] px-4 py-3 text-left transition-colors ${selected?.id === conversation.id ? 'bg-[#0B3558] text-white' : 'bg-[#F8FBFF] text-[#0B3558] hover:bg-[#EFF7FC]'}`}
+                  className={`w-full rounded-[8px] px-4 py-3 text-left transition-colors ${selected?.id === conversation.id ? 'bg-[#0B3558] text-white' : 'bg-white/75 text-[#0B3558] hover:bg-[#EAF6FC]'}`}
                 >
                   <div className="font-semibold text-sm">{conversation.subject || 'Service update'}</div>
                   <div className={`mt-1 text-xs ${selected?.id === conversation.id ? 'text-white/62' : 'text-[#60798F]'}`}>
@@ -113,8 +113,8 @@ function MessagesView() {
               ))}
             </div>
 
-            <div className="rounded-[8px] border border-[#CFE0ED] bg-white p-5 shadow-sm">
-              <div className="mb-4 border-b border-[#CFE0ED] pb-4">
+            <div className="rounded-[8px] border border-[#B9CFDE] bg-[#F8FBFF] p-5 shadow-sm">
+              <div className="mb-4 border-b border-[#B9CFDE] pb-4">
                 <div className="font-black text-[#0B3558]">{selected?.subject || 'Service update'}</div>
                 {selected?.booking_id && <div className="mt-1 text-xs text-[#60798F]">Booking: {selected.booking_id}</div>}
               </div>
@@ -124,7 +124,7 @@ function MessagesView() {
                   const mine = message.sender_type === 'customer'
                   return (
                     <div key={message.id} className={`flex ${mine ? 'justify-end' : 'justify-start'}`}>
-                      <div className={`max-w-[82%] rounded-[8px] px-4 py-3 ${mine ? 'bg-[#0B3558] text-white' : 'bg-[#EFF7FC] text-[#0B3558]'}`}>
+                      <div className={`max-w-[82%] rounded-[8px] px-4 py-3 ${mine ? 'bg-[#0B3558] text-white' : 'bg-[#EAF6FC] text-[#0B3558]'}`}>
                         <div className="text-sm whitespace-pre-wrap">{message.body}</div>
                         <div className={`mt-2 text-[11px] ${mine ? 'text-white/60' : 'text-[#60798F]'}`}>{timeLabel(message.created_at)}</div>
                       </div>
@@ -133,13 +133,13 @@ function MessagesView() {
                 })}
               </div>
 
-              <div className="mt-5 border-t border-[#CFE0ED] pt-4">
+              <div className="mt-5 border-t border-[#B9CFDE] pt-4">
                 <textarea
                   rows={3}
                   placeholder="Write a reply for the Cleanngo team..."
                   value={reply}
                   onChange={e => setReply(e.target.value)}
-                  className="w-full resize-none rounded-[8px] border border-[#CFE0ED] bg-[#F8FBFF] px-4 py-3 text-sm text-[#0B3558] placeholder:text-[#8AA0AC] outline-none focus:border-[#1D7ED0]"
+                  className="w-full resize-none rounded-[8px] border border-[#B9CFDE] bg-[#F8FBFF] px-4 py-3 text-sm text-[#0B3558] placeholder:text-[#8AA0AC] outline-none focus:border-[#1D7ED0]"
                 />
                 {error && <div className="mt-2 text-sm font-bold text-red-600">{error}</div>}
                 <button
@@ -161,8 +161,9 @@ function MessagesView() {
 
 export default function AccountMessagesPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-[#EFF7FC] text-[#0B3558]">Loading...</div>}>
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-[#DDECF5] text-[#0B3558]">Loading...</div>}>
       <MessagesView />
     </Suspense>
   )
 }
+

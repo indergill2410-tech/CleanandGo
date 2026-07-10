@@ -36,7 +36,7 @@ export default function AdminPayments() {
   const money = (cents: number) => `$${(cents / 100).toLocaleString(undefined, { minimumFractionDigits: 2 })}`
 
   return (
-    <div className="min-h-screen bg-[#EFF7FC] px-4 py-5 text-[#0B3558] sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#DDECF5] px-4 py-5 text-[#0B3558] sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
         <div className="mb-6">
           <Link href="/admin" className="text-sm font-black text-[#1D7ED0] hover:text-[#0B3558]">Back to overview</Link>
@@ -50,7 +50,7 @@ export default function AdminPayments() {
             { label: 'This month', value: money(totals.monthCents), color: 'text-[#1D7ED0]' },
             { label: 'Payments', value: String(totals.count), color: 'text-[#0B3558]' },
           ].map(s => (
-            <div key={s.label} className="rounded-[8px] border border-[#CFE0ED] bg-white p-5 shadow-sm">
+            <div key={s.label} className="rounded-[8px] border border-[#B9CFDE] bg-[#F8FBFF] p-5 shadow-sm">
               <div className={`text-2xl font-bold ${s.color}`}>{s.value}</div>
               <div className="mt-1 text-sm font-bold text-[#60798F]">{s.label}</div>
             </div>
@@ -60,11 +60,11 @@ export default function AdminPayments() {
         {loading ? (
           <div className="text-[#60798F]">Loading...</div>
         ) : payments.length === 0 ? (
-          <div className="rounded-[8px] border border-[#CFE0ED] bg-white p-12 text-center text-[#60798F] shadow-sm">No payments recorded yet.</div>
+          <div className="rounded-[8px] border border-[#B9CFDE] bg-[#F8FBFF] p-12 text-center text-[#60798F] shadow-sm">No payments recorded yet.</div>
         ) : (
           <div className="space-y-3">
             {payments.map(p => (
-              <div key={p.id} className="flex items-center justify-between gap-3 rounded-[8px] border border-[#CFE0ED] bg-white p-4 shadow-sm">
+              <div key={p.id} className="flex items-center justify-between gap-3 rounded-[8px] border border-[#B9CFDE] bg-[#F8FBFF] p-4 shadow-sm">
                 <div>
                   <div className="font-black text-[#0B3558]">{p.bookings?.customers?.name || 'Customer'}</div>
                   <div className="text-sm font-bold text-[#60798F]">{p.bookings?.service_type || '-'}{p.bookings?.scheduled_date ? ` · ${p.bookings.scheduled_date}` : ''}</div>
@@ -82,3 +82,4 @@ export default function AdminPayments() {
     </div>
   )
 }
+

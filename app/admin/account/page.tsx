@@ -23,10 +23,10 @@ export default function AdminAccount() {
     setPassword(''); setConfirm('')
   }
 
-  const inputCls = 'w-full rounded-[8px] border border-[#CFE0ED] bg-[#F8FBFF] px-4 py-3 text-sm text-[#0B3558] placeholder:text-[#8AA0AC] outline-none focus:border-[#1D7ED0]'
+  const inputCls = 'w-full rounded-[8px] border border-[#B9CFDE] bg-[#F8FBFF] px-4 py-3 text-sm text-[#0B3558] placeholder:text-[#8AA0AC] outline-none focus:border-[#1D7ED0]'
 
   return (
-    <div className="min-h-screen bg-[#EFF7FC] px-4 py-5 text-[#0B3558] sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#DDECF5] px-4 py-5 text-[#0B3558] sm:px-6 lg:px-8">
       <div className="max-w-md mx-auto">
         <div className="mb-6">
           <Link href="/admin" className="text-sm font-black text-[#1D7ED0] hover:text-[#0B3558]">Back to overview</Link>
@@ -34,7 +34,7 @@ export default function AdminAccount() {
           <p className="mt-1 text-sm font-bold text-[#60798F]">Change your password.</p>
         </div>
 
-        <form onSubmit={save} className="space-y-4 rounded-[8px] border border-[#CFE0ED] bg-white p-6 shadow-sm">
+        <form onSubmit={save} className="space-y-4 rounded-[8px] border border-[#B9CFDE] bg-[#F8FBFF] p-6 shadow-sm">
           <input type="password" placeholder="New password" value={password} onChange={e => setPassword(e.target.value)} required className={inputCls} />
           <input type="password" placeholder="Confirm new password" value={confirm} onChange={e => setConfirm(e.target.value)} required className={inputCls} />
           {error && <div className="rounded-[8px] border border-red-200 bg-red-50 px-4 py-3 text-sm font-bold text-red-700">{error}</div>}
@@ -47,3 +47,4 @@ export default function AdminAccount() {
     </div>
   )
 }
+

@@ -125,13 +125,13 @@ export default function CleanerPortal() {
   }
 
   if (loading) {
-    return <div className="min-h-screen flex items-center justify-center bg-[#F4F7FA] text-[#0B3558]">Loading your workboard...</div>
+    return <div className="min-h-screen flex items-center justify-center bg-[#DDECF5] text-[#0B3558]">Loading your workboard...</div>
   }
 
   if (error) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-[#F4F7FA] px-4 text-[#0B3558]">
-        <section className="w-full max-w-md rounded-[8px] border border-[#DCE5ED] bg-white p-6 text-center shadow-sm">
+      <main className="flex min-h-screen items-center justify-center bg-[#DDECF5] px-4 text-[#0B3558]">
+        <section className="w-full max-w-md rounded-[8px] border border-[#B9CFDE] bg-[#F8FBFF] p-6 text-center shadow-sm">
           <h1 className="text-2xl font-black">Workboard could not load</h1>
           <p className="mt-3 text-sm text-[#60798F]">{error}</p>
           <button onClick={() => { setLoading(true); load() }} className="mt-5 min-h-11 rounded-full bg-[#0B3558] px-5 text-sm font-black text-white">Try again</button>
@@ -141,15 +141,15 @@ export default function CleanerPortal() {
   }
 
   return (
-    <main className="min-h-screen bg-[#F4F7FA] text-[#0B3558]">
-      <header className="border-b border-[#CFE0ED] bg-white/90 backdrop-blur">
+    <main className="min-h-screen bg-[#DDECF5] text-[#0B3558]">
+      <header className="border-b border-[#B9CFDE] bg-[#EAF6FC]/92 backdrop-blur">
         <div className="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-5 sm:px-6 md:flex-row md:items-center md:justify-between">
           <div>
             <Link href="/" className="text-sm font-bold text-[#1D7ED0]">cleanngo home</Link>
             <h1 className="mt-2 text-3xl font-black tracking-normal">Today&apos;s jobs</h1>
             <p className="mt-1 text-[#60798F]">Start jobs, check notes, upload proof, and finish work from one place.</p>
           </div>
-          <button onClick={signOut} className="w-fit rounded-full border border-[#DCE5ED] px-5 py-3 text-sm font-black text-[#60798F]">Sign out</button>
+          <button onClick={signOut} className="w-fit rounded-full border border-[#B9CFDE] px-5 py-3 text-sm font-black text-[#60798F]">Sign out</button>
         </div>
       </header>
 
@@ -163,7 +163,7 @@ export default function CleanerPortal() {
             tertiary={{ label: 'Completed', value: stats.completed }}
           />
 
-          <section className="rounded-[8px] border border-[#DCE5ED] bg-white p-5 shadow-sm">
+          <section className="rounded-[8px] border border-[#B9CFDE] bg-[#F8FBFF] p-5 shadow-sm">
             <div className="flex items-center gap-4">
               <div className="flex h-14 w-14 items-center justify-center rounded-[8px] bg-[#0B3558] text-white">
                 <UserRound className="h-7 w-7" />
@@ -190,7 +190,7 @@ export default function CleanerPortal() {
               { label: 'Backup jobs', value: stats.backup, icon: ShieldCheck },
               { label: 'Proof sets', value: stats.proof, icon: Camera },
             ].map((item) => (
-              <div key={item.label} className="rounded-[8px] border border-[#DCE5ED] bg-white p-4 shadow-sm">
+              <div key={item.label} className="rounded-[8px] border border-[#B9CFDE] bg-[#F8FBFF] p-4 shadow-sm">
                 <item.icon className="h-5 w-5 text-[#1D7ED0]" />
                 <div className="mt-3 text-2xl font-black">{item.value}</div>
                 <div className="text-xs font-bold text-[#60798F]">{item.label}</div>
@@ -198,7 +198,7 @@ export default function CleanerPortal() {
             ))}
           </section>
 
-          <section className="rounded-[8px] border border-[#DCE5ED] bg-white p-5 shadow-sm">
+          <section className="rounded-[8px] border border-[#B9CFDE] bg-[#F8FBFF] p-5 shadow-sm">
             <h2 className="font-black">Before you leave</h2>
             <ul className="mt-4 space-y-3 text-sm text-[#60798F]">
               <li className="flex gap-2"><CheckCircle2 className="h-4 w-4 text-emerald-600" />Arrive on time and start the job in-app.</li>
@@ -218,11 +218,11 @@ export default function CleanerPortal() {
           </div>
 
           {jobs.length === 0 ? (
-            <div className="rounded-[8px] border border-[#DCE5ED] bg-white p-10 text-center text-[#60798F]">No jobs assigned right now.</div>
+            <div className="rounded-[8px] border border-[#B9CFDE] bg-[#F8FBFF] p-10 text-center text-[#60798F]">No jobs assigned right now.</div>
           ) : (
             <div className="space-y-4">
               {jobs.map((job) => (
-                <article key={job.id} className="overflow-hidden rounded-[8px] border border-[#DCE5ED] bg-white shadow-sm">
+                <article key={job.id} className="overflow-hidden rounded-[8px] border border-[#B9CFDE] bg-[#F8FBFF] shadow-sm">
                   <button onClick={() => setExpanded(expanded === job.id ? null : job.id)} className="w-full p-5 text-left">
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                       <div>
@@ -240,20 +240,20 @@ export default function CleanerPortal() {
                   </button>
 
                   {expanded === job.id && (
-                    <div className="border-t border-[#DCE5ED] p-5">
+                    <div className="border-t border-[#B9CFDE] p-5">
                       <div className="grid gap-4 md:grid-cols-3">
-                        <div className="rounded-[8px] bg-[#F4F7FA] p-4">
+                        <div className="rounded-[8px] bg-[#EAF6FC] p-4">
                           <BriefcaseBusiness className="h-5 w-5 text-[#1D7ED0]" />
                           <div className="mt-3 text-sm text-[#60798F]">Customer</div>
                           <div className="font-black">{job.customers?.name || 'Customer'}</div>
                           <div className="text-sm text-[#60798F]">{job.customers?.phone || 'No phone'}</div>
                         </div>
-                        <div className="rounded-[8px] bg-[#F4F7FA] p-4">
+                        <div className="rounded-[8px] bg-[#EAF6FC] p-4">
                           <MapPin className="h-5 w-5 text-[#1D7ED0]" />
                           <div className="mt-3 text-sm text-[#60798F]">Address</div>
                           <div className="font-black">{job.address}</div>
                         </div>
-                        <div className="rounded-[8px] bg-[#F4F7FA] p-4">
+                        <div className="rounded-[8px] bg-[#EAF6FC] p-4">
                           <ShieldCheck className="h-5 w-5 text-[#1D7ED0]" />
                           <div className="mt-3 text-sm text-[#60798F]">Scope</div>
                           <div className="font-black">{job.bedrooms ?? '?'} bed · {job.bathrooms ?? '?'} bath</div>
@@ -262,7 +262,7 @@ export default function CleanerPortal() {
                       </div>
 
                       {(job.extras?.length || job.notes) && (
-                        <div className="mt-4 rounded-[8px] bg-[#F4F7FA] p-4 text-sm text-[#60798F]">
+                        <div className="mt-4 rounded-[8px] bg-[#EAF6FC] p-4 text-sm text-[#60798F]">
                           {job.extras && job.extras.length > 0 && <div><span className="font-black text-[#0B3558]">Extras:</span> {job.extras.join(', ')}</div>}
                           {job.notes && <div className="mt-2"><span className="font-black text-[#0B3558]">Notes:</span> {job.notes}</div>}
                         </div>
@@ -278,7 +278,7 @@ export default function CleanerPortal() {
                           <PhotoUpload label="After photos" urls={after[job.id] || []} onChange={urls => setAfter(current => ({ ...current, [job.id]: urls }))} />
                           <textarea rows={3} placeholder="Completion notes for admin..." value={notes[job.id] || ''}
                             onChange={event => setNotes(current => ({ ...current, [job.id]: event.target.value }))}
-                            className="w-full rounded-xl border border-[#DCE5ED] px-4 py-3 text-sm" />
+                            className="w-full rounded-xl border border-[#B9CFDE] px-4 py-3 text-sm" />
                           <button onClick={() => complete(job.id)} disabled={busy === job.id} className="w-full rounded-xl bg-[#0B3558] px-5 py-4 font-black text-white disabled:opacity-50">
                             Mark job complete
                           </button>
@@ -295,3 +295,4 @@ export default function CleanerPortal() {
     </main>
   )
 }
+

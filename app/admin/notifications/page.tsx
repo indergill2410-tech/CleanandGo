@@ -30,7 +30,7 @@ export default function AdminNotifications() {
   const unread = items.filter(n => !n.read).length
 
   return (
-    <div className="min-h-screen bg-[#EFF7FC] px-4 py-5 text-[#0B3558] sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#DDECF5] px-4 py-5 text-[#0B3558] sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto">
         <div className="mb-6 flex items-end justify-between">
           <div>
@@ -40,7 +40,7 @@ export default function AdminNotifications() {
           </div>
           {unread > 0 && (
             <button onClick={() => mark({ all: true })} disabled={busy}
-              className="rounded-full border border-[#CFE0ED] bg-white px-4 py-2 text-sm font-black text-[#0B3558] hover:border-[#1D7ED0] disabled:opacity-50">
+              className="rounded-full border border-[#B9CFDE] bg-[#F8FBFF] px-4 py-2 text-sm font-black text-[#0B3558] hover:border-[#1D7ED0] disabled:opacity-50">
               Mark all read
             </button>
           )}
@@ -49,12 +49,12 @@ export default function AdminNotifications() {
         {loading ? (
           <div className="text-[#60798F]">Loading...</div>
         ) : items.length === 0 ? (
-          <div className="rounded-[8px] border border-[#CFE0ED] bg-white p-12 text-center text-[#60798F] shadow-sm">No updates.</div>
+          <div className="rounded-[8px] border border-[#B9CFDE] bg-[#F8FBFF] p-12 text-center text-[#60798F] shadow-sm">No updates.</div>
         ) : (
           <div className="space-y-2">
             {items.map(n => (
               <button key={n.id} onClick={() => !n.read && mark({ id: n.id })}
-                className={`flex w-full gap-3 rounded-[8px] border border-[#CFE0ED] p-4 text-left shadow-sm transition-colors ${n.read ? 'bg-white' : 'bg-[#F8FBFF] hover:bg-white'}`}>
+                className={`flex w-full gap-3 rounded-[8px] border border-[#B9CFDE] p-4 text-left shadow-sm transition-colors ${n.read ? 'bg-white' : 'bg-[#F8FBFF] hover:bg-white'}`}>
                 <div className="rounded-full bg-[#E7F3FC] px-2.5 py-1 text-xs font-black text-[#1D7ED0]">{ICONS[n.type] || ICONS.default}</div>
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
@@ -72,3 +72,4 @@ export default function AdminNotifications() {
     </div>
   )
 }
+

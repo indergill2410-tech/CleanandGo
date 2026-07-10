@@ -28,7 +28,7 @@ type Tone = keyof typeof lensTone
 
 export function DashboardPage({ children, className = '' }: { children: React.ReactNode; className?: string }) {
   return (
-    <main className={`min-h-screen bg-[#EFF7FC] text-[#0B3558] ${className}`}>
+    <main className={`min-h-screen bg-[#DDECF5] text-[#0B3558] ${className}`}>
       {children}
     </main>
   )
@@ -36,7 +36,7 @@ export function DashboardPage({ children, className = '' }: { children: React.Re
 
 export function DashboardSection({ children, className = '' }: { children: React.ReactNode; className?: string }) {
   return (
-    <section className={`rounded-[8px] border border-[#CFE0ED] bg-white p-5 shadow-sm ${className}`}>
+    <section className={`rounded-[8px] border border-[#B9CFDE] bg-[#F8FBFF] p-5 shadow-[0_14px_36px_rgba(11,53,88,0.08)] ${className}`}>
       {children}
     </section>
   )
@@ -139,7 +139,7 @@ export function RoleLens3D({
   ]
 
   return (
-    <div className={`relative min-h-[260px] overflow-hidden rounded-[8px] bg-gradient-to-br ${theme.surface} p-5 text-white shadow-sm [perspective:1000px]`}>
+    <div className={`relative min-h-[248px] overflow-hidden rounded-[8px] bg-gradient-to-br ${theme.surface} p-5 text-white shadow-[0_18px_42px_rgba(11,53,88,0.22)] [perspective:1000px]`}>
       <div className="absolute inset-x-8 bottom-8 top-16 rounded-[8px] border border-white/14 bg-white/[0.06] [transform:rotateX(62deg)_rotateZ(-10deg)]">
         <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.12)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.12)_1px,transparent_1px)] bg-[size:34px_34px]" />
       </div>
@@ -168,4 +168,3 @@ export function RoleLens3D({
     </div>
   )
 }
-

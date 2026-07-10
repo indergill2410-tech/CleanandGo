@@ -18,7 +18,7 @@ export default function AdminTimesheets() {
   }, [])
 
   return (
-    <div className="min-h-screen bg-[#EFF7FC] px-4 py-5 text-[#0B3558] sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#DDECF5] px-4 py-5 text-[#0B3558] sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
         <div className="mb-6">
           <Link href="/admin" className="text-sm font-black text-[#1D7ED0] hover:text-[#0B3558]">Back to overview</Link>
@@ -26,11 +26,11 @@ export default function AdminTimesheets() {
           <p className="mt-1 text-sm font-bold text-[#60798F]">Hours logged when cleaners complete jobs. Use this for weekly payroll review.</p>
         </div>
 
-        <div className="mb-6 rounded-[8px] border border-[#CFE0ED] bg-white p-5 shadow-sm">
+        <div className="mb-6 rounded-[8px] border border-[#B9CFDE] bg-[#F8FBFF] p-5 shadow-sm">
           <div className="mb-3 text-sm font-bold text-[#60798F]">Total hours logged: <span className="text-lg font-black text-[#0B3558]">{totals.totalHours}</span></div>
           <div className="flex flex-wrap gap-2">
             {totals.byStaff.map(s => (
-              <span key={s.name} className="rounded-full bg-[#EFF7FC] px-3 py-1 text-sm font-bold text-[#0B3558]">{s.name}: <b>{s.hours}h</b></span>
+              <span key={s.name} className="rounded-full bg-[#DDECF5] px-3 py-1 text-sm font-bold text-[#0B3558]">{s.name}: <b>{s.hours}h</b></span>
             ))}
           </div>
         </div>
@@ -38,11 +38,11 @@ export default function AdminTimesheets() {
         {loading ? (
           <div className="text-[#60798F]">Loading...</div>
         ) : rows.length === 0 ? (
-          <div className="rounded-[8px] border border-[#CFE0ED] bg-white p-12 text-center text-[#60798F] shadow-sm">No timesheet entries yet.</div>
+          <div className="rounded-[8px] border border-[#B9CFDE] bg-[#F8FBFF] p-12 text-center text-[#60798F] shadow-sm">No timesheet entries yet.</div>
         ) : (
           <div className="space-y-2">
             {rows.map(r => (
-              <div key={r.id} className="flex items-center justify-between gap-3 rounded-[8px] border border-[#CFE0ED] bg-white p-4 shadow-sm">
+              <div key={r.id} className="flex items-center justify-between gap-3 rounded-[8px] border border-[#B9CFDE] bg-[#F8FBFF] p-4 shadow-sm">
                 <div>
                   <div className="font-black text-[#0B3558]">{r.staff?.name || 'Unassigned'}</div>
                   <div className="text-xs text-[#60798F]">{r.date}</div>
@@ -64,3 +64,4 @@ export default function AdminTimesheets() {
     </div>
   )
 }
+

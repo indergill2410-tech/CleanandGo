@@ -92,7 +92,7 @@ export default function AdminTeam() {
   return (
     <section className="px-4 py-5 sm:px-6 lg:px-8">
       <div className="grid gap-5 xl:grid-cols-[1fr_420px]">
-        <section className="rounded-[8px] border border-[#D4E1E8] bg-white p-5 shadow-sm">
+        <section className="rounded-[8px] border border-[#B9CFDE] bg-[#F8FBFF] p-5 shadow-sm">
           <p className="text-xs font-black uppercase tracking-[0.18em] text-[#1D7ED0]">Staff</p>
           <h1 className="mt-2 text-3xl font-black text-[#0B3558]">Know who can work, who can log in, and who needs setup</h1>
           <p className="mt-2 max-w-2xl text-sm font-bold leading-6 text-[#60798F]">Invite cleaners and admins, keep access tidy, and make sure active staff are ready for jobs.</p>
@@ -105,7 +105,7 @@ export default function AdminTeam() {
           </div>
         </section>
 
-        <form onSubmit={add} className="rounded-[8px] border border-[#D4E1E8] bg-white p-5 shadow-sm">
+        <form onSubmit={add} className="rounded-[8px] border border-[#B9CFDE] bg-[#F8FBFF] p-5 shadow-sm">
           <h2 className="text-lg font-black text-[#102D42]">Invite staff</h2>
           <div className="mt-4 grid gap-3">
             <Field placeholder="Full name" value={form.name} onChange={(value) => setForm((current) => ({ ...current, name: value }))} required />
@@ -114,7 +114,7 @@ export default function AdminTeam() {
               <Field placeholder="Phone" value={form.phone} onChange={(value) => setForm((current) => ({ ...current, phone: value }))} />
               <Field placeholder="Suburb" value={form.suburb} onChange={(value) => setForm((current) => ({ ...current, suburb: value }))} />
             </div>
-            <select value={form.role} onChange={(event) => setForm((current) => ({ ...current, role: event.target.value }))} className="min-h-11 rounded-[8px] border border-[#D4E1E8] bg-[#F7FAFC] px-3 text-sm font-bold text-[#102D42]">
+            <select value={form.role} onChange={(event) => setForm((current) => ({ ...current, role: event.target.value }))} className="min-h-11 rounded-[8px] border border-[#B9CFDE] bg-[#F7FAFC] px-3 text-sm font-bold text-[#102D42]">
               <option value="cleaner">Cleaner</option>
               <option value="admin">Admin</option>
             </select>
@@ -128,13 +128,13 @@ export default function AdminTeam() {
         </form>
       </div>
 
-      <section className="mt-5 overflow-hidden rounded-[8px] border border-[#D4E1E8] bg-white shadow-sm">
+      <section className="mt-5 overflow-hidden rounded-[8px] border border-[#B9CFDE] bg-[#F8FBFF] shadow-sm">
         {loading ? (
           <div className="p-8 text-sm font-bold text-[#5C7180]">Loading staff...</div>
         ) : staff.length === 0 ? (
           <div className="p-10 text-center text-sm font-bold text-[#5C7180]">No staff members yet.</div>
         ) : staff.map((member) => (
-          <article key={member.id} className="grid gap-4 border-b border-[#D4E1E8] p-4 last:border-b-0 xl:grid-cols-[1fr_auto] xl:items-center">
+          <article key={member.id} className="grid gap-4 border-b border-[#B9CFDE] p-4 last:border-b-0 xl:grid-cols-[1fr_auto] xl:items-center">
             <div>
               <div className="flex flex-wrap items-center gap-2">
                 <h2 className="text-lg font-black text-[#102D42]">{member.name}</h2>
@@ -169,7 +169,7 @@ export default function AdminTeam() {
 
 function Stat({ label, value, icon: Icon }: { label: string; value: number; icon: typeof UsersRound }) {
   return (
-    <div className="rounded-[8px] border border-[#D4E1E8] bg-[#F7FAFC] p-3">
+    <div className="rounded-[8px] border border-[#B9CFDE] bg-[#F7FAFC] p-3">
       <Icon className="h-4 w-4 text-[#1670A8]" />
       <div className="mt-2 text-2xl font-black text-[#102D42]">{value}</div>
       <div className="text-xs font-bold text-[#5C7180]">{label}</div>
@@ -178,7 +178,7 @@ function Stat({ label, value, icon: Icon }: { label: string; value: number; icon
 }
 
 function Field({ value, onChange, placeholder, type = 'text', required = false }: { value: string; onChange: (value: string) => void; placeholder: string; type?: string; required?: boolean }) {
-  return <input type={type} value={value} required={required} placeholder={placeholder} onChange={(event) => onChange(event.target.value)} className="min-h-11 rounded-[8px] border border-[#D4E1E8] bg-[#F7FAFC] px-3 text-sm font-bold text-[#102D42] placeholder:text-[#8AA0AC]" />
+  return <input type={type} value={value} required={required} placeholder={placeholder} onChange={(event) => onChange(event.target.value)} className="min-h-11 rounded-[8px] border border-[#B9CFDE] bg-[#F7FAFC] px-3 text-sm font-bold text-[#102D42] placeholder:text-[#8AA0AC]" />
 }
 
 function Status({ value, tone }: { value: string; tone: 'amber' | 'blue' | 'green' | 'slate' | 'red' }) {
@@ -194,8 +194,9 @@ function Status({ value, tone }: { value: string; tone: 'amber' | 'blue' | 'gree
 
 function Action({ children, onClick, disabled, danger = false }: { children: React.ReactNode; onClick: () => void; disabled?: boolean; danger?: boolean }) {
   return (
-    <button onClick={onClick} disabled={disabled} className={`min-h-10 rounded-[8px] border px-3 text-sm font-black disabled:opacity-50 ${danger ? 'border-red-200 text-red-700 hover:bg-red-50' : 'border-[#D4E1E8] text-[#102D42] hover:bg-[#F7FAFC]'}`}>
+    <button onClick={onClick} disabled={disabled} className={`min-h-10 rounded-[8px] border px-3 text-sm font-black disabled:opacity-50 ${danger ? 'border-red-200 text-red-700 hover:bg-red-50' : 'border-[#B9CFDE] text-[#102D42] hover:bg-[#F7FAFC]'}`}>
       {children}
     </button>
   )
 }
+

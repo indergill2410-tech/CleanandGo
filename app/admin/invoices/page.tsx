@@ -60,10 +60,10 @@ export default function AdminInvoices() {
     }
   }
 
-  const inputCls = 'w-full rounded-[8px] border border-[#CFE0ED] bg-[#F8FBFF] px-4 py-3 text-sm text-[#0B3558] placeholder:text-[#8AA0AC] outline-none focus:border-[#1D7ED0]'
+  const inputCls = 'w-full rounded-[8px] border border-[#B9CFDE] bg-[#F8FBFF] px-4 py-3 text-sm text-[#0B3558] placeholder:text-[#8AA0AC] outline-none focus:border-[#1D7ED0]'
 
   return (
-    <div className="min-h-screen bg-[#EFF7FC] px-4 py-5 text-[#0B3558] sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#DDECF5] px-4 py-5 text-[#0B3558] sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto">
         <div className="mb-8">
           <Link href="/admin" className="text-sm font-black text-[#1D7ED0] hover:text-[#0B3558]">Back to overview</Link>
@@ -71,7 +71,7 @@ export default function AdminInvoices() {
           <p className="mt-1 text-sm font-bold text-[#60798F]">Send a Stripe payment link and track whether the customer has paid.</p>
         </div>
 
-        <form onSubmit={send} className="mb-8 grid gap-3 rounded-[8px] border border-[#CFE0ED] bg-white p-6 shadow-sm">
+        <form onSubmit={send} className="mb-8 grid gap-3 rounded-[8px] border border-[#B9CFDE] bg-[#F8FBFF] p-6 shadow-sm">
           <div className="grid sm:grid-cols-2 gap-3">
             <input type="email" placeholder="Customer email" value={email} onChange={e => setEmail(e.target.value)} required className={inputCls} />
             <input placeholder="Customer name (optional)" value={name} onChange={e => setName(e.target.value)} className={inputCls} />
@@ -96,11 +96,11 @@ export default function AdminInvoices() {
         {loading ? (
           <div className="text-[#60798F]">Loading...</div>
         ) : invoices.length === 0 ? (
-          <div className="rounded-[8px] border border-[#CFE0ED] bg-white p-8 text-center text-[#60798F] shadow-sm">No invoices yet.</div>
+          <div className="rounded-[8px] border border-[#B9CFDE] bg-[#F8FBFF] p-8 text-center text-[#60798F] shadow-sm">No invoices yet.</div>
         ) : (
           <div className="space-y-3">
             {invoices.map(inv => (
-              <div key={inv.id} className="flex items-center justify-between rounded-[8px] border border-[#CFE0ED] bg-white p-4 shadow-sm">
+              <div key={inv.id} className="flex items-center justify-between rounded-[8px] border border-[#B9CFDE] bg-[#F8FBFF] p-4 shadow-sm">
                 <div>
                   <div className="font-black text-[#0B3558]">${(inv.amount_cents / 100).toFixed(2)} <span className="text-sm font-bold text-[#60798F]">· {inv.customers?.name || inv.customers?.email}</span></div>
                   <div className="text-xs text-[#60798F]">{inv.description || 'Cleaning service'}</div>
@@ -119,3 +119,4 @@ export default function AdminInvoices() {
     </div>
   )
 }
+

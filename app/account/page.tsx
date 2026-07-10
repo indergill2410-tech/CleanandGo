@@ -220,13 +220,13 @@ export default function AccountPage() {
   }
 
   if (loading) {
-    return <div className="min-h-screen flex items-center justify-center bg-[#EFF7FC] text-[#0B3558]">Preparing your dashboard...</div>
+    return <div className="min-h-screen flex items-center justify-center bg-[#DDECF5] text-[#0B3558]">Preparing your dashboard...</div>
   }
 
   if (error) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-[#EFF7FC] px-4 text-[#0B3558]">
-        <section className="w-full max-w-md rounded-[8px] border border-[#CFE0ED] bg-white p-6 text-center shadow-sm">
+      <main className="flex min-h-screen items-center justify-center bg-[#DDECF5] px-4 text-[#0B3558]">
+        <section className="w-full max-w-md rounded-[8px] border border-[#B9CFDE] bg-[#F8FBFF] p-6 text-center shadow-sm">
           <h1 className="text-2xl font-black">Dashboard could not load</h1>
           <p className="mt-3 text-sm text-[#60798F]">{error}</p>
           <div className="mt-5 flex flex-col gap-2 sm:flex-row sm:justify-center">
@@ -239,8 +239,8 @@ export default function AccountPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#EFF7FC] text-[#0B3558]">
-      <header className="border-b border-[#CFE0ED] bg-white/80 backdrop-blur-xl">
+    <main className="min-h-screen bg-[#DDECF5] text-[#0B3558]">
+      <header className="border-b border-[#B9CFDE] bg-[#EAF6FC]/92 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-5 sm:px-6 lg:flex-row lg:items-center lg:justify-between">
           <div>
             <Link href="/" className="text-sm font-bold text-[#1D7ED0] hover:text-[#0B3558]">cleanngo home</Link>
@@ -269,7 +269,7 @@ export default function AccountPage() {
             { label: 'Account credit', value: money(creditTotal), icon: CheckCircle2 },
             { label: 'Open invoices', value: money(openInvoiceTotal), icon: CreditCard },
           ].map((item) => (
-            <div key={item.label} className="rounded-[8px] border border-[#CFE0ED] bg-white p-5 shadow-sm">
+            <div key={item.label} className="rounded-[8px] border border-[#B9CFDE] bg-[#F8FBFF] p-5 shadow-[0_14px_34px_rgba(11,53,88,0.07)]">
               <item.icon className="h-5 w-5 text-[#1D7ED0]" />
               <div className="mt-4 text-2xl font-black">{item.value}</div>
               <div className="mt-1 text-sm font-semibold text-[#60798F]">{item.label}</div>
@@ -277,8 +277,8 @@ export default function AccountPage() {
           ))}
         </section>
 
-        <section className="mt-6 grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
-          <div className="rounded-[8px] bg-[#0B3558] p-6 text-white shadow-xl">
+        <section className="mt-6 grid gap-5 lg:grid-cols-[minmax(0,0.98fr)_minmax(360px,1.02fr)]">
+          <div className="rounded-[8px] bg-[#0B3558] p-6 text-white shadow-[0_18px_46px_rgba(11,53,88,0.22)]">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
               <div>
                 <p className="text-sm font-black uppercase tracking-[0.16em] text-[#7DD3FC]">Your next clean</p>
@@ -332,7 +332,7 @@ export default function AccountPage() {
               tertiary={{ label: 'Photos', value: bookings.filter((booking) => Boolean(completion(booking.job_completions))).length }}
             />
 
-            <div className="rounded-[8px] border border-[#CFE0ED] bg-white p-6 shadow-sm">
+            <div className="rounded-[8px] border border-[#B9CFDE] bg-[#F8FBFF] p-6 shadow-[0_14px_34px_rgba(11,53,88,0.07)]">
               <p className="text-sm font-black uppercase tracking-[0.16em] text-[#1D7ED0]">Helpful next steps</p>
               <h2 className="mt-2 text-2xl font-black">Make the next clean feel easier</h2>
               <div className="mt-5 space-y-3">
@@ -345,7 +345,7 @@ export default function AccountPage() {
                     key={item.title}
                     type="button"
                     onClick={() => openRequest(item.type, item.title, item.message, nextBooking?.id)}
-                    className="block w-full rounded-[8px] border border-[#D8E8F2] p-4 text-left transition hover:border-[#1D7ED0] hover:bg-[#EFF7FC]"
+                    className="block w-full rounded-[8px] border border-[#B9CFDE] bg-white/70 p-4 text-left transition hover:border-[#1D7ED0] hover:bg-[#EAF6FC]"
                   >
                     <div className="font-black">{item.title}</div>
                     <div className="mt-1 text-sm text-[#60798F]">{item.text}</div>
@@ -357,7 +357,7 @@ export default function AccountPage() {
         </section>
 
         {request && (
-          <section className="mt-6 rounded-[8px] border border-[#C9D7E2] bg-white p-5 shadow-sm">
+          <section className="mt-6 rounded-[8px] border border-[#C9D7E2] bg-[#F8FBFF] p-5 shadow-sm">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
               <div className="lg:max-w-md">
                 <p className="text-sm font-black uppercase tracking-[0.16em] text-[#1D7ED0]">Service request</p>
@@ -421,7 +421,7 @@ export default function AccountPage() {
             </div>
 
             {subs.length === 0 ? (
-              <div className="rounded-[8px] border border-[#CFE0ED] bg-white p-6 text-center">
+              <div className="rounded-[8px] border border-[#B9CFDE] bg-[#F8FBFF] p-6 text-center">
                 <p className="text-[#60798F]">No recurring plan yet.</p>
                 <Link href="/customer/plan" className="mt-4 inline-flex rounded-full bg-[#0B3558] px-5 py-3 text-sm font-black text-white">Start a recurring plan</Link>
               </div>
@@ -431,7 +431,7 @@ export default function AccountPage() {
                   const primary = person(plan.primary_staff)
                   const backup = person(plan.backup_staff)
                   return (
-                    <div key={plan.id} className="rounded-[8px] border border-[#CFE0ED] bg-white p-5 shadow-sm">
+                    <div key={plan.id} className="rounded-[8px] border border-[#B9CFDE] bg-[#F8FBFF] p-5 shadow-sm">
                       <div className="flex items-start justify-between gap-3">
                         <div>
                           <div className="text-lg font-black capitalize">{plan.property_type} · {plan.frequency}</div>
@@ -441,15 +441,15 @@ export default function AccountPage() {
                         <span className={`rounded-full px-3 py-1 text-xs font-black ${statusInfo(plan.status).className}`}>{statusInfo(plan.status).label}</span>
                       </div>
                       <div className="mt-4 grid gap-3 sm:grid-cols-3">
-                        <div className="rounded-[8px] bg-[#EFF7FC] p-3">
+                        <div className="rounded-[8px] bg-[#EAF6FC] p-3">
                           <div className="text-xs font-bold text-[#60798F]">Per visit</div>
                           <div className="font-black">{money(plan.price_cents)}</div>
                         </div>
-                        <div className="rounded-[8px] bg-[#EFF7FC] p-3">
+                        <div className="rounded-[8px] bg-[#EAF6FC] p-3">
                           <div className="text-xs font-bold text-[#60798F]">Primary cleaner</div>
                           <div className="font-black">{primary?.name || 'Assigning soon'}</div>
                         </div>
-                        <div className="rounded-[8px] bg-[#EFF7FC] p-3">
+                        <div className="rounded-[8px] bg-[#EAF6FC] p-3">
                           <div className="text-xs font-bold text-[#60798F]">Backup cover</div>
                           <div className="font-black">{backup?.name || 'On standby'}</div>
                         </div>
@@ -478,7 +478,7 @@ export default function AccountPage() {
                         )}
                       </div>
                       {pay?.id === plan.id && (
-                        <div className="mt-5 border-t border-[#CFE0ED] pt-5">
+                        <div className="mt-5 border-t border-[#B9CFDE] pt-5">
                           <PaymentForm clientSecret={pay.clientSecret} amountCents={pay.amountCents} returnPath="/account" ctaLabel="Confirm and start plan" />
                         </div>
                       )}
@@ -499,7 +499,7 @@ export default function AccountPage() {
             </div>
 
             {bookings.length === 0 ? (
-              <div className="rounded-[8px] border border-[#CFE0ED] bg-white p-6 text-center">
+              <div className="rounded-[8px] border border-[#B9CFDE] bg-[#F8FBFF] p-6 text-center">
                 <p className="text-[#60798F]">No one-off jobs yet.</p>
                 <Link href="/customer/book" className="mt-4 inline-flex rounded-full bg-[#0B3558] px-5 py-3 text-sm font-black text-white">Post a job</Link>
               </div>
@@ -513,12 +513,12 @@ export default function AccountPage() {
                   const afterPhotos = done?.after_photos || []
                   const requestPhotos = booking.photos || []
                   return (
-                    <article key={booking.id} className="rounded-[8px] border border-[#CFE0ED] bg-white p-5 shadow-sm">
+                    <article key={booking.id} className="rounded-[8px] border border-[#B9CFDE] bg-[#F8FBFF] p-5 shadow-sm">
                       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                         <div>
                           <div className="text-lg font-black">{SERVICE_LABELS[booking.service_type] || booking.service_type}</div>
                           <div className="mt-1 text-sm text-[#60798F]">{dateLabel(booking.scheduled_date)} at {timeLabel(booking.scheduled_time)} · {booking.address}</div>
-                          {booking.notes && <div className="mt-2 rounded-[8px] bg-[#EFF7FC] p-3 text-sm text-[#60798F]">{booking.notes}</div>}
+                          {booking.notes && <div className="mt-2 rounded-[8px] bg-[#EAF6FC] p-3 text-sm text-[#60798F]">{booking.notes}</div>}
                         </div>
                         <div className="sm:text-right">
                           <div className="font-black">{money(booking.price_cents)}</div>
@@ -526,20 +526,20 @@ export default function AccountPage() {
                         </div>
                       </div>
                       <div className="mt-4 grid gap-3 sm:grid-cols-3">
-                        <div className="rounded-[8px] bg-[#EFF7FC] p-3">
+                        <div className="rounded-[8px] bg-[#EAF6FC] p-3">
                           <div className="text-xs font-bold text-[#60798F]">Cleaner</div>
                           <div className="font-black">{cleaner?.name || 'Being assigned'}</div>
                         </div>
-                        <div className="rounded-[8px] bg-[#EFF7FC] p-3">
+                        <div className="rounded-[8px] bg-[#EAF6FC] p-3">
                           <div className="text-xs font-bold text-[#60798F]">Coverage</div>
                           <div className="font-black">{booking.covered_by_backup ? 'Backup cleaner' : 'Standard cover'}</div>
                         </div>
-                        <div className="rounded-[8px] bg-[#EFF7FC] p-3">
+                        <div className="rounded-[8px] bg-[#EAF6FC] p-3">
                           <div className="text-xs font-bold text-[#60798F]">Proof</div>
                           <div className="font-black">{(done?.after_photos || []).length || (booking.photos || []).length || 0} photo{((done?.after_photos || []).length || (booking.photos || []).length || 0) === 1 ? '' : 's'}</div>
                         </div>
                       </div>
-                      <div className="mt-5 rounded-[8px] bg-[#EFF7FC] p-4">
+                      <div className="mt-5 rounded-[8px] bg-[#EAF6FC] p-4">
                         <div className="flex items-center justify-between gap-2">
                           {TIMELINE.map((step, index) => {
                             const active = progressIndex >= 0 && index <= progressIndex
@@ -559,14 +559,14 @@ export default function AccountPage() {
                         <button
                           type="button"
                           onClick={() => openRequest('reschedule', 'Update this booking', `I would like to update my ${SERVICE_LABELS[booking.service_type] || booking.service_type} on ${dateLabel(booking.scheduled_date)}.`, booking.id)}
-                          className="rounded-full bg-[#EFF7FC] px-4 py-2 text-sm font-black text-[#0B3558]"
+                          className="rounded-full bg-[#EAF6FC] px-4 py-2 text-sm font-black text-[#0B3558]"
                         >
                           Change booking
                         </button>
                         <button
                           type="button"
                           onClick={() => openRequest('oven_fridge', 'Add service to this booking', `Please add an extra service to my ${SERVICE_LABELS[booking.service_type] || booking.service_type}. I am interested in: `, booking.id)}
-                          className="rounded-full bg-[#EFF7FC] px-4 py-2 text-sm font-black text-[#0B3558]"
+                          className="rounded-full bg-[#EAF6FC] px-4 py-2 text-sm font-black text-[#0B3558]"
                         >
                           Add extra service
                         </button>
@@ -610,7 +610,7 @@ function CustomerPhotoGallery({
       </h3>
       <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3">
         {photos.map((photo, index) => (
-          <a key={`${photo.src}-${index}`} href={photo.src} target="_blank" rel="noopener noreferrer" className="block overflow-hidden rounded-[8px] border border-[#CFE0ED] bg-[#EFF7FC]">
+          <a key={`${photo.src}-${index}`} href={photo.src} target="_blank" rel="noopener noreferrer" className="block overflow-hidden rounded-[8px] border border-[#B9CFDE] bg-[#EAF6FC]">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={photo.src} alt={`${photo.label} ${index + 1}`} className="aspect-video w-full object-cover" />
             <div className="px-2 py-1 text-xs font-bold text-[#60798F]">{photo.label}</div>
@@ -620,3 +620,5 @@ function CustomerPhotoGallery({
     </div>
   )
 }
+
+
