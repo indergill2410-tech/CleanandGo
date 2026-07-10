@@ -93,9 +93,9 @@ export default function AdminTeam() {
     <section className="px-4 py-5 sm:px-6 lg:px-8">
       <div className="grid gap-5 xl:grid-cols-[1fr_420px]">
         <section className="rounded-[8px] border border-[#D4E1E8] bg-white p-5 shadow-sm">
-          <p className="text-xs font-black uppercase tracking-[0.18em] text-[#1670A8]">Staff hub</p>
-          <h1 className="mt-2 text-3xl font-black text-[#102D42]">Cleaner, admin, access, and readiness control</h1>
-          <p className="mt-2 max-w-2xl text-sm font-bold leading-6 text-[#5C7180]">Keep the people layer tied to the operating system: who can log in, who is active, who cleans, and who can run the business.</p>
+          <p className="text-xs font-black uppercase tracking-[0.18em] text-[#1D7ED0]">Staff</p>
+          <h1 className="mt-2 text-3xl font-black text-[#0B3558]">Know who can work, who can log in, and who needs setup</h1>
+          <p className="mt-2 max-w-2xl text-sm font-bold leading-6 text-[#60798F]">Invite cleaners and admins, keep access tidy, and make sure active staff are ready for jobs.</p>
           <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
             <Stat label="Staff" value={totals.all} icon={UsersRound} />
             <Stat label="Cleaners" value={totals.cleaners} icon={ShieldCheck} />
@@ -120,9 +120,9 @@ export default function AdminTeam() {
             </select>
             {error && <div className="rounded-[8px] border border-red-200 bg-red-50 px-3 py-2 text-sm font-bold text-red-700">{error}</div>}
             {message && <div className="rounded-[8px] border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm font-bold text-emerald-700">{message}</div>}
-            <button type="submit" disabled={adding} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-[8px] bg-[#0A2537] px-5 text-sm font-black text-white disabled:opacity-50">
+            <button type="submit" disabled={adding} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-[8px] bg-[#0B3558] px-5 text-sm font-black text-white disabled:opacity-50">
               <Plus className="h-4 w-4" />
-              {adding ? 'Adding...' : 'Add and send invite'}
+              {adding ? 'Adding...' : 'Send invite'}
             </button>
           </div>
         </form>

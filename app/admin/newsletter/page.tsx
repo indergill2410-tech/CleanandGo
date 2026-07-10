@@ -46,26 +46,26 @@ export default function AdminNewsletter() {
   }
 
   const Card = ({ p, isDraft }: { p: Post; isDraft: boolean }) => (
-    <div className="glass-strong rounded-2xl p-5">
+    <div className="rounded-[8px] border border-[#CFE0ED] bg-white p-5 shadow-sm">
       <div className="flex items-start justify-between gap-3">
         <div>
           <div className="flex items-center gap-2">
-            <span className="text-white font-semibold">{p.title}</span>
-            <span className={`text-xs px-2 py-0.5 rounded-full ${isDraft ? 'bg-amber-500/20 text-amber-300' : 'bg-green-500/20 text-green-300'}`}>{p.status}</span>
+            <span className="font-black text-[#0B3558]">{p.title}</span>
+            <span className={`rounded-full px-2 py-0.5 text-xs font-black ${isDraft ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800'}`}>{p.status}</span>
           </div>
-          <div className="text-white/50 text-sm mt-1">{p.excerpt}</div>
-          <div className="text-white/30 text-xs mt-1">{p.category} · {p.read_time}</div>
+          <div className="mt-1 text-sm font-bold text-[#60798F]">{p.excerpt}</div>
+          <div className="mt-1 text-xs text-[#8AA0AC]">{p.category} · {p.read_time}</div>
         </div>
-        <button onClick={() => setOpen(open === p.id ? null : p.id)} className="text-white/50 text-sm hover:text-white shrink-0">{open === p.id ? 'Hide' : 'Preview'}</button>
+        <button onClick={() => setOpen(open === p.id ? null : p.id)} className="shrink-0 text-sm font-black text-[#1D7ED0] hover:text-[#0B3558]">{open === p.id ? 'Hide' : 'Preview'}</button>
       </div>
 
       {open === p.id && (
-        <div className="mt-4 bg-white/5 rounded-xl p-4 max-h-72 overflow-auto space-y-3">
+        <div className="mt-4 max-h-72 space-y-3 overflow-auto rounded-[8px] bg-[#F8FBFF] p-4">
           {p.sections?.map((s, i) => (
             <div key={i}>
-              {s.heading && <div className="text-white font-semibold text-sm mb-1">{s.heading}</div>}
-              {s.paragraphs?.map((t, j) => <p key={j} className="text-white/60 text-sm leading-relaxed mb-2">{t}</p>)}
-              {s.bullets && <ul className="list-disc pl-5 text-white/60 text-sm space-y-1">{s.bullets.map((b, k) => <li key={k}>{b}</li>)}</ul>}
+              {s.heading && <div className="mb-1 text-sm font-black text-[#0B3558]">{s.heading}</div>}
+              {s.paragraphs?.map((t, j) => <p key={j} className="mb-2 text-sm leading-relaxed text-[#60798F]">{t}</p>)}
+              {s.bullets && <ul className="list-disc space-y-1 pl-5 text-sm text-[#60798F]">{s.bullets.map((b, k) => <li key={k}>{b}</li>)}</ul>}
             </div>
           ))}
         </div>
@@ -73,50 +73,50 @@ export default function AdminNewsletter() {
 
       <div className="flex flex-wrap gap-2 mt-4">
         {isDraft && (
-          <button onClick={() => act(p.id, '/publish')} disabled={busy === p.id} className="text-sm px-4 py-2 rounded-full border border-white/20 text-white/80 hover:bg-white/10 disabled:opacity-50">Publish</button>
+          <button onClick={() => act(p.id, '/publish')} disabled={busy === p.id} className="rounded-full border border-[#CFE0ED] px-4 py-2 text-sm font-black text-[#0B3558] hover:bg-[#EFF7FC] disabled:opacity-50">Publish</button>
         )}
         <button onClick={() => act(p.id, '/send', `Send “${p.title}” to ${subscriberCount} subscriber(s)?`)} disabled={busy === p.id || subscriberCount === 0}
-          className="text-sm px-4 py-2 rounded-full bg-white text-[#0B3558] font-semibold hover:bg-white/90 disabled:opacity-40">
-          {isDraft ? 'Publish & send' : 'Send'}
+          className="rounded-full bg-[#0B3558] px-4 py-2 text-sm font-black text-white hover:bg-[#164A75] disabled:opacity-40">
+          {isDraft ? 'Publish and send' : 'Send'}
         </button>
-        {!isDraft && <Link href={`/blog/${p.slug}`} className="text-sm px-4 py-2 rounded-full border border-white/20 text-white/80 hover:bg-white/10">View ↗</Link>}
+        {!isDraft && <Link href={`/blog/${p.slug}`} className="rounded-full border border-[#CFE0ED] px-4 py-2 text-sm font-black text-[#0B3558] hover:bg-[#EFF7FC]">View</Link>}
         {isDraft && (
-          <button onClick={() => act(p.id, '', 'Discard this draft?')} disabled={busy === p.id} className="text-sm px-4 py-2 rounded-full border border-red-400/30 text-red-300 hover:bg-red-500/10 disabled:opacity-50">Discard</button>
+          <button onClick={() => act(p.id, '', 'Discard this draft?')} disabled={busy === p.id} className="rounded-full border border-red-200 px-4 py-2 text-sm font-black text-red-700 hover:bg-red-50 disabled:opacity-50">Discard</button>
         )}
       </div>
     </div>
   )
 
   return (
-    <div className="min-h-screen py-6 px-6" style={{ background: 'linear-gradient(135deg, #0B3558 0%, #0B3558 100%)' }}>
+    <div className="min-h-screen bg-[#EFF7FC] px-4 py-5 text-[#0B3558] sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto">
         <div className="mb-6 flex items-end justify-between gap-4">
           <div>
-            <Link href="/admin" className="text-white/50 text-sm hover:text-white">← Dashboard</Link>
-            <h1 className="text-3xl font-bold text-white mt-2">Newsletter</h1>
-            <p className="text-white/50 mt-1">{subscriberCount} subscriber{subscriberCount === 1 ? '' : 's'} · weekly AI drafts land here to review.</p>
+            <Link href="/admin" className="text-sm font-black text-[#1D7ED0] hover:text-[#0B3558]">Back to overview</Link>
+            <h1 className="mt-2 text-3xl font-black tracking-normal text-[#0B3558]">Newsletter</h1>
+            <p className="mt-1 text-sm font-bold text-[#60798F]">{subscriberCount} subscriber{subscriberCount === 1 ? '' : 's'} · review drafts before sending.</p>
           </div>
-          <button onClick={generate} disabled={busy === 'generate'} className="shrink-0 text-sm px-5 py-2.5 rounded-full bg-white text-[#0B3558] font-bold hover:bg-white/90 disabled:opacity-50">
-            {busy === 'generate' ? 'Researching…' : '✨ Generate draft'}
+          <button onClick={generate} disabled={busy === 'generate'} className="shrink-0 rounded-full bg-[#0B3558] px-5 py-2.5 text-sm font-black text-white hover:bg-[#164A75] disabled:opacity-50">
+            {busy === 'generate' ? 'Researching...' : 'Generate draft'}
           </button>
         </div>
 
-        {msg && <div className="bg-white/10 border border-white/15 rounded-xl px-4 py-3 text-white/80 text-sm mb-5">{msg}</div>}
+        {msg && <div className="mb-5 rounded-[8px] border border-[#CFE0ED] bg-white px-4 py-3 text-sm font-bold text-[#60798F] shadow-sm">{msg}</div>}
 
         {loading ? (
-          <div className="text-white/50">Loading…</div>
+          <div className="text-[#60798F]">Loading...</div>
         ) : (
           <div className="space-y-8">
             <section>
-              <h2 className="text-white/70 text-sm font-semibold uppercase tracking-wider mb-3">Drafts to review</h2>
+              <h2 className="mb-3 text-sm font-black uppercase tracking-[0.16em] text-[#1D7ED0]">Drafts to review</h2>
               {drafts.length === 0 ? (
-                <div className="glass-strong rounded-2xl p-8 text-center text-white/40 text-sm">No drafts. Hit “Generate draft” or wait for the weekly run.</div>
+                <div className="rounded-[8px] border border-[#CFE0ED] bg-white p-8 text-center text-sm text-[#60798F] shadow-sm">No drafts yet. Generate one when you are ready.</div>
               ) : <div className="space-y-3">{drafts.map((p) => <Card key={p.id} p={p} isDraft />)}</div>}
             </section>
 
             {published.length > 0 && (
               <section>
-                <h2 className="text-white/70 text-sm font-semibold uppercase tracking-wider mb-3">Published</h2>
+                <h2 className="mb-3 text-sm font-black uppercase tracking-[0.16em] text-[#1D7ED0]">Published</h2>
                 <div className="space-y-3">{published.map((p) => <Card key={p.id} p={p} isDraft={false} />)}</div>
               </section>
             )}

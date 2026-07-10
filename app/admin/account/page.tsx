@@ -23,24 +23,24 @@ export default function AdminAccount() {
     setPassword(''); setConfirm('')
   }
 
-  const inputCls = 'w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 text-sm'
+  const inputCls = 'w-full rounded-[8px] border border-[#CFE0ED] bg-[#F8FBFF] px-4 py-3 text-sm text-[#0B3558] placeholder:text-[#8AA0AC] outline-none focus:border-[#1D7ED0]'
 
   return (
-    <div className="min-h-screen py-6 px-6" style={{ background: 'linear-gradient(135deg, #0B3558 0%, #0B3558 100%)' }}>
+    <div className="min-h-screen bg-[#EFF7FC] px-4 py-5 text-[#0B3558] sm:px-6 lg:px-8">
       <div className="max-w-md mx-auto">
         <div className="mb-6">
-          <Link href="/admin" className="text-white/50 text-sm hover:text-white">← Dashboard</Link>
-          <h1 className="text-3xl font-bold text-white mt-2">Account</h1>
-          <p className="text-white/50 mt-1">Change your password.</p>
+          <Link href="/admin" className="text-sm font-black text-[#1D7ED0] hover:text-[#0B3558]">Back to overview</Link>
+          <h1 className="mt-2 text-3xl font-black tracking-normal text-[#0B3558]">Admin account</h1>
+          <p className="mt-1 text-sm font-bold text-[#60798F]">Change your password.</p>
         </div>
 
-        <form onSubmit={save} className="glass-strong rounded-2xl p-6 space-y-4">
+        <form onSubmit={save} className="space-y-4 rounded-[8px] border border-[#CFE0ED] bg-white p-6 shadow-sm">
           <input type="password" placeholder="New password" value={password} onChange={e => setPassword(e.target.value)} required className={inputCls} />
           <input type="password" placeholder="Confirm new password" value={confirm} onChange={e => setConfirm(e.target.value)} required className={inputCls} />
-          {error && <div className="bg-red-500/20 border border-red-500/30 rounded-xl px-4 py-3 text-red-200 text-sm">{error}</div>}
-          {msg && <div className="bg-green-500/20 border border-green-500/30 rounded-xl px-4 py-3 text-green-200 text-sm">{msg}</div>}
-          <button type="submit" disabled={saving} className="w-full py-3.5 rounded-xl bg-white text-[#0B3558] font-bold hover:bg-white/90 transition disabled:opacity-50">
-            {saving ? 'Saving…' : 'Update password'}
+          {error && <div className="rounded-[8px] border border-red-200 bg-red-50 px-4 py-3 text-sm font-bold text-red-700">{error}</div>}
+          {msg && <div className="rounded-[8px] border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-bold text-emerald-700">{msg}</div>}
+          <button type="submit" disabled={saving} className="w-full rounded-[8px] bg-[#0B3558] py-3.5 font-bold text-white transition hover:bg-[#164A75] disabled:opacity-50">
+            {saving ? 'Saving...' : 'Update password'}
           </button>
         </form>
       </div>

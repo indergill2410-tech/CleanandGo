@@ -13,9 +13,9 @@ type Invoice = {
 }
 
 const STATUS_STYLES: Record<string, string> = {
-  open: 'bg-amber-500/20 text-amber-300',
-  paid: 'bg-green-500/20 text-green-300',
-  void: 'bg-red-500/20 text-red-300',
+  open: 'bg-amber-100 text-amber-800',
+  paid: 'bg-emerald-100 text-emerald-800',
+  void: 'bg-red-100 text-red-800',
 }
 
 export default function AdminInvoices() {
@@ -60,19 +60,18 @@ export default function AdminInvoices() {
     }
   }
 
-  const inputCls = 'w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 text-sm'
+  const inputCls = 'w-full rounded-[8px] border border-[#CFE0ED] bg-[#F8FBFF] px-4 py-3 text-sm text-[#0B3558] placeholder:text-[#8AA0AC] outline-none focus:border-[#1D7ED0]'
 
   return (
-    <div className="min-h-screen py-6 px-6" style={{ background: 'linear-gradient(135deg, #0B3558 0%, #0B3558 100%)' }}>
+    <div className="min-h-screen bg-[#EFF7FC] px-4 py-5 text-[#0B3558] sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto">
         <div className="mb-8">
-          <Link href="/admin" className="text-white/50 text-sm hover:text-white">← Dashboard</Link>
-          <h1 className="text-3xl font-bold text-white mt-2">Invoices</h1>
-          <p className="text-white/50 mt-1">Bill a customer any amount. Stripe emails a payment link; they can also pay from their account.</p>
+          <Link href="/admin" className="text-sm font-black text-[#1D7ED0] hover:text-[#0B3558]">Back to overview</Link>
+          <h1 className="mt-2 text-3xl font-black tracking-normal text-[#0B3558]">Invoices</h1>
+          <p className="mt-1 text-sm font-bold text-[#60798F]">Send a Stripe payment link and track whether the customer has paid.</p>
         </div>
 
-        {/* Send form */}
-        <form onSubmit={send} className="glass-strong rounded-2xl p-6 mb-8 grid gap-3">
+        <form onSubmit={send} className="mb-8 grid gap-3 rounded-[8px] border border-[#CFE0ED] bg-white p-6 shadow-sm">
           <div className="grid sm:grid-cols-2 gap-3">
             <input type="email" placeholder="Customer email" value={email} onChange={e => setEmail(e.target.value)} required className={inputCls} />
             <input placeholder="Customer name (optional)" value={name} onChange={e => setName(e.target.value)} className={inputCls} />
@@ -81,36 +80,35 @@ export default function AdminInvoices() {
             <input type="number" min="0" step="0.01" placeholder="Amount (AUD)" value={amount} onChange={e => setAmount(e.target.value)} required className={inputCls} />
             <input placeholder="Description (e.g. Deep clean — 12 Smith St)" value={description} onChange={e => setDescription(e.target.value)} className={inputCls} />
           </div>
-          {error && <div className="bg-red-500/20 border border-red-500/30 rounded-xl px-4 py-3 text-red-200 text-sm">{error}</div>}
+          {error && <div className="rounded-[8px] border border-red-200 bg-red-50 px-4 py-3 text-sm font-bold text-red-700">{error}</div>}
           {result && (
-            <div className="bg-green-500/20 border border-green-500/30 rounded-xl px-4 py-3 text-green-200 text-sm">
+            <div className="rounded-[8px] border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-bold text-emerald-700">
               Invoice sent &amp; emailed.{' '}
-              {result.url && <a href={result.url} target="_blank" rel="noopener noreferrer" className="underline font-semibold">Open payment link →</a>}
+              {result.url && <a href={result.url} target="_blank" rel="noopener noreferrer" className="underline font-semibold">Open payment link</a>}
             </div>
           )}
-          <button type="submit" disabled={sending} className="py-3.5 rounded-xl bg-white text-[#0B3558] font-bold hover:bg-white/90 transition disabled:opacity-50">
-            {sending ? 'Sending…' : 'Create & send invoice'}
+          <button type="submit" disabled={sending} className="rounded-[8px] bg-[#0B3558] py-3.5 font-bold text-white transition hover:bg-[#164A75] disabled:opacity-50">
+            {sending ? 'Sending...' : 'Create and send invoice'}
           </button>
         </form>
 
-        {/* List */}
-        <h2 className="text-white/70 text-sm font-semibold uppercase tracking-wider mb-3">Recent invoices</h2>
+        <h2 className="mb-3 text-sm font-black uppercase tracking-[0.16em] text-[#1D7ED0]">Recent invoices</h2>
         {loading ? (
-          <div className="text-white/50">Loading…</div>
+          <div className="text-[#60798F]">Loading...</div>
         ) : invoices.length === 0 ? (
-          <div className="glass-strong rounded-2xl p-8 text-center text-white/60">No invoices yet.</div>
+          <div className="rounded-[8px] border border-[#CFE0ED] bg-white p-8 text-center text-[#60798F] shadow-sm">No invoices yet.</div>
         ) : (
           <div className="space-y-3">
             {invoices.map(inv => (
-              <div key={inv.id} className="glass-strong rounded-2xl p-4 flex items-center justify-between">
+              <div key={inv.id} className="flex items-center justify-between rounded-[8px] border border-[#CFE0ED] bg-white p-4 shadow-sm">
                 <div>
-                  <div className="text-white font-semibold">${(inv.amount_cents / 100).toFixed(2)} <span className="text-white/40 text-sm font-normal">· {inv.customers?.name || inv.customers?.email}</span></div>
-                  <div className="text-white/40 text-xs">{inv.description || 'Cleaning service'}</div>
+                  <div className="font-black text-[#0B3558]">${(inv.amount_cents / 100).toFixed(2)} <span className="text-sm font-bold text-[#60798F]">· {inv.customers?.name || inv.customers?.email}</span></div>
+                  <div className="text-xs text-[#60798F]">{inv.description || 'Cleaning service'}</div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className={`text-xs px-2.5 py-0.5 rounded-full ${STATUS_STYLES[inv.status] || 'bg-white/10 text-white/60'}`}>{inv.status}</span>
+                  <span className={`rounded-full px-2.5 py-0.5 text-xs font-black ${STATUS_STYLES[inv.status] || 'bg-slate-100 text-slate-700'}`}>{inv.status}</span>
                   {inv.hosted_invoice_url && (
-                    <a href={inv.hosted_invoice_url} target="_blank" rel="noopener noreferrer" className="text-[#7DD3FC] text-sm hover:text-white">link →</a>
+                    <a href={inv.hosted_invoice_url} target="_blank" rel="noopener noreferrer" className="text-sm font-black text-[#1D7ED0] hover:text-[#0B3558]">Open</a>
                   )}
                 </div>
               </div>

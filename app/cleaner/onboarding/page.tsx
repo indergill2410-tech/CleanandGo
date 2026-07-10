@@ -2,6 +2,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import { ArrowLeft, BadgeCheck, Banknote, BriefcaseBusiness, CheckCircle2, ClipboardCheck, FileText, ShieldCheck, UserRound } from 'lucide-react'
+import { RoleLens3D } from '@/components/dashboard/CleanDashboard'
 
 type AgreementTemplate = {
   type: string
@@ -207,12 +208,12 @@ export default function CleanerOnboardingPage() {
         <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6">
           <Link href="/cleaner" className="inline-flex items-center gap-2 text-sm font-black text-[#1D7ED0]">
             <ArrowLeft className="h-4 w-4" />
-            Cleaner workboard
+            Today&apos;s jobs
           </Link>
           <div className="mt-4 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
             <div>
-              <h1 className="text-3xl font-black sm:text-4xl">Contractor onboarding</h1>
-              <p className="mt-1 text-[#60798F]">ABN, payment details, emergency contact and required agreements.</p>
+              <h1 className="text-3xl font-black tracking-normal sm:text-4xl">My onboarding</h1>
+              <p className="mt-1 text-[#60798F]">Add the details Cleanngo needs to assign work and pay you correctly.</p>
             </div>
             <StatusBadge status={profile?.onboarding_status || 'incomplete'} />
           </div>
@@ -307,6 +308,14 @@ export default function CleanerOnboardingPage() {
         </section>
 
         <aside className="space-y-4">
+          <RoleLens3D
+            tone="staff"
+            score={readyToSubmit ? 'Ready' : 'Setup'}
+            primary={{ label: 'Profile', value: essentialsDone ? 'Done' : 'Open' }}
+            secondary={{ label: 'Agreements', value: `${acceptedTypes.size}/${templates.length}` }}
+            tertiary={{ label: 'Review', value: profile?.onboarding_status || 'Draft' }}
+          />
+
           <section className="rounded-[8px] border border-[#DCE5ED] bg-white p-5 shadow-sm">
             <h2 className="flex items-center gap-2 font-black"><ClipboardCheck className="h-5 w-5 text-[#1D7ED0]" />Readiness</h2>
             <div className="mt-4 space-y-2">
@@ -314,7 +323,7 @@ export default function CleanerOnboardingPage() {
               <CheckRow label="Required agreements" ok={missingAgreements.length === 0} />
               <CheckRow label="Admin approved" ok={profile?.onboarding_status === 'approved'} />
             </div>
-            <p className="mt-4 text-sm text-[#60798F]">Required details and agreements must be complete before admin can confidently assign and pay work.</p>
+            <p className="mt-4 text-sm text-[#60798F]">Complete these items so Cleanngo can assign jobs and pay you without delays.</p>
           </section>
 
           <section className="rounded-[8px] border border-[#DCE5ED] bg-white p-5 shadow-sm">

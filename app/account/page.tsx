@@ -18,6 +18,7 @@ import {
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import PaymentForm from '@/components/PaymentForm'
+import { RoleLens3D } from '@/components/dashboard/CleanDashboard'
 
 type StaffPerson = { name: string; phone: string | null; suburb: string | null }
 type StaffRef = StaffPerson | StaffPerson[] | null
@@ -244,7 +245,7 @@ export default function AccountPage() {
           <div>
             <Link href="/" className="text-sm font-bold text-[#1D7ED0] hover:text-[#0B3558]">cleanngo home</Link>
             <h1 className="mt-2 text-3xl font-black tracking-normal sm:text-4xl">Welcome back, {firstName}</h1>
-            <p className="mt-1 text-sm text-[#60798F]">Your clean schedule, quotes, messages, and service upgrades in one calm place.</p>
+            <p className="mt-1 text-sm text-[#60798F]">Your upcoming cleans, messages, photos, and payments in one calm place.</p>
           </div>
           <div className="flex flex-wrap gap-2">
             <Link href="/account/messages" className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-[#C9D7E2] bg-white px-5 text-sm font-black text-[#0B3558] hover:border-[#0B3558]">
@@ -252,7 +253,7 @@ export default function AccountPage() {
               Messages
             </Link>
             <Link href="/customer/book" className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-[#0B3558] px-5 text-sm font-black text-white hover:bg-[#0B3558]">
-              Post a job
+              Book a clean
               <ArrowRight className="h-4 w-4" />
             </Link>
             <button onClick={signOut} className="min-h-11 rounded-full px-4 text-sm font-bold text-[#60798F] hover:bg-white">Sign out</button>
@@ -322,25 +323,35 @@ export default function AccountPage() {
             )}
           </div>
 
-          <div className="rounded-[8px] border border-[#CFE0ED] bg-white p-6 shadow-sm">
-            <p className="text-sm font-black uppercase tracking-[0.16em] text-[#1D7ED0]">Recommended for you</p>
-            <h2 className="mt-2 text-2xl font-black">Make the next clean feel even lighter</h2>
-            <div className="mt-5 space-y-3">
-              {[
-                { title: 'Add an oven or fridge reset', text: 'Perfect before guests, inspections, or a fresh start.', type: 'oven_fridge', message: 'I would like to add an oven or fridge reset to my next clean. Please confirm the best option and price.' },
-                { title: 'Move to a recurring plan', text: 'Keep the same clean feeling every week or fortnight.', type: 'recurring_plan', message: 'I am interested in a recurring cleaning plan. Please recommend the best frequency for my home.' },
-                { title: 'Need office or Airbnb support?', text: 'Get a fixed plan for workspaces or turnovers.', type: 'office_airbnb', message: 'I would like help with office cleaning or Airbnb turnover support. Please send me the best next step.' },
-              ].map((item) => (
-                <button
-                  key={item.title}
-                  type="button"
-                  onClick={() => openRequest(item.type, item.title, item.message, nextBooking?.id)}
-                  className="block w-full rounded-[8px] border border-[#D8E8F2] p-4 text-left transition hover:border-[#1D7ED0] hover:bg-[#EFF7FC]"
-                >
-                  <div className="font-black">{item.title}</div>
-                  <div className="mt-1 text-sm text-[#60798F]">{item.text}</div>
-                </button>
-              ))}
+          <div className="space-y-4">
+            <RoleLens3D
+              tone="customer"
+              score={activePlans > 0 ? 'Plan on' : 'Ready'}
+              primary={{ label: 'Next clean', value: nextBooking ? statusInfo(nextBooking.status).label : 'Book' }}
+              secondary={{ label: 'Messages', value: conversations.length }}
+              tertiary={{ label: 'Photos', value: bookings.filter((booking) => Boolean(completion(booking.job_completions))).length }}
+            />
+
+            <div className="rounded-[8px] border border-[#CFE0ED] bg-white p-6 shadow-sm">
+              <p className="text-sm font-black uppercase tracking-[0.16em] text-[#1D7ED0]">Helpful next steps</p>
+              <h2 className="mt-2 text-2xl font-black">Make the next clean feel easier</h2>
+              <div className="mt-5 space-y-3">
+                {[
+                  { title: 'Add an oven or fridge reset', text: 'Good before guests, inspections, or a fresh start.', type: 'oven_fridge', message: 'I would like to add an oven or fridge reset to my next clean. Please confirm the best option and price.' },
+                  { title: 'Start a recurring plan', text: 'Keep the same clean feeling every week or fortnight.', type: 'recurring_plan', message: 'I am interested in a recurring cleaning plan. Please recommend the best frequency for my home.' },
+                  { title: 'Ask about office or Airbnb support', text: 'Get a fixed plan for workspaces or turnovers.', type: 'office_airbnb', message: 'I would like help with office cleaning or Airbnb turnover support. Please send me the best next step.' },
+                ].map((item) => (
+                  <button
+                    key={item.title}
+                    type="button"
+                    onClick={() => openRequest(item.type, item.title, item.message, nextBooking?.id)}
+                    className="block w-full rounded-[8px] border border-[#D8E8F2] p-4 text-left transition hover:border-[#1D7ED0] hover:bg-[#EFF7FC]"
+                  >
+                    <div className="font-black">{item.title}</div>
+                    <div className="mt-1 text-sm text-[#60798F]">{item.text}</div>
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         </section>

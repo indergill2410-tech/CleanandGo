@@ -5,7 +5,7 @@ import Link from 'next/link'
 type Notif = { id: string; type: string; title: string; message: string; booking_id: string | null; read: boolean; created_at: string }
 
 const ICONS: Record<string, string> = {
-  new_booking: '📅', new_application: '🧹', payment: '💳', quote: '💰', default: '🔔',
+  new_booking: 'Job', new_application: 'Staff', payment: 'Pay', quote: 'Quote', default: 'Update',
 }
 
 export default function AdminNotifications() {
@@ -30,39 +30,39 @@ export default function AdminNotifications() {
   const unread = items.filter(n => !n.read).length
 
   return (
-    <div className="min-h-screen py-6 px-6" style={{ background: 'linear-gradient(135deg, #0B3558 0%, #0B3558 100%)' }}>
+    <div className="min-h-screen bg-[#EFF7FC] px-4 py-5 text-[#0B3558] sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto">
         <div className="mb-6 flex items-end justify-between">
           <div>
-            <Link href="/admin" className="text-white/50 text-sm hover:text-white">← Dashboard</Link>
-            <h1 className="text-3xl font-bold text-white mt-2">Notifications</h1>
-            <p className="text-white/50 mt-1">{unread} unread</p>
+            <Link href="/admin" className="text-sm font-black text-[#1D7ED0] hover:text-[#0B3558]">Back to overview</Link>
+            <h1 className="mt-2 text-3xl font-black tracking-normal text-[#0B3558]">Updates</h1>
+            <p className="mt-1 text-sm font-bold text-[#60798F]">{unread} unread</p>
           </div>
           {unread > 0 && (
             <button onClick={() => mark({ all: true })} disabled={busy}
-              className="text-sm px-4 py-2 rounded-full border border-white/20 text-white/80 hover:bg-white/10 disabled:opacity-50">
+              className="rounded-full border border-[#CFE0ED] bg-white px-4 py-2 text-sm font-black text-[#0B3558] hover:border-[#1D7ED0] disabled:opacity-50">
               Mark all read
             </button>
           )}
         </div>
 
         {loading ? (
-          <div className="text-white/50">Loading…</div>
+          <div className="text-[#60798F]">Loading...</div>
         ) : items.length === 0 ? (
-          <div className="glass-strong rounded-2xl p-12 text-center text-white/40">No notifications.</div>
+          <div className="rounded-[8px] border border-[#CFE0ED] bg-white p-12 text-center text-[#60798F] shadow-sm">No updates.</div>
         ) : (
           <div className="space-y-2">
             {items.map(n => (
               <button key={n.id} onClick={() => !n.read && mark({ id: n.id })}
-                className={`w-full text-left rounded-2xl p-4 flex gap-3 transition-colors ${n.read ? 'bg-white/5' : 'glass-strong hover:bg-white/15'}`}>
-                <div className="text-xl">{ICONS[n.type] || ICONS.default}</div>
+                className={`flex w-full gap-3 rounded-[8px] border border-[#CFE0ED] p-4 text-left shadow-sm transition-colors ${n.read ? 'bg-white' : 'bg-[#F8FBFF] hover:bg-white'}`}>
+                <div className="rounded-full bg-[#E7F3FC] px-2.5 py-1 text-xs font-black text-[#1D7ED0]">{ICONS[n.type] || ICONS.default}</div>
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
-                    <span className={`font-semibold ${n.read ? 'text-white/60' : 'text-white'}`}>{n.title}</span>
-                    {!n.read && <span className="w-2 h-2 rounded-full bg-amber-400" />}
+                    <span className={`font-black ${n.read ? 'text-[#60798F]' : 'text-[#0B3558]'}`}>{n.title}</span>
+                    {!n.read && <span className="h-2 w-2 rounded-full bg-[#1D7ED0]" />}
                   </div>
-                  <div className="text-white/50 text-sm">{n.message}</div>
-                  <div className="text-white/30 text-xs mt-1" suppressHydrationWarning>{new Date(n.created_at).toLocaleString()}</div>
+                  <div className="text-sm font-bold text-[#60798F]">{n.message}</div>
+                  <div className="mt-1 text-xs text-[#8AA0AC]" suppressHydrationWarning>{new Date(n.created_at).toLocaleString()}</div>
                 </div>
               </button>
             ))}

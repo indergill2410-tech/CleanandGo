@@ -15,10 +15,10 @@ type Payment = {
 type Totals = { grossCents: number; monthCents: number; count: number }
 
 const STATUS_STYLES: Record<string, string> = {
-  succeeded: 'bg-green-500/20 text-green-300',
-  pending: 'bg-amber-500/20 text-amber-300',
-  failed: 'bg-red-500/20 text-red-300',
-  refunded: 'bg-white/10 text-white/50',
+  succeeded: 'bg-emerald-100 text-emerald-800',
+  pending: 'bg-amber-100 text-amber-800',
+  failed: 'bg-red-100 text-red-800',
+  refunded: 'bg-slate-100 text-slate-700',
 }
 
 export default function AdminPayments() {
@@ -36,43 +36,43 @@ export default function AdminPayments() {
   const money = (cents: number) => `$${(cents / 100).toLocaleString(undefined, { minimumFractionDigits: 2 })}`
 
   return (
-    <div className="min-h-screen py-6 px-6" style={{ background: 'linear-gradient(135deg, #0B3558 0%, #0B3558 100%)' }}>
+    <div className="min-h-screen bg-[#EFF7FC] px-4 py-5 text-[#0B3558] sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
         <div className="mb-6">
-          <Link href="/admin" className="text-white/50 text-sm hover:text-white">← Dashboard</Link>
-          <h1 className="text-3xl font-bold text-white mt-2">Payments &amp; revenue</h1>
-          <p className="text-white/50 mt-1">Captured Stripe payments across all bookings.</p>
+          <Link href="/admin" className="text-sm font-black text-[#1D7ED0] hover:text-[#0B3558]">Back to overview</Link>
+          <h1 className="mt-2 text-3xl font-black tracking-normal text-[#0B3558]">Payments and revenue</h1>
+          <p className="mt-1 text-sm font-bold text-[#60798F]">Captured Stripe payments across customer bookings.</p>
         </div>
 
         <div className="grid grid-cols-3 gap-4 mb-8">
           {[
-            { label: 'Total revenue', value: money(totals.grossCents), color: 'text-green-300' },
-            { label: 'This month', value: money(totals.monthCents), color: 'text-blue-300' },
-            { label: 'Payments', value: String(totals.count), color: 'text-white' },
+            { label: 'Total revenue', value: money(totals.grossCents), color: 'text-emerald-700' },
+            { label: 'This month', value: money(totals.monthCents), color: 'text-[#1D7ED0]' },
+            { label: 'Payments', value: String(totals.count), color: 'text-[#0B3558]' },
           ].map(s => (
-            <div key={s.label} className="glass-strong rounded-2xl p-5">
+            <div key={s.label} className="rounded-[8px] border border-[#CFE0ED] bg-white p-5 shadow-sm">
               <div className={`text-2xl font-bold ${s.color}`}>{s.value}</div>
-              <div className="text-white/50 text-sm mt-1">{s.label}</div>
+              <div className="mt-1 text-sm font-bold text-[#60798F]">{s.label}</div>
             </div>
           ))}
         </div>
 
         {loading ? (
-          <div className="text-white/50">Loading…</div>
+          <div className="text-[#60798F]">Loading...</div>
         ) : payments.length === 0 ? (
-          <div className="glass-strong rounded-2xl p-12 text-center text-white/40">No payments recorded yet.</div>
+          <div className="rounded-[8px] border border-[#CFE0ED] bg-white p-12 text-center text-[#60798F] shadow-sm">No payments recorded yet.</div>
         ) : (
           <div className="space-y-3">
             {payments.map(p => (
-              <div key={p.id} className="glass-strong rounded-2xl p-4 flex items-center justify-between gap-3">
+              <div key={p.id} className="flex items-center justify-between gap-3 rounded-[8px] border border-[#CFE0ED] bg-white p-4 shadow-sm">
                 <div>
-                  <div className="text-white font-semibold">{p.bookings?.customers?.name || 'Customer'}</div>
-                  <div className="text-white/50 text-sm">{p.bookings?.service_type || '—'}{p.bookings?.scheduled_date ? ` · ${p.bookings.scheduled_date}` : ''}</div>
-                  <div className="text-white/30 text-xs mt-1" suppressHydrationWarning>{new Date(p.captured_at || p.created_at).toLocaleString()}</div>
+                  <div className="font-black text-[#0B3558]">{p.bookings?.customers?.name || 'Customer'}</div>
+                  <div className="text-sm font-bold text-[#60798F]">{p.bookings?.service_type || '-'}{p.bookings?.scheduled_date ? ` · ${p.bookings.scheduled_date}` : ''}</div>
+                  <div className="mt-1 text-xs text-[#8AA0AC]" suppressHydrationWarning>{new Date(p.captured_at || p.created_at).toLocaleString()}</div>
                 </div>
                 <div className="text-right">
-                  <div className="text-white font-bold text-lg">{money(p.amount_cents)}</div>
-                  <span className={`text-xs px-2 py-0.5 rounded-full ${STATUS_STYLES[p.status] || 'bg-white/10 text-white/50'}`}>{p.status}</span>
+                  <div className="text-lg font-black text-[#0B3558]">{money(p.amount_cents)}</div>
+                  <span className={`rounded-full px-2 py-0.5 text-xs font-black ${STATUS_STYLES[p.status] || 'bg-slate-100 text-slate-700'}`}>{p.status}</span>
                 </div>
               </div>
             ))}

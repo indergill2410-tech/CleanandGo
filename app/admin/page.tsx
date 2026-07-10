@@ -9,7 +9,6 @@ import {
   Banknote,
   Bell,
   CalendarDays,
-  Camera,
   CheckCircle2,
   ClipboardList,
   Clock3,
@@ -24,6 +23,7 @@ import {
   UserRoundCheck,
   UsersRound,
 } from 'lucide-react'
+import { RoleLens3D } from '@/components/dashboard/CleanDashboard'
 
 type Relation<T> = T | T[] | null
 type Person = { id?: string; name: string; email?: string | null; phone?: string | null; suburb?: string | null; status?: string | null; role?: string | null }
@@ -182,39 +182,45 @@ export default function AdminCommandCenter() {
       )}
 
       <section className="grid gap-5 2xl:grid-cols-[1.08fr_0.92fr]">
-        <div className="rounded-[8px] border border-[#D4E1E8] bg-white p-5 shadow-sm">
-          <div className="grid gap-6 xl:grid-cols-[1fr_420px]">
+        <div className="rounded-[8px] border border-[#CFE0ED] bg-white p-5 shadow-sm">
+          <div className="grid gap-6 xl:grid-cols-[1fr_400px]">
             <div>
-              <p className="text-xs font-black uppercase tracking-[0.18em] text-[#1670A8]">Billion-dollar operating posture</p>
-              <h2 className="mt-2 max-w-3xl text-3xl font-black tracking-normal text-[#102D42] sm:text-5xl">
-                Staff, customers, jobs, and money in one calm control room.
+              <p className="text-xs font-black uppercase tracking-[0.18em] text-[#1D7ED0]">Today&apos;s business view</p>
+              <h2 className="mt-2 max-w-3xl text-2xl font-black tracking-normal text-[#0B3558] sm:text-4xl">
+                See what needs attention, then move the day forward.
               </h2>
-              <p className="mt-4 max-w-2xl text-sm font-bold leading-6 text-[#5C7180]">
-                The dashboard now behaves like an operating system: live priorities first, then work lanes for dispatch, customer care, people, and finance.
+              <p className="mt-4 max-w-2xl text-sm font-bold leading-6 text-[#60798F]">
+                Review open jobs, customer messages, staff readiness, and payments from one calm place.
               </p>
               <div className="mt-5 flex flex-wrap gap-2">
-                <CommandLink href="/admin/team" icon={UsersRound} label="Staff hub" />
-                <CommandLink href="/admin/customers" icon={UserRoundCheck} label="Customer hub" />
-                <CommandLink href="/admin/finance" icon={ReceiptText} label="Finance ops" />
+                <CommandLink href="/admin/team" icon={UsersRound} label="Staff" />
+                <CommandLink href="/admin/customers" icon={UserRoundCheck} label="Customers" />
+                <CommandLink href="/admin/finance" icon={ReceiptText} label="Finance" />
                 <CommandLink href="/admin/applications" icon={ShieldCheck} label="Onboarding" />
               </div>
             </div>
-            <OpsMap3D score={operationalScore} today={counts.today} unassigned={counts.unassigned} cleaners={counts.cleaners} />
+            <RoleLens3D
+              tone="admin"
+              score={operationalScore}
+              primary={{ label: 'Jobs today', value: counts.today }}
+              secondary={{ label: 'Staff ready', value: counts.cleaners }}
+              tertiary={{ label: 'Needs assigning', value: counts.unassigned }}
+            />
           </div>
         </div>
 
         <div className="grid gap-3 sm:grid-cols-2">
-          <MetricCard label="Today roster" value={String(counts.today)} helper={`${counts.tomorrow} tomorrow`} icon={CalendarDays} tone="sky" />
-          <MetricCard label="Unassigned jobs" value={String(counts.unassigned)} helper={`${counts.cleaners} active cleaners`} icon={MapPin} tone="amber" />
-          <MetricCard label="Customer signals" value={String(metrics.unreadMessages + metrics.unreadNotifications)} helper={`${metrics.unreadMessages} messages`} icon={MessageCircle} tone="blue" />
-          <MetricCard label="Contractor readiness" value={String(onboardingPressure)} helper="items to clear" icon={ShieldAlert} tone="emerald" />
+          <MetricCard label="Jobs today" value={String(counts.today)} helper={`${counts.tomorrow} tomorrow`} icon={CalendarDays} tone="sky" />
+          <MetricCard label="Needs assigning" value={String(counts.unassigned)} helper={`${counts.cleaners} staff ready`} icon={MapPin} tone="amber" />
+          <MetricCard label="Customer updates" value={String(metrics.unreadMessages + metrics.unreadNotifications)} helper={`${metrics.unreadMessages} messages`} icon={MessageCircle} tone="blue" />
+          <MetricCard label="Staff setup" value={String(onboardingPressure)} helper="items to clear" icon={ShieldAlert} tone="emerald" />
           <MetricCard label="Pending staff pay" value={money(finance?.pendingStaffPaymentCents)} helper={`${money(finance?.paidStaffThisWeekCents)} paid week`} icon={Banknote} tone="lime" />
           <MetricCard label="Month expenses" value={money(finance?.expensesThisMonthCents)} helper={`${money(metrics.capturedPaymentCents)} captured`} icon={DollarSign} tone="slate" />
         </div>
       </section>
 
       <section className="mt-5 grid gap-5 xl:grid-cols-[1.25fr_0.75fr]">
-        <Panel title="Job control room" action={<Link href="/admin/subscriptions" className="text-sm font-black text-[#1670A8]">Recurring plans</Link>}>
+        <Panel title="Jobs needing attention" action={<Link href="/admin/subscriptions" className="text-sm font-black text-[#1D7ED0]">Recurring plans</Link>}>
           <div className="grid gap-3 lg:grid-cols-4">
             <LaneStat label="Quote backlog" value={counts.pending} icon={ClipboardList} />
             <LaneStat label="Confirmed" value={counts.confirmed} icon={BadgeCheck} />
@@ -252,7 +258,7 @@ export default function AdminCommandCenter() {
           </div>
         </Panel>
 
-        <Panel title="Alerts and customer care" action={<Link href="/admin/notifications" className="text-sm font-black text-[#1670A8]">View alerts</Link>}>
+        <Panel title="Customer updates" action={<Link href="/admin/notifications" className="text-sm font-black text-[#1D7ED0]">View updates</Link>}>
           <div className="space-y-3">
             {latestAlerts.length === 0 ? (
               <div className="rounded-[8px] bg-[#F7FAFC] p-6 text-sm font-bold text-[#5C7180]">No live alerts.</div>
@@ -273,7 +279,7 @@ export default function AdminCommandCenter() {
       </section>
 
       <section className="mt-5 grid gap-5 xl:grid-cols-3">
-        <Panel title="Staff hub" action={<Link href="/admin/team" className="text-sm font-black text-[#1670A8]">Open staff</Link>}>
+        <Panel title="Staff ready today" action={<Link href="/admin/team" className="text-sm font-black text-[#1D7ED0]">Open staff</Link>}>
           <div className="space-y-3">
             {activeCleaners.map((member) => (
               <div key={member.id} className="flex items-center justify-between gap-3 rounded-[8px] border border-[#D4E1E8] bg-[#F7FAFC] p-3">
@@ -288,7 +294,7 @@ export default function AdminCommandCenter() {
           </div>
         </Panel>
 
-        <Panel title="Applicant and compliance lane" action={<Link href="/admin/applications" className="text-sm font-black text-[#1670A8]">Open applicants</Link>}>
+        <Panel title="Applicants and checks" action={<Link href="/admin/applications" className="text-sm font-black text-[#1D7ED0]">Open applicants</Link>}>
           <div className="space-y-3">
             {applications.slice(0, 5).map((application) => (
               <div key={application.id} className="rounded-[8px] border border-[#D4E1E8] bg-[#F7FAFC] p-3">
@@ -310,7 +316,7 @@ export default function AdminCommandCenter() {
           </div>
         </Panel>
 
-        <Panel title="Finance cockpit" action={<Link href="/admin/finance" className="text-sm font-black text-[#1670A8]">Open finance</Link>}>
+        <Panel title="Finance to review" action={<Link href="/admin/finance" className="text-sm font-black text-[#1D7ED0]">Open finance</Link>}>
           <div className="grid gap-3">
             <FinanceRow label="Staff pay waiting" value={money(finance?.pendingStaffPaymentCents)} icon={Banknote} />
             <FinanceRow label="Paid this month" value={money(finance?.paidStaffThisMonthCents)} icon={CheckCircle2} />
@@ -333,44 +339,6 @@ function priorityScore(booking: Booking, notifications: Notification[], conversa
   if ((thread?.unread_admin_count || 0) > 0) return 65
   if (booking.status === 'in_progress') return 50
   return 10
-}
-
-function OpsMap3D({ score, today, unassigned, cleaners }: { score: number; today: number; unassigned: number; cleaners: number }) {
-  const lanes = [
-    { label: 'Jobs', value: today, x: 'left-[15%]', y: 'top-[26%]', color: 'bg-[#8DEBFF]' },
-    { label: 'Staff', value: cleaners, x: 'left-[58%]', y: 'top-[18%]', color: 'bg-[#D8F36A]' },
-    { label: 'Risk', value: unassigned, x: 'left-[48%]', y: 'top-[64%]', color: 'bg-[#F6C44F]' },
-  ]
-
-  return (
-    <div className="relative min-h-[280px] overflow-hidden rounded-[8px] border border-[#BFD3DE] bg-[#0A2537] p-5 text-white [perspective:1000px]">
-      <div className="absolute inset-x-8 bottom-8 top-14 rounded-[8px] border border-white/10 bg-white/[0.04] [transform:rotateX(62deg)_rotateZ(-12deg)]">
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.08)_1px,transparent_1px)] bg-[size:34px_34px]" />
-      </div>
-      <div className="relative z-10 flex items-start justify-between gap-4">
-        <div>
-          <p className="text-xs font-black uppercase tracking-[0.18em] text-[#8DEBFF]">3D operations map</p>
-          <div className="mt-2 text-4xl font-black">{score}</div>
-          <p className="text-sm font-bold text-white/55">control score</p>
-        </div>
-        <span className="rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-black text-white/70">Live</span>
-      </div>
-      {lanes.map((lane) => (
-        <div key={lane.label} className={`absolute ${lane.x} ${lane.y} z-20 [transform:translateZ(42px)]`}>
-          <div className={`h-5 w-5 rounded-full ${lane.color} shadow-[0_0_28px_rgba(141,235,255,0.5)]`} />
-          <div className="mt-2 rounded-[8px] border border-white/12 bg-[#102D42]/90 px-3 py-2 shadow-2xl backdrop-blur">
-            <div className="text-lg font-black">{lane.value}</div>
-            <div className="text-[11px] font-black uppercase tracking-[0.12em] text-white/45">{lane.label}</div>
-          </div>
-        </div>
-      ))}
-      <div className="absolute bottom-5 left-5 right-5 z-10 grid grid-cols-3 gap-2 text-center text-xs font-black text-white/60">
-        <div className="rounded-[8px] bg-white/[0.06] px-2 py-2">Dispatch</div>
-        <div className="rounded-[8px] bg-white/[0.06] px-2 py-2">People</div>
-        <div className="rounded-[8px] bg-white/[0.06] px-2 py-2">Margin</div>
-      </div>
-    </div>
-  )
 }
 
 function CommandLink({ href, icon: Icon, label }: { href: string; icon: typeof UsersRound; label: string }) {

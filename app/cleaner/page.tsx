@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { BriefcaseBusiness, CalendarDays, Camera, CheckCircle2, Clock, MapPin, ShieldCheck, UserRound } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import PhotoUpload from '@/components/PhotoUpload'
+import { RoleLens3D } from '@/components/dashboard/CleanDashboard'
 
 type Job = {
   id: string
@@ -141,12 +142,12 @@ export default function CleanerPortal() {
 
   return (
     <main className="min-h-screen bg-[#F4F7FA] text-[#0B3558]">
-      <header className="border-b border-[#DCE5ED] bg-white">
+      <header className="border-b border-[#CFE0ED] bg-white/90 backdrop-blur">
         <div className="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-5 sm:px-6 md:flex-row md:items-center md:justify-between">
           <div>
             <Link href="/" className="text-sm font-bold text-[#1D7ED0]">cleanngo home</Link>
-            <h1 className="mt-2 text-3xl font-black">Cleaner workboard</h1>
-            <p className="mt-1 text-[#60798F]">Your assigned jobs, proof uploads, and profile details.</p>
+            <h1 className="mt-2 text-3xl font-black tracking-normal">Today&apos;s jobs</h1>
+            <p className="mt-1 text-[#60798F]">Start jobs, check notes, upload proof, and finish work from one place.</p>
           </div>
           <button onClick={signOut} className="w-fit rounded-full border border-[#DCE5ED] px-5 py-3 text-sm font-black text-[#60798F]">Sign out</button>
         </div>
@@ -154,6 +155,14 @@ export default function CleanerPortal() {
 
       <div className="mx-auto grid max-w-6xl gap-6 px-4 py-6 sm:px-6 lg:grid-cols-[340px_1fr]">
         <aside className="space-y-4">
+          <RoleLens3D
+            tone="staff"
+            score={jobs.length > 0 ? `${jobs.length} jobs` : 'Clear'}
+            primary={{ label: 'Assigned', value: jobs.length }}
+            secondary={{ label: 'Proof sets', value: stats.proof }}
+            tertiary={{ label: 'Completed', value: stats.completed }}
+          />
+
           <section className="rounded-[8px] border border-[#DCE5ED] bg-white p-5 shadow-sm">
             <div className="flex items-center gap-4">
               <div className="flex h-14 w-14 items-center justify-center rounded-[8px] bg-[#0B3558] text-white">
@@ -170,7 +179,7 @@ export default function CleanerPortal() {
               <div>{profile?.staff.suburb || 'Primary area not set'}</div>
             </div>
             <Link href="/cleaner/onboarding" className="mt-5 inline-flex min-h-11 w-full items-center justify-center rounded-full bg-[#0B3558] px-4 text-sm font-black text-white">
-              Contractor onboarding
+              My onboarding
             </Link>
           </section>
 
@@ -190,11 +199,11 @@ export default function CleanerPortal() {
           </section>
 
           <section className="rounded-[8px] border border-[#DCE5ED] bg-white p-5 shadow-sm">
-            <h2 className="font-black">Professional standard</h2>
+            <h2 className="font-black">Before you leave</h2>
             <ul className="mt-4 space-y-3 text-sm text-[#60798F]">
               <li className="flex gap-2"><CheckCircle2 className="h-4 w-4 text-emerald-600" />Arrive on time and start the job in-app.</li>
               <li className="flex gap-2"><CheckCircle2 className="h-4 w-4 text-emerald-600" />Upload before and after photos for proof.</li>
-              <li className="flex gap-2"><CheckCircle2 className="h-4 w-4 text-emerald-600" />Leave clear notes for admin when anything changes.</li>
+              <li className="flex gap-2"><CheckCircle2 className="h-4 w-4 text-emerald-600" />Leave clear notes when anything changes.</li>
             </ul>
           </section>
         </aside>
@@ -202,8 +211,8 @@ export default function CleanerPortal() {
         <section>
           <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <p className="text-sm font-black uppercase tracking-[0.16em] text-[#1D7ED0]">Today and upcoming</p>
-              <h2 className="text-2xl font-black">Assigned jobs</h2>
+              <p className="text-sm font-black uppercase tracking-[0.16em] text-[#1D7ED0]">Work list</p>
+              <h2 className="text-2xl font-black">Ready to start</h2>
             </div>
             <span className="text-sm font-bold text-[#60798F]">{jobs.length} active job{jobs.length === 1 ? '' : 's'}</span>
           </div>

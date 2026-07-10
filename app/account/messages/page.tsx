@@ -82,41 +82,41 @@ function MessagesView() {
   }
 
   if (loading) {
-    return <div className="min-h-screen flex items-center justify-center text-white/60" style={{ background: 'linear-gradient(135deg, #0B3558, #0B3558)' }}>Opening your messages...</div>
+    return <div className="min-h-screen flex items-center justify-center bg-[#EFF7FC] text-[#0B3558]">Opening your messages...</div>
   }
 
   return (
-    <div className="min-h-screen py-10 px-4" style={{ background: 'linear-gradient(135deg, #0B3558 0%, #0B3558 100%)' }}>
+    <div className="min-h-screen bg-[#EFF7FC] px-4 py-10 text-[#0B3558]">
       <div className="max-w-5xl mx-auto">
         <div className="mb-6">
-          <Link href="/account" className="text-white/50 text-sm hover:text-white">← Account</Link>
-          <h1 className="text-3xl font-bold text-white mt-2">Your Cleanngo messages</h1>
-          <p className="text-white/50 text-sm mt-1">Ask about a quote, update access notes, or reply to your service team.</p>
+          <Link href="/account" className="text-[#1D7ED0] text-sm font-black hover:text-[#0B3558]">Back to account</Link>
+          <h1 className="mt-2 text-3xl font-black tracking-normal text-[#0B3558]">Messages</h1>
+          <p className="mt-1 text-sm font-bold text-[#60798F]">Ask about a clean, update access notes, or reply to your Cleanngo team.</p>
         </div>
 
         {conversations.length === 0 ? (
-          <div className="glass-strong rounded-2xl p-10 text-center text-white/60">No messages yet. When your service team sends an update, it will appear here.</div>
+          <div className="rounded-[8px] border border-[#CFE0ED] bg-white p-10 text-center text-[#60798F] shadow-sm">No messages yet. When your service team sends an update, it will appear here.</div>
         ) : (
           <div className="grid lg:grid-cols-[320px_1fr] gap-4">
-            <div className="glass-strong rounded-2xl p-3 space-y-2 h-fit">
+            <div className="h-fit space-y-2 rounded-[8px] border border-[#CFE0ED] bg-white p-3 shadow-sm">
               {conversations.map((conversation) => (
                 <button
                   key={conversation.id}
                   onClick={() => setSelectedId(conversation.id)}
-                  className={`w-full text-left rounded-xl px-4 py-3 transition-colors ${selected?.id === conversation.id ? 'bg-white text-[#0B3558]' : 'bg-white/5 text-white hover:bg-white/10'}`}
+                  className={`w-full rounded-[8px] px-4 py-3 text-left transition-colors ${selected?.id === conversation.id ? 'bg-[#0B3558] text-white' : 'bg-[#F8FBFF] text-[#0B3558] hover:bg-[#EFF7FC]'}`}
                 >
                   <div className="font-semibold text-sm">{conversation.subject || 'Service update'}</div>
-                  <div className={`text-xs mt-1 ${selected?.id === conversation.id ? 'text-[#0B3558]/60' : 'text-white/45'}`}>
+                  <div className={`mt-1 text-xs ${selected?.id === conversation.id ? 'text-white/62' : 'text-[#60798F]'}`}>
                     {conversation.last_message_at ? timeLabel(conversation.last_message_at) : 'New conversation'}
                   </div>
                 </button>
               ))}
             </div>
 
-            <div className="glass-strong rounded-2xl p-5">
-              <div className="border-b border-white/10 pb-4 mb-4">
-                <div className="text-white font-semibold">{selected?.subject || 'Service update'}</div>
-                {selected?.booking_id && <div className="text-white/40 text-xs mt-1">Booking: {selected.booking_id}</div>}
+            <div className="rounded-[8px] border border-[#CFE0ED] bg-white p-5 shadow-sm">
+              <div className="mb-4 border-b border-[#CFE0ED] pb-4">
+                <div className="font-black text-[#0B3558]">{selected?.subject || 'Service update'}</div>
+                {selected?.booking_id && <div className="mt-1 text-xs text-[#60798F]">Booking: {selected.booking_id}</div>}
               </div>
 
               <div className="space-y-3 min-h-[260px]">
@@ -124,29 +124,29 @@ function MessagesView() {
                   const mine = message.sender_type === 'customer'
                   return (
                     <div key={message.id} className={`flex ${mine ? 'justify-end' : 'justify-start'}`}>
-                      <div className={`max-w-[82%] rounded-2xl px-4 py-3 ${mine ? 'bg-white text-[#0B3558]' : 'bg-white/10 text-white'}`}>
+                      <div className={`max-w-[82%] rounded-[8px] px-4 py-3 ${mine ? 'bg-[#0B3558] text-white' : 'bg-[#EFF7FC] text-[#0B3558]'}`}>
                         <div className="text-sm whitespace-pre-wrap">{message.body}</div>
-                        <div className={`text-[11px] mt-2 ${mine ? 'text-[#0B3558]/50' : 'text-white/35'}`}>{timeLabel(message.created_at)}</div>
+                        <div className={`mt-2 text-[11px] ${mine ? 'text-white/60' : 'text-[#60798F]'}`}>{timeLabel(message.created_at)}</div>
                       </div>
                     </div>
                   )
                 })}
               </div>
 
-              <div className="border-t border-white/10 pt-4 mt-5">
+              <div className="mt-5 border-t border-[#CFE0ED] pt-4">
                 <textarea
                   rows={3}
                   placeholder="Write a reply for the Cleanngo team..."
                   value={reply}
                   onChange={e => setReply(e.target.value)}
-                  className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 text-sm resize-none"
+                  className="w-full resize-none rounded-[8px] border border-[#CFE0ED] bg-[#F8FBFF] px-4 py-3 text-sm text-[#0B3558] placeholder:text-[#8AA0AC] outline-none focus:border-[#1D7ED0]"
                 />
-                {error && <div className="text-red-200 text-sm mt-2">{error}</div>}
+                {error && <div className="mt-2 text-sm font-bold text-red-600">{error}</div>}
                 <button
                   type="button"
                   onClick={sendReply}
                   disabled={sending || !reply.trim()}
-                  className="mt-3 px-5 py-3 rounded-xl bg-white text-[#0B3558] font-bold hover:bg-white/90 disabled:opacity-50"
+                  className="mt-3 rounded-[8px] bg-[#0B3558] px-5 py-3 font-bold text-white hover:bg-[#164A75] disabled:opacity-50"
                 >
                   {sending ? 'Sending...' : 'Send to Cleanngo'}
                 </button>
@@ -161,7 +161,7 @@ function MessagesView() {
 
 export default function AccountMessagesPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center text-white/60" style={{ background: 'linear-gradient(135deg, #0B3558, #0B3558)' }}>Loading...</div>}>
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-[#EFF7FC] text-[#0B3558]">Loading...</div>}>
       <MessagesView />
     </Suspense>
   )

@@ -233,9 +233,9 @@ export default function AdminFinancePage() {
     <section className="px-4 py-5 text-[#0B3558] sm:px-6 lg:px-8">
       <header className="rounded-[8px] border border-[#DCE5ED] bg-white p-5 shadow-sm">
         <div>
-          <p className="text-xs font-black uppercase tracking-[0.18em] text-[#1D7ED0]">Finance ops</p>
-          <h1 className="mt-2 text-3xl font-black sm:text-4xl">Contractor pay, spending, and readiness</h1>
-          <p className="mt-2 text-sm font-bold text-[#60798F]">Timestamp staff wages, ABN payments, expenses and onboarding readiness.</p>
+          <p className="text-xs font-black uppercase tracking-[0.18em] text-[#1D7ED0]">Finance</p>
+          <h1 className="mt-2 text-3xl font-black sm:text-4xl">Staff pay, business spending, and onboarding checks</h1>
+          <p className="mt-2 text-sm font-bold text-[#60798F]">Approve cleaner payments, record expenses, and keep contractor details ready before work is assigned.</p>
         </div>
       </header>
 
